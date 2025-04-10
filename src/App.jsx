@@ -7,6 +7,7 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupUp";
 import CoursesPage from "./pages/CoursesPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
+import Portal from "./pages/Portal";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/portal" element={<Portal/>}/>
         </Routes>
         <WhatsAppButton />
       </Router>

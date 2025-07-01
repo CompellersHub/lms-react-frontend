@@ -103,21 +103,12 @@ export const api = createApi({
         url: `/payment/paypal/create-order/`, // NEW SECURE ENDPOINT
         method: "POST",
         body: {
-          payment_id: paymentData.payment_id, // PayPal payment ID
-          order_id: paymentData.order_id, // PayPal order ID
-          expected_amount: paymentData.expected_amount, // Expected payment amount
-          course_id: paymentData.course_id, // Single course ID
-          currency: paymentData.currency || "GBP", // Payment currency
-          payer_email: paymentData.payer_email, // Payer's email
-          billing_info: paymentData.billing_info, // Billing information
+          course_id: paymentData.courseId, // Single course ID
         },
       }),
       transformResponse: (response) => {
         return {
-          success: true,
-          order_id: response.order_id,
-          message: response.message || "Payment processed successfully",
-          course_access: response.course_access,
+          orderId: response.orderID,
         };
       },
       transformErrorResponse: (response) => {
@@ -127,7 +118,6 @@ export const api = createApi({
           error_code: response.data?.error_code,
         };
       },
-      invalidatesTags: ["Orders"],
     }),
 
     processPayPalPayment: builder.mutation({
@@ -257,6 +247,7 @@ export const {
   useGetCoursesQuery,
   useGetCourseByIdQuery,
   useCreateOrderMutation,
+  useCreatePayPalOrderMutation,
   useProcessPayPalPaymentMutation,
   useCreateStripePaymentIntentMutation,
   useNotifyStripePaymentSuccessMutation,

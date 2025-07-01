@@ -8,7 +8,7 @@ import {
   setOrderId,
   clearCart,
 } from "@/store/slices/cartSlice";
-import { useProcessPayPalPaymentMutation } from "@/services/api";
+import { useProcessPayPalPaymentMutation, useCreatePayPalOrderMutation } from "@/services/api";
 import {
   formatSecurePaymentData,
   validatePaymentData,
@@ -21,6 +21,7 @@ const PayPalCheckoutForm = ({ cartTotal, cartItems, billingInfo }) => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [processPayPalPayment] = useProcessPayPalPaymentMutation();
+  const [createPayPalOrder] = useCreatePayPalOrderMutation();
 
   // 🆕 GET USER FROM REDUX - This is the key addition!
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -34,7 +35,7 @@ const PayPalCheckoutForm = ({ cartTotal, cartItems, billingInfo }) => {
     "disable-funding": "credit,card",
   };
 
-  const createOrder = (data, actions) => {
+  const createOrder = async (data, actions) => {
     try {
       // 🆕 AUTHENTICATION CHECK
       if (!isAuthenticated || !user?.id) {
@@ -69,32 +70,38 @@ const PayPalCheckoutForm = ({ cartTotal, cartItems, billingInfo }) => {
       console.log("  User ID valid ObjectId:", isValidObjectId(user.id));
       console.log("  Course ID valid ObjectId:", isValidObjectId(course.id));
 
-      return actions.order.create({
-        purchase_units: [
-          {
-            amount: {
-              value: cartTotal.toString(),
-              currency_code: "GBP",
-              breakdown: {
-                item_total: {
-                  currency_code: "GBP",
-                  value: cartTotal.toString(),
-                },
-              },
-            },
-            items: items,
-            description: `Course: ${course.name}`,
-            // 🆕 FIXED: Use backend expected format user_id|course_id
-            custom_id: customId,
-          },
-        ],
-        application_context: {
-          shipping_preference: "NO_SHIPPING", // Digital goods
-          user_action: "PAY_NOW",
-          brand_name: "Titans Careers",
-          landing_page: "BILLING",
-        },
-      });
+      // Create Paypal Order
+      const result = await createPayPalOrder({ courseId: course.id }).unwrap();
+
+      return result.orderId;
+
+      // return actions.order.create({
+      //   purchase_units: [
+      //     {
+      //       amount: {
+      //         value: cartTotal.toString(),
+      //         currency_code: "GBP",
+      //         breakdown: {
+      //           item_total: {
+      //             currency_code: "GBP",
+      //             value: cartTotal.toString(),
+      //           },
+      //         },
+      //       },
+      //       items: items,
+      //       description: `Course: ${course.name}`,
+      //       // 🆕 FIXED: Use backend expected format user_id|course_id
+      //       custom_id: customId,
+      //     },
+      //   ],
+      //   application_context: {
+      //     shipping_preference: "NO_SHIPPING", // Digital goods
+      //     user_action: "PAY_NOW",
+      //     brand_name: "Titans Careers",
+      //     landing_page: "BILLING",
+      //   },
+      // });
+      // Fetch Order_id from backend
     } catch (error) {
       console.error("PayPal createOrder error:", error);
       toast.error("Failed to create PayPal order");

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 // import { useDispatch } from "react-redux";
 // import { clearCart } from "@/store/slices/cartSlice";
 import { useState } from "react";
-
+import { useNotifyStripePaymentSuccessMutation } from "@/services/api";
 // Convert country name to ISO 3166-1 alpha-2 code
 const convertCountryToCode = (country) => {
   const countryCodes = {
@@ -47,6 +47,10 @@ const StripeCheckoutForm = ({
   // const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // stripe payment notify Api 
+  const [notifyPaymentSuccess] = useNotifyStripePaymentSuccessMutation()
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!stripe || !elements || !clientSecret || isSubmitting) return;
@@ -88,6 +92,14 @@ const StripeCheckoutForm = ({
       }
 
       if (paymentIntent.status === "succeeded") {
+        // notify backend of payment
+        const { error } = await notifyPaymentSuccess({
+          paymentIntentId: paymentIntent.id
+        });
+        if (error) {
+          toast.warning(error.message || "Server Callback Error")
+        }
+
         toast.success("Payment successful!");
         navigate("/courses/success", {
           state: {

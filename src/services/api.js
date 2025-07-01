@@ -98,6 +98,38 @@ export const api = createApi({
     }),
 
     // UPDATED: Secure PayPal payment processing with backend verification
+    createPayPalOrder: builder.mutation({
+      query: (paymentData) => ({
+        url: `/payment/paypal/create-order/`, // NEW SECURE ENDPOINT
+        method: "POST",
+        body: {
+          payment_id: paymentData.payment_id, // PayPal payment ID
+          order_id: paymentData.order_id, // PayPal order ID
+          expected_amount: paymentData.expected_amount, // Expected payment amount
+          course_id: paymentData.course_id, // Single course ID
+          currency: paymentData.currency || "GBP", // Payment currency
+          payer_email: paymentData.payer_email, // Payer's email
+          billing_info: paymentData.billing_info, // Billing information
+        },
+      }),
+      transformResponse: (response) => {
+        return {
+          success: true,
+          order_id: response.order_id,
+          message: response.message || "Payment processed successfully",
+          course_access: response.course_access,
+        };
+      },
+      transformErrorResponse: (response) => {
+        return {
+          status: response.status,
+          message: response.data?.message || "Failed to process PayPal payment",
+          error_code: response.data?.error_code,
+        };
+      },
+      invalidatesTags: ["Orders"],
+    }),
+
     processPayPalPayment: builder.mutation({
       query: (paymentData) => ({
         url: `/payment/paypal/verify-order/`, // NEW SECURE ENDPOINT
@@ -158,6 +190,28 @@ export const api = createApi({
       },
     }),
 
+    notifyStripePaymentSuccess: builder.mutation({
+      query: (data) => ({
+        url: `/payment/payment-success/`,
+        method: "POST",
+        body: {
+          payment_intent_id: data.paymentIntentId, // Stripe Payment Intent ID
+        },
+      }),
+      transformResponse: (response) => {
+        return {
+          userMessage: response.user_message,
+          courseId: response.course_id,
+        };
+      },
+      transformErrorResponse: (response) => {
+        return {
+          status: response.status,
+          message: response.data?.error || "Failed to notify payment success",
+        };
+      },
+    }),
+
     // Get user orders
     getUserOrders: builder.query({
       query: () => "/orders/user/",
@@ -205,6 +259,7 @@ export const {
   useCreateOrderMutation,
   useProcessPayPalPaymentMutation,
   useCreateStripePaymentIntentMutation,
+  useNotifyStripePaymentSuccessMutation,
   useGetUserOrdersQuery,
   useSendGuideMutation,
   useRequestPasswordResetMutation,

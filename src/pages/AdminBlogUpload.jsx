@@ -38,6 +38,7 @@ const initialBlogState = {
   image: "", // Featured image URL
   excerpt: "", // Short summary
   content: [], // This will hold our structured content blocks
+  status: "draft", // Default status
 };
 
 function AdminBlogUpload() {
@@ -71,7 +72,7 @@ function AdminBlogUpload() {
   const addContentBlock = (type) => {
     const id = Date.now().toString(); // Generate unique ID
     let newBlock;
-    
+
     // Initialize block based on its type to match JSON structure
     if (type === "heading") {
       newBlock = { id, type: "heading", level: 2, headingId: "", value: "" }; // Default to h2
@@ -292,7 +293,7 @@ function AdminBlogUpload() {
         <h1 className="text-4xl font-bold text-primary">
           Upload New Blog Post
         </h1>
-        
+
         {/* Preview Toggle Button */}
         <button
           type="button"
@@ -317,7 +318,7 @@ function AdminBlogUpload() {
         /* Preview Mode */
         <div className="max-w-4xl mx-auto">
           <BlogPreview blog={blog} />
-          
+
           {/* Submit Button in Preview Mode */}
           <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
             <button
@@ -347,14 +348,14 @@ function AdminBlogUpload() {
               <span className="ml-2 text-sm text-gray-500">Uploading...</span>
             )}
           </h2>
-          
+
           {blog.content.length > 0 && (
             <p className="text-sm text-gray-600 mb-4 flex items-center gap-1">
               <GripVertical className="h-4 w-4" />
               Drag the grip handle to reorder content blocks
             </p>
           )}
-          
+
           <div className="space-y-6 mb-8 p-4 border border-gray-100 rounded-md bg-gray-50">
             {/* Render each content block dynamically */}
             {blog.content.map((block, blockIndex) => (

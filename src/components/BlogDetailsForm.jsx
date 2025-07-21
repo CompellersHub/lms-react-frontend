@@ -47,6 +47,7 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
         Blog Details
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* ...existing code... */}
         <div>
           <label
             htmlFor="title"
@@ -120,6 +121,28 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-gray-100 disabled:cursor-not-allowed"
             required
           />
+        </div>
+
+        {/* Status Selector */}
+        <div>
+          <label
+            htmlFor="status"
+            className="block text-sm font-medium text-foreground mb-1"
+          >
+            Status <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="status"
+            name="status"
+            value={blog.status}
+            onChange={handleChange}
+            disabled={disabled}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-gray-100 disabled:cursor-not-allowed"
+            required
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
         </div>
 
         <div className="md:col-span-2">

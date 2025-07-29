@@ -1,4 +1,3 @@
-"use client";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,6 +10,8 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { useLogoutMutation } from "../../services/api"; // Import the logout mutation
+import { logout as logoutAction } from "../../store/slices/authSlice"; // Import the logout action
 
 function AdminLayout() {
   const location = useLocation();
@@ -20,6 +21,7 @@ function AdminLayout() {
 
   // You might want to add admin user check here
   const user = useSelector((state) => state.auth.user);
+  const [logoutApi] = useLogoutMutation(); // Initialize the logout mutation
 
   const navigation = [
     {
@@ -44,9 +46,18 @@ function AdminLayout() {
     },
   ];
 
-  const handleLogout = () => {
-    // Add your logout logic here
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await logoutApi().unwrap(); // Call the logout API
+      dispatch(logoutAction()); // Dispatch the logout action to clear Redux state and localStorage
+      navigate("/login"); // Redirect to login page
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Optionally, handle error (e.g., show a toast notification)
+      // Even if API logout fails, clear local state for better UX
+      dispatch(logoutAction());
+      navigate("/login");
+    }
   };
 
   return (
@@ -108,7 +119,7 @@ function AdminLayout() {
             />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">
-                {user?.name || "Admin User"}
+                {user?.email || "Admin User"}
               </p>
               <p className="text-xs text-gray-500 truncate">Administrator</p>
             </div>

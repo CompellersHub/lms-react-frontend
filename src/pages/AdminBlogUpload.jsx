@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useCreateBlogMutation } from "../services/blogsApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import BlogDetailsForm from "../components/BlogDetailsForm";
-import DraggableContentBlock from "../components/DraggableContentBlock";
-import BlogPreview from "../components/BlogPreview";
+import BlogDetailsForm from "../components/admin/BlogDetailsForm";
+import DraggableContentBlock from "../components/admin/DraggableContentBlock";
+import BlogPreview from "../components/admin/BlogPreview";
 import {
   Plus,
   Heading1,

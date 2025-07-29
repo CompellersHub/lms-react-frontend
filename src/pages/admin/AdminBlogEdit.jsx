@@ -8,9 +8,9 @@ import {
   useGetBlogByIdQuery,
   useUpdateBlogMutation,
 } from "../../services/blogsApi";
-import BlogDetailsForm from "../../components/BlogDetailsForm";
-import DraggableContentBlock from "../../components/DraggableContentBlock";
-import BlogPreview from "../../components/BlogPreview";
+import BlogDetailsForm from "../../components/admin/BlogDetailsForm";
+import DraggableContentBlock from "../../components/admin/DraggableContentBlock";
+import BlogPreview from "../../components/admin/BlogPreview";
 
 function AdminBlogEdit() {
   const { id } = useParams();

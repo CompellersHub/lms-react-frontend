@@ -8,8 +8,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import store, { persistor } from "./store"; // NEW: Import persistor
-
 import Layout from "./components/Layout";
 import AdminLayout from "./components/admin/AdminLayout";
 

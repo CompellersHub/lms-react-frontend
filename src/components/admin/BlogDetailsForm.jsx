@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import ImageUpload from "../admin/ImageUpload"; // Updated path
 
 function BlogDetailsForm({ blog, setBlog, disabled = false }) {
   const [currentTagInput, setCurrentTagInput] = useState("");
@@ -20,6 +21,11 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
       .replace(/-+/g, "-")
       .trim();
     setBlog((prev) => ({ ...prev, title: title, slug: slug }));
+  };
+
+  // Handle image upload
+  const handleImageChange = (imageUrl) => {
+    setBlog((prev) => ({ ...prev, image: imageUrl }));
   };
 
   // Handle adding a new tag
@@ -47,7 +53,7 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
         Blog Details
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* ...existing code... */}
+        {/* Title */}
         <div>
           <label
             htmlFor="title"
@@ -67,6 +73,7 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
           />
         </div>
 
+        {/* Slug */}
         <div>
           <label
             htmlFor="slug"
@@ -84,6 +91,7 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
           />
         </div>
 
+        {/* Category */}
         <div>
           <label
             htmlFor="category"
@@ -98,26 +106,6 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
             value={blog.category}
             onChange={handleChange}
             disabled={disabled}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-gray-100 disabled:cursor-not-allowed"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="image"
-            className="block text-sm font-medium text-foreground mb-1"
-          >
-            Featured Image URL <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="url"
-            id="image"
-            name="image"
-            value={blog.image}
-            onChange={handleChange}
-            disabled={disabled}
-            placeholder="e.g., https://example.com/image.jpg"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-gray-100 disabled:cursor-not-allowed"
             required
           />
@@ -145,6 +133,20 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
           </select>
         </div>
 
+        {/* Featured Image Upload - Full width */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-foreground mb-1">
+            Featured Image <span className="text-red-500">*</span>
+          </label>
+          <ImageUpload
+            value={blog.image}
+            onChange={handleImageChange}
+            disabled={disabled}
+            placeholder="Upload featured image for your blog post"
+          />
+        </div>
+
+        {/* Excerpt */}
         <div className="md:col-span-2">
           <label
             htmlFor="excerpt"
@@ -164,6 +166,7 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
           ></textarea>
         </div>
 
+        {/* Tags */}
         <div className="md:col-span-2">
           <label
             htmlFor="tags"

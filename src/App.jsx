@@ -62,6 +62,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBlogList from "./pages/admin/AdminBlogList";
 import AdminBlogEdit from "./pages/admin/AdminBlogEdit";
 import BloggerRoute from "./components/admin/BloggerRoute";
+import store from "./store";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -94,224 +95,216 @@ function App() {
   return (
     <Provider store={store}>
       {/* NEW: PersistGate to handle data persistence */}
-      <PersistGate loading={<PersistenceLoader />} persistor={persistor}>
-        <GoogleOAuthProvider clientId={googleClientId}>
-          <Router>
-            <ScrollToTop />
-            <Routes>
-              {/* Authentication Pages (outside main layout) */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <Router>
+          <ScrollToTop />
+          <Routes>
+            {/* Authentication Pages (outside main layout) */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route
+              path="/password-reset-confirm/:uid/:token"
+              element={<ResetPasswordConfirmPage />}
+            />
+            {/* Portal Routes - Kept flat as in historical version */}
+            <Route
+              path="/portal"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/enroll-courses"
+              element={
+                <ProtectedRoute>
+                  <CourseLibrary />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/enroll-courses/:courseId"
+              element={
+                <ProtectedRoute>
+                  <CourseDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/courses"
+              element={
+                <ProtectedRoute>
+                  <MyCourses />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/learn/:id"
+              element={
+                <ProtectedRoute>
+                  <CourseLearning />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/progress"
+              element={
+                <ProtectedRoute>
+                  <ProgressAnalytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/library"
+              element={
+                <ProtectedRoute>
+                  <Library />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/library/:id"
+              element={
+                <ProtectedRoute>
+                  <CourseLibraryDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/assignments"
+              element={
+                <ProtectedRoute>
+                  <Assignments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/assignments/:id/submit"
+              element={
+                <ProtectedRoute>
+                  <AssignmentSubmission />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/chat"
+              element={
+                <ProtectedRoute>
+                  <TeamsChat />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/live-classes"
+              element={
+                <ProtectedRoute>
+                  <LiveClassesSchedule />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/certificates"
+              element={
+                <ProtectedRoute>
+                  <CertificatesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/profile"
+              element={
+                <ProtectedRoute>
+                  <StudentProfile />
+                </ProtectedRoute>
+              }
+            />
+            {/* Admin Routes - New admin section with its own layout */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <BloggerRoute requiredRole="BLOGGER">
+                    <AdminLayout />
+                  </BloggerRoute>
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="blog/list" element={<AdminBlogList />} />
+              <Route path="blog/create" element={<AdminBlogUpload />} />
+              <Route path="blog/edit/:id" element={<AdminBlogEdit />} />
+            </Route>
+            {/* Data Analysis Tool - UPDATED: Now supports multiple tables with persistence */}
+            <Route path="/analysis" element={<Index />} />
+            {/* Order confirmation route */}
+            <Route
+              path="/order-confirmation/:orderId"
+              element={
+                <ProtectedRoute>
+                  <OrderConfirmationPage />
+                </ProtectedRoute>
+              }
+            />
+            {/* Main Layout Routes */}
+            <Route path="/" element={<Layout />}>
+              {/* Public Routes */}
+              <Route index element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/story" element={<OurStoryPage />} />
+              <Route path="/partner" element={<PartnerWithUs />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="courses" element={<CoursesPage />} />
+              <Route path="courses/success" element={<PaymentSuccessPage />} />
+              <Route path="courses/:courseId" element={<CourseDetailPage />} />
+              <Route path="blog" element={<BlogPage />} />
+              <Route path="blog/:slug" element={<BlogPostPage />} />
+              <Route path="events" element={<WorkshopEvents />} />
+              <Route path="terms" element={<TermsAndConditions />} />
+              <Route path="privacy" element={<PrivacyPolicy />} />
+
+              {/* Protected Routes that should use main layout */}
               <Route
-                path="/password-reset-confirm/:uid/:token"
-                element={<ResetPasswordConfirmPage />}
-              />
-              {/* Portal Routes - Kept flat as in historical version */}
-              <Route
-                path="/portal"
+                path="checkout"
                 element={
                   <ProtectedRoute>
-                    <Dashboard />
+                    <CheckoutPage />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/portal/enroll-courses"
-                element={
-                  <ProtectedRoute>
-                    <CourseLibrary />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/enroll-courses/:courseId"
-                element={
-                  <ProtectedRoute>
-                    <CourseDetail />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/courses"
-                element={
-                  <ProtectedRoute>
-                    <MyCourses />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/learn/:id"
-                element={
-                  <ProtectedRoute>
-                    <CourseLearning />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/progress"
-                element={
-                  <ProtectedRoute>
-                    <ProgressAnalytics />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/library"
-                element={
-                  <ProtectedRoute>
-                    <Library />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/library/:id"
-                element={
-                  <ProtectedRoute>
-                    <CourseLibraryDetail />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/assignments"
-                element={
-                  <ProtectedRoute>
-                    <Assignments />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/assignments/:id/submit"
-                element={
-                  <ProtectedRoute>
-                    <AssignmentSubmission />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/chat"
-                element={
-                  <ProtectedRoute>
-                    <TeamsChat />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/live-classes"
-                element={
-                  <ProtectedRoute>
-                    <LiveClassesSchedule />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/notifications"
-                element={
-                  <ProtectedRoute>
-                    <NotificationsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/certificates"
-                element={
-                  <ProtectedRoute>
-                    <CertificatesPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/portal/profile"
-                element={
-                  <ProtectedRoute>
-                    <StudentProfile />
-                  </ProtectedRoute>
-                }
-              />
-              {/* Admin Routes - New admin section with its own layout */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <BloggerRoute requiredRole="BLOGGER">
-                      <AdminLayout />
-                    </BloggerRoute>
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<AdminDashboard />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="blog/list" element={<AdminBlogList />} />
-                <Route path="blog/create" element={<AdminBlogUpload />} />
-                <Route path="blog/edit/:id" element={<AdminBlogEdit />} />
-              </Route>
-              {/* Data Analysis Tool - UPDATED: Now supports multiple tables with persistence */}
-              <Route path="/analysis" element={<Index />} />
-              {/* Order confirmation route */}
-              <Route
-                path="/order-confirmation/:orderId"
+                path="order-confirmation"
                 element={
                   <ProtectedRoute>
                     <OrderConfirmationPage />
                   </ProtectedRoute>
                 }
               />
-              {/* Main Layout Routes */}
-              <Route path="/" element={<Layout />}>
-                {/* Public Routes */}
-                <Route index element={<HomePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/story" element={<OurStoryPage />} />
-                <Route path="/partner" element={<PartnerWithUs />} />
-                <Route path="/refund-policy" element={<RefundPolicy />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/community" element={<CommunityPage />} />
-                <Route path="courses" element={<CoursesPage />} />
-                <Route
-                  path="courses/success"
-                  element={<PaymentSuccessPage />}
-                />
-                <Route
-                  path="courses/:courseId"
-                  element={<CourseDetailPage />}
-                />
-                <Route path="blog" element={<BlogPage />} />
-                <Route path="blog/:slug" element={<BlogPostPage />} />
-                <Route path="events" element={<WorkshopEvents />} />
-                <Route path="terms" element={<TermsAndConditions />} />
-                <Route path="privacy" element={<PrivacyPolicy />} />
 
-                {/* Protected Routes that should use main layout */}
-                <Route
-                  path="checkout"
-                  element={
-                    <ProtectedRoute>
-                      <CheckoutPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="order-confirmation"
-                  element={
-                    <ProtectedRoute>
-                      <OrderConfirmationPage />
-                    </ProtectedRoute>
-                  }
-                />
+              {/* 404 catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
 
-                {/* 404 catch-all route */}
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-
-            {/* Global Components */}
-            <Toaster />
-            <ToastContainer />
-            <WhatsAppButton />
-          </Router>
-        </GoogleOAuthProvider>
-      </PersistGate>
+          {/* Global Components */}
+          <Toaster />
+          <ToastContainer />
+          <WhatsAppButton />
+        </Router>
+      </GoogleOAuthProvider>
     </Provider>
   );
 }

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { loginSchema } from "../schemas/authSchemas";
 import { useLoginMutation } from "../services/api";
@@ -68,7 +68,19 @@ function LoginPage() {
           <Spinner />
         </div>
       )}
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+
+      {/* Back to Home Button - Top Left */}
+
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md relative">
+        {/* Alternative: Home icon in top-right corner of form */}
+        <Link
+          to="/"
+          className="absolute top-4 right-4 p-2 text-foreground/60 hover:text-primary hover:bg-gray-50 rounded-full transition-colors duration-200"
+          title="Go to Home"
+        >
+          <Home className="h-5 w-5" />
+        </Link>
+
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-primary">Welcome back</h2>
           <p className="mt-2 text-sm text-foreground/80">
@@ -198,6 +210,16 @@ function LoginPage() {
           <div className="mt-6">
             <GoogleAuthButton redirectPath={from} />
           </div>
+        </div>
+
+        {/* Alternative: Text link at bottom */}
+        <div className="mt-4 text-center">
+          <Link
+            to="/"
+            className="text-xs text-foreground/60 hover:text-primary transition-colors"
+          >
+            ← Return to homepage
+          </Link>
         </div>
       </div>
     </div>

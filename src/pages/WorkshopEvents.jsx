@@ -24,6 +24,39 @@ export function WorkshopEvents() {
 
   const workshops = [
     {
+      id: 3,
+      title: "Data Analytics",
+      date: "09 August 2025",
+      time: "4:00 PM - 6:00 PM EST",
+      description:
+        "Transform complex datasets into strategic insights using advanced analytical techniques and powerful visualization tools that drive informed business decisions.",
+      highlights: [
+        "Instructor-led training on core data analysis concepts and techniques",
+        "Hands-on projects using Excel, SQL, and Power BI or Tableau",
+        "Real-world case studies to develop problem-solving and data storytelling skills",
+        "Introduction to data cleaning, transformation, and visualization",
+        "Learn to build dashboards and reports that support business decisions",
+        "Basics of Python for data analysis (optional module)",
+        "CV and LinkedIn support tailored for data analyst roles",
+        "Downloadable templates, datasets, and project files",
+        "Practical tips on how to transition into a data analytics career",
+        "Certificate of completion to showcase your skills to employers",
+      ],
+      instructor: {
+        name: "TOBI OLADIPUPO",
+        bio: "Tobi Oladipupo is a skilled Data Analyst with over 6 years of experience turning spatial and non-spatial data into strategic insights for organizations like WHO, eHealth Africa, and various consultancies. Holding an MSc in Information Management, he specialises in training aspiring analysts and professionals to use tools like Excel, SQL, Python, and Power BI to make smarter, data-driven decisions.",
+      },
+      audience: [
+        "Aspiring Data Analysts and Business Intelligence professionals",
+        "Career changers looking to break into tech or data-driven roles",
+        "Professionals in operations, finance, marketing, or admin seeking to upskill",
+        "Graduates and job seekers who want to stand out in today’s data-driven job market",
+        "Junior analysts looking to strengthen their technical and analytical skills",
+        "Anyone interested in using data to make better business decisions",
+      ].join("\n"),
+      icon: <BarChart2 className="h-6 w-6" />,
+    },
+    {
       id: 1,
       title: "AML/KYC Compliance",
       date: "17 August 2025",
@@ -87,39 +120,6 @@ export function WorkshopEvents() {
         "Anyone looking to understand how to manage projects or improve business processes",
       ].join("\n"),
       icon: <Briefcase className="h-6 w-6" />,
-    },
-    {
-      id: 3,
-      title: "Data Analytics",
-      date: "09 August 2025",
-      time: "4:00 PM - 6:00 PM EST",
-      description:
-        "Transform complex datasets into strategic insights using advanced analytical techniques and powerful visualization tools that drive informed business decisions.",
-      highlights: [
-        "Instructor-led training on core data analysis concepts and techniques",
-        "Hands-on projects using Excel, SQL, and Power BI or Tableau",
-        "Real-world case studies to develop problem-solving and data storytelling skills",
-        "Introduction to data cleaning, transformation, and visualization",
-        "Learn to build dashboards and reports that support business decisions",
-        "Basics of Python for data analysis (optional module)",
-        "CV and LinkedIn support tailored for data analyst roles",
-        "Downloadable templates, datasets, and project files",
-        "Practical tips on how to transition into a data analytics career",
-        "Certificate of completion to showcase your skills to employers",
-      ],
-      instructor: {
-        name: "TOBI OLADIPUPO",
-        bio: "Tobi Oladipupo is a skilled Data Analyst with over 6 years of experience turning spatial and non-spatial data into strategic insights for organizations like WHO, eHealth Africa, and various consultancies. Holding an MSc in Information Management, he specialises in training aspiring analysts and professionals to use tools like Excel, SQL, Python, and Power BI to make smarter, data-driven decisions.",
-      },
-      audience: [
-        "Aspiring Data Analysts and Business Intelligence professionals",
-        "Career changers looking to break into tech or data-driven roles",
-        "Professionals in operations, finance, marketing, or admin seeking to upskill",
-        "Graduates and job seekers who want to stand out in today’s data-driven job market",
-        "Junior analysts looking to strengthen their technical and analytical skills",
-        "Anyone interested in using data to make better business decisions",
-      ].join("\n"),
-      icon: <BarChart2 className="h-6 w-6" />,
     },
     {
       id: 4,

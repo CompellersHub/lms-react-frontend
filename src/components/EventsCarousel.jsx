@@ -35,6 +35,16 @@ export function EventsCarousel() {
   // Events data - these are the static event descriptions
   const events = [
     {
+      id: 3,
+      title: "Data Analytics Workshop",
+      date: "09 August 2025",
+      time: "4:00 PM - 6:00 PM EST",
+      location: "Virtual Event",
+      description:
+        "Transform complex datasets into strategic insights using advanced analytical techniques and powerful visualization tools that drive informed business decisions.",
+      image: "/assets/illustrations/career-growth.svg",
+    },
+    {
       id: 1,
       title: "AML/KYC Compliance Workshop",
       date: "17 August 2025",
@@ -53,16 +63,6 @@ export function EventsCarousel() {
       description:
         "Develop critical skills in requirements gathering, process optimization, and stakeholder management to effectively bridge technical and business objectives.",
       image: "/assets/illustrations/data-masterclass.svg",
-    },
-    {
-      id: 3,
-      title: "Data Analytics Workshop",
-      date: "09 August 2025",
-      time: "4:00 PM - 6:00 PM EST",
-      location: "Virtual Event",
-      description:
-        "Transform complex datasets into strategic insights using advanced analytical techniques and powerful visualization tools that drive informed business decisions.",
-      image: "/assets/illustrations/career-growth.svg",
     },
     {
       id: 4,

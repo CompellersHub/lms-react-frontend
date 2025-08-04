@@ -22,7 +22,7 @@ export function CommunityPage() {
       <div className="py-20 px-6 md:px-12 lg:px-16 bg-primary/10 text-center">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Join Our Community of 10,000+ Digital Professionals
+            Join Our Community of Digital Professionals
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
             Connect with industry leaders and ambitious peers to access daily

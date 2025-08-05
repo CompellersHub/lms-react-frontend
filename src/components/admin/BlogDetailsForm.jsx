@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import ImageUpload from "../admin/ImageUpload"; // Updated path
 
@@ -23,9 +25,9 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
     setBlog((prev) => ({ ...prev, title: title, slug: slug }));
   };
 
-  // Handle image upload
+  // Handle image upload - now updates image_url
   const handleImageChange = (imageUrl) => {
-    setBlog((prev) => ({ ...prev, image: imageUrl }));
+    setBlog((prev) => ({ ...prev, image_url: imageUrl })); // Changed from 'image' to 'image_url'
   };
 
   // Handle adding a new tag
@@ -139,7 +141,7 @@ function BlogDetailsForm({ blog, setBlog, disabled = false }) {
             Featured Image <span className="text-red-500">*</span>
           </label>
           <ImageUpload
-            value={blog.image}
+            value={blog.image_url} // Changed from blog.image to blog.image_url
             onChange={handleImageChange}
             disabled={disabled}
             placeholder="Upload featured image for your blog post"

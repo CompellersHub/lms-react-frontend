@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef } from "react";
 import { Upload, X, AlertCircle, Check } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -178,7 +180,7 @@ const ImageUpload = ({
         // Image Preview
         <div className="relative">
           <img
-            src={value}
+            src={value || "/placeholder.svg"}
             alt="Uploaded image"
             className="w-full h-48 object-cover rounded-lg border border-gray-300"
             onError={(e) => {

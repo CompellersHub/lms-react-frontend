@@ -23,7 +23,8 @@ function AdminBlogEdit() {
 
   useEffect(() => {
     if (blogData) {
-      setBlog(blogData);
+      // Ensure the image field is mapped correctly from backend's image_url
+      setBlog({ ...blogData, image_url: blogData.image_url || blogData.image });
     }
   }, [blogData]);
 
@@ -146,7 +147,14 @@ function AdminBlogEdit() {
       e.preventDefault();
     }
 
-    if (!blog.title || !blog.slug || !blog.category || !blog.excerpt) {
+    if (
+      !blog.title ||
+      !blog.slug ||
+      !blog.category ||
+      !blog.excerpt ||
+      !blog.image_url
+    ) {
+      // Added blog.image_url
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -157,7 +165,12 @@ function AdminBlogEdit() {
     }
 
     try {
-      await updateBlog({ id: blog.id, ...blog }).unwrap();
+      // Ensure the payload sent to backend uses image_url
+      await updateBlog({
+        id: blog.id,
+        ...blog,
+        image_url: blog.image_url,
+      }).unwrap();
       toast.success("Blog updated successfully!");
       navigate("/admin/blog/list");
     } catch (err) {

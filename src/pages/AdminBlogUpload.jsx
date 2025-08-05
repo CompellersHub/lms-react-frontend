@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { useCreateBlogMutation } from "../services/blogsApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -6,14 +8,13 @@ import BlogDetailsForm from "../components/admin/BlogDetailsForm";
 import DraggableContentBlock from "../components/admin/DraggableContentBlock";
 import BlogPreview from "../components/admin/BlogPreview";
 import {
-  Plus,
   Heading1,
   FileText,
   Info,
   Lightbulb,
   AlertTriangle,
   Star,
-  Image as ImageIcon,
+  ImageIcon,
   List,
   Eye,
   Edit3,
@@ -35,7 +36,7 @@ const initialBlogState = {
   }), // Auto-generated date
   category: "Compliance", // Default category
   tags: [], // Array for tags
-  image: "", // Featured image URL
+  image_url: "", // Changed from 'image' to 'image_url' to match backend
   excerpt: "", // Short summary
   content: [], // This will hold our structured content blocks
   status: "draft", // Default status
@@ -54,7 +55,7 @@ function AdminBlogUpload() {
       toast.success("Blog post uploaded successfully!");
       setBlog(initialBlogState); // Reset the form after successful upload
       setIsPreviewMode(false); // Reset to edit mode
-      navigate("/blog"); // Navigate to the blog listing page
+      navigate("/admin"); // Navigate to the blog listing page
     }
     if (isError) {
       toast.error(
@@ -196,7 +197,7 @@ function AdminBlogUpload() {
       !blog.slug ||
       !blog.category ||
       !blog.excerpt ||
-      !blog.image
+      !blog.image_url // Changed from blog.image
     ) {
       toast.error(
         "Please fill in all basic blog details (Title, Slug, Category, Excerpt, Image URL)."

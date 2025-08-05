@@ -85,7 +85,6 @@ export function Navbar() {
     { title: "Home", href: "/" },
     { title: "About Us", href: "/about" },
     { title: "Partner with Us", href: "/partner" },
-    { title: "Events", href: "/events" },
     { title: "Get Started", href: "/courses" },
   ];
 

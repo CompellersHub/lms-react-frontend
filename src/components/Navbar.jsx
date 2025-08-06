@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -60,12 +60,6 @@ export function Navbar() {
     setIsMenuOpen(false);
   }, [location]);
 
-  const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), []);
-  const toggleProfile = useCallback(
-    () => setIsProfileOpen((prev) => !prev),
-    []
-  );
-
   const handleLogout = () => {
     if (user) {
       try {
@@ -76,6 +70,7 @@ export function Navbar() {
         setIsProfileOpen(false);
       } catch (error) {
         toast.error("Logout failed. Please try again.");
+        console.log(error);
       }
     }
   };

@@ -254,7 +254,8 @@ function AdminBlogList() {
                     <div className="col-span-5 flex items-center space-x-3">
                       <img
                         src={
-                          blog.image || "/placeholder.svg?height=48&width=48"
+                          blog.image_url ||
+                          "/placeholder.svg?height=48&width=48" // Changed from blog.image
                         }
                         alt={blog.title}
                         className="w-12 h-12 object-cover rounded"
@@ -302,7 +303,10 @@ function AdminBlogList() {
 
                     {/* Date */}
                     <div className="col-span-2 text-sm text-gray-500">
-                      {blog.date}
+                      {new Date(
+                        blog.date || blog.createdAt
+                      ).toLocaleDateString()}{" "}
+                      {/* Fail-safe for date */}
                     </div>
 
                     {/* Actions */}

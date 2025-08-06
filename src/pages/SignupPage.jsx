@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
-import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Phone, Home } from "lucide-react";
 import { signupSchema } from "../schemas/authSchemas";
 import { useRegisterMutation } from "../services/api";
 import Spinner from "../components/Spinner";
@@ -82,7 +82,16 @@ function SignupPage() {
         </div>
       )}
 
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md relative">
+        {/* Home icon in top-right corner of form */}
+        <Link
+          to="/"
+          className="absolute top-4 right-4 p-2 text-foreground/60 hover:text-primary hover:bg-gray-50 rounded-full transition-colors duration-200"
+          title="Go to Home"
+        >
+          <Home className="h-5 w-5" />
+        </Link>
+
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-primary">
             Create your account
@@ -93,9 +102,6 @@ function SignupPage() {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          {/* Form fields remain the same */}
-          {/* ... */}
-
           <div className="rounded-md shadow-sm space-y-4">
             {/* Username field */}
             <div className="relative">
@@ -312,6 +318,16 @@ function SignupPage() {
               redirectPath="/portal"
             />
           </div>
+        </div>
+
+        {/* Text link at bottom */}
+        <div className="mt-4 text-center">
+          <Link
+            to="/"
+            className="text-xs text-foreground/60 hover:text-primary transition-colors"
+          >
+            ← Return to homepage
+          </Link>
         </div>
       </div>
     </div>

@@ -162,7 +162,7 @@ export function ContactPage() {
               {[
                 {
                   title: "Initial Contact",
-                  description: "We'll respond within 24 hours",
+                  description: "Initial Introduction",
                 },
                 {
                   title: "Consultation",

@@ -23,7 +23,7 @@ export const coursesApi = createApi({
   endpoints: (builder) => ({
     // Get all courses
     getAllCourses: builder.query({
-      query: () => "/courses/courses",
+      query: () => "/courses/courses/",
       providesTags: (result) =>
         result
           ? [
@@ -35,13 +35,13 @@ export const coursesApi = createApi({
 
     // Get a single course by ID
     getCourseById: builder.query({
-      query: (id) => `/courses/courses/${id}`,
+      query: (id) => `/courses/courses/${id}/`,
       providesTags: (result, error, id) => [{ type: "Course", id }],
     }),
 
     // Get courses by category
     getCoursesByCategory: builder.query({
-      query: (category) => `/courses/courses?category=${category}`,
+      query: (category) => `/courses/courses?category=${category}/`,
       providesTags: (result) =>
         result
           ? [
@@ -53,7 +53,7 @@ export const coursesApi = createApi({
 
     // Search courses
     searchCourses: builder.query({
-      query: (searchTerm) => `/courses/courses?search=${searchTerm}`,
+      query: (searchTerm) => `/courses/courses?search=${searchTerm}/`,
       providesTags: [{ type: "Course", id: "SEARCH" }],
     }),
 
@@ -155,6 +155,7 @@ export const coursesApi = createApi({
         try {
           const { data } = await queryFulfilled;
           // Handle blob download here instead of storing in state
+          console.log(data);
         } catch (error) {
           console.error("Certificate generation failed:", error);
         }

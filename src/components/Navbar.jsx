@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,25 +24,6 @@ import { logout } from "../store/slices/authSlice";
 import { selectCartItems } from "../store/slices/cartSlice";
 import { toast } from "react-toastify";
 import logoImage from "@/assets/img/logo.png";
-
-// Constants
-const menuLinks = [
-  { title: "Home", href: "/" },
-  { title: "About Us", href: "/about" },
-  { title: "Partner with Us", href: "/partner" },
-  { title: "Events", href: "/events" },
-  { title: "Get Started", href: "/courses" },
-];
-
-const lgScreenLinks = [
-  { title: "Services", href: "/services" },
-  { title: "Courses", href: "/courses" },
-  { title: "Events", href: "/events" },
-  { title: "Student Portal", href: "/portal" },
-  { title: "Blog", href: "/blog" },
-  { title: "Our Story", href: "/story" },
-  { title: "Contact Us", href: "/contact" },
-];
 
 function useResponsive() {
   const [isMobile, setIsMobile] = useState(false);
@@ -81,12 +60,6 @@ export function Navbar() {
     setIsMenuOpen(false);
   }, [location]);
 
-  const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), []);
-  const toggleProfile = useCallback(
-    () => setIsProfileOpen((prev) => !prev),
-    []
-  );
-
   const handleLogout = () => {
     if (user) {
       try {
@@ -97,9 +70,29 @@ export function Navbar() {
         setIsProfileOpen(false);
       } catch (error) {
         toast.error("Logout failed. Please try again.");
+        console.log(error);
       }
     }
   };
+
+  // Constants
+  const menuLinks = [
+    { title: "Home", href: "/" },
+    { title: "About Us", href: "/about" },
+    { title: "Partner with Us", href: "/partner" },
+    { title: "Get Started", href: "/courses" },
+  ];
+
+  const lgScreenLinks = [
+    { title: "Services", href: "/services" },
+    { title: "Courses", href: "/courses" },
+    { title: "Events", href: "/events" },
+    { title: "Student Portal", href: "/portal" },
+    { title: "Blog", href: "/blog" },
+    { title: "Our Story", href: "/story" },
+    { title: "Contact Us", href: "/contact" },
+    ...(user?.role === "BLOGGER" ? [{ title: "Admin", href: "/admin" }] : []),
+  ];
 
   // Profile options based on authentication status
   const profileOptions = user

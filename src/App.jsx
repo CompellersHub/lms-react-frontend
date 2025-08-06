@@ -7,8 +7,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import store from "./store";
-
 import Layout from "./components/Layout";
 import AdminLayout from "./components/admin/AdminLayout";
 
@@ -56,12 +54,14 @@ import AdminBlogUpload from "./pages/AdminBlogUpload";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordConfirmPage from "./pages/ResetPasswordConfirmPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
-import Index from './pages/data-analysis-tool/Index'
+import Index from "./pages/data-analysis-tool/Index";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBlogList from "./pages/admin/AdminBlogList";
 import AdminBlogEdit from "./pages/admin/AdminBlogEdit";
+import BloggerRoute from "./components/admin/BloggerRoute";
+import store from "./store";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -71,6 +71,21 @@ function ScrollToTop() {
   return null;
 }
 
+// NEW: Loading component for PersistGate
+const PersistenceLoader = () => (
+  <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+    <div className="text-center">
+      <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+      <h2 className="text-xl font-semibold text-slate-700 mb-2">
+        Loading Workspace
+      </h2>
+      <p className="text-slate-500">
+        Restoring your data analysis workspace...
+      </p>
+    </div>
+  </div>
+);
+
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
     ? import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -78,6 +93,7 @@ function App() {
 
   return (
     <Provider store={store}>
+      {/* NEW: PersistGate to handle data persistence */}
       <GoogleOAuthProvider clientId={googleClientId}>
         <Router>
           <ScrollToTop />
@@ -90,7 +106,6 @@ function App() {
               path="/password-reset-confirm/:uid/:token"
               element={<ResetPasswordConfirmPage />}
             />
-
             {/* Portal Routes - Kept flat as in historical version */}
             <Route
               path="/portal"
@@ -212,13 +227,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             {/* Admin Routes - New admin section with its own layout */}
             <Route
               path="/admin"
               element={
                 <ProtectedRoute>
-                  <AdminLayout />
+                  <BloggerRoute requiredRole="BLOGGER">
+                    <AdminLayout />
+                  </BloggerRoute>
                 </ProtectedRoute>
               }
             >
@@ -228,9 +244,9 @@ function App() {
               <Route path="blog/create" element={<AdminBlogUpload />} />
               <Route path="blog/edit/:id" element={<AdminBlogEdit />} />
             </Route>
-
-            <Route path="analysis" element={<Index/>}/>
-
+            {/* Data Analysis Tool - UPDATED: Now supports multiple tables with persistence */}
+            <Route path="/analysis" element={<Index />} />
+            {/* Order confirmation route */}
             <Route
               path="/order-confirmation/:orderId"
               element={
@@ -239,7 +255,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             {/* Main Layout Routes */}
             <Route path="/" element={<Layout />}>
               {/* Public Routes */}

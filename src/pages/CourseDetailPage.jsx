@@ -277,35 +277,30 @@ function CourseDetailPage() {
               <h3 className="font-bold text-foreground/90 mb-3">
                 This course includes:
               </h3>
-              <ul className="space-y-2">
-                <li className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>{course.estimated_time} of on-demand video</span>{" "}
-                  {/* Using default text color, adjust if needed */}
-                </li>
-                <li className="flex items-start">
-                  {/* Keeping green for success/inclusion icon */}
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>{course.resources} downloadable resources</span>{" "}
-                  {/* Using default text color, adjust if needed */}
-                </li>
-                <li className="flex items-start">
-                  {/* Keeping green for success/inclusion icon */}
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>12 months access</span>{" "}
-                  {/* Using default text color, adjust if needed */}
-                </li>
-                {/* <li className="flex items-start">
+              {course.course_include ? (
+                <ul className="space-y-2">
+                  {Object.entries(course.course_include).map(([key, value]) => (
+                    <li key={key} className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>{value}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <ul className="space-y-2">
+                  <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Access on mobile and desktop</span>
-                  </li> */}
-                <li className="flex items-start">
-                  {/* Keeping green for success/inclusion icon */}
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                  <span>Certificate of completion</span>{" "}
-                  {/* Using default text color, adjust if needed */}
-                </li>
-              </ul>
+                    <span>{course.estimated_time} of on-demand video</span>{" "}
+                    {/* Using default text color, adjust if needed */}
+                  </li>
+                  <li className="flex items-start">
+                    {/* Keeping green for success/inclusion icon */}
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <span>{course.resources} downloadable resources</span>{" "}
+                    {/* Using default text color, adjust if needed */}
+                  </li>
+                </ul>
+              )}
             </div>
           </div>
         </div>

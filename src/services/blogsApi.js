@@ -342,7 +342,7 @@ export const blogsApi = createApi({
     // Upload blog image (if supported)
     uploadBlogImage: builder.mutation({
       query: (formData) => ({
-        url: "/blog/upload-image/",
+        url: "/blog/api/upload/image/",
         method: "POST",
         body: formData,
         prepareHeaders: (headers) => {

@@ -155,6 +155,7 @@ export const coursesApi = createApi({
         try {
           const { data } = await queryFulfilled;
           // Handle blob download here instead of storing in state
+          console.log(data);
         } catch (error) {
           console.error("Certificate generation failed:", error);
         }

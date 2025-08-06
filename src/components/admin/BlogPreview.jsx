@@ -10,7 +10,7 @@ function BlogPreview({ blog }) {
           </p>
         );
 
-      case "heading":
+      case "heading": {
         const HeadingTag = `h${block.level}`;
         return (
           <HeadingTag
@@ -27,7 +27,7 @@ function BlogPreview({ blog }) {
             {block.value || "Empty heading..."}
           </HeadingTag>
         );
-
+      }
       case "list":
         return (
           <ul key={index} className="list-disc pl-6 mb-6 space-y-2">

@@ -280,6 +280,7 @@ function AdminBlogUpload() {
     }
 
     try {
+      console.log("Blog data being sent for creation:", blog); // Add this line
       // Send the blog object (which now contains the structured content array) to the backend
       await createBlog(blog).unwrap();
     } catch (err) {

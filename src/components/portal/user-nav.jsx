@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "@/store/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
-import { UserIcon, Settings, LogOut } from "lucide-react";
+import { UserIcon, Settings, LogOut, Home } from "lucide-react";
 
 export function UserNav() {
   const { user } = useSelector((state) => state.auth);
@@ -76,8 +76,13 @@ export function UserNav() {
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/")}>
+            <Home className="mr-2 h-4 w-4" />
+            <span>Back to Home</span>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>

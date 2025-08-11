@@ -24,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import Spinner from "../components/Spinner";
 import AddToCartButton from "../components/AddToCartButton";
 import AwsVideoPlayer from "../components/AwsVideoPlayer";
-import { Helmet } from "react-helmet";
 
 function CourseDetailPage() {
   const { courseId } = useParams();
@@ -104,18 +103,6 @@ function CourseDetailPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{course.name} - Titans Careers</title>
-        <meta property="og:title" content={`${course.name} - Titans Careers`} />
-        <meta property="og:description" content={course.preview_description} />
-        <meta property="og:image" content={course.course_image} />
-        <meta
-          property="og:url"
-          content={`https://www.titanscareers.com/courses/${course.id}/`}
-        />
-        <meta property="og:type" content="article" />
-      </Helmet>
-
       <div className="container mx-auto px-4 py-12">
         {/* Breadcrumb */}
         <div className="text-sm text-foreground/70 mb-6">

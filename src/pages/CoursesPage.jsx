@@ -219,27 +219,7 @@ function CoursesPage() {
 
                   <div className="mt-auto space-y-3">
                     <div className="flex flex-col">
-                      <div className="flex items-center justify-between mb-1">
-                        {course.original_price && (
-                          <span className="text-red-500 line-through text-sm">
-                            £{course.original_price.toFixed(2)}
-                          </span>
-                        )}
-                        {course.original_price &&
-                          course.original_price > course.price && (
-                            <span className="text-green-600 text-xs font-medium">
-                              Save £
-                              {(course.original_price - course.price).toFixed(
-                                2
-                              )}
-                              !
-                            </span>
-                          )}
-                      </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-primary">
-                          £{course.price.toFixed(2)}
-                        </span>
                         <Link
                           to={`/courses/${course.id}`}
                           className="text-sm text-primary hover:text-primary/80 font-medium"

@@ -169,8 +169,7 @@ function AdminBlogEdit() {
         id: blog.id,
         ...blog,
         image_url: blog.image_url,
-      }); // Add this line
-      // Ensure the payload sent to backend uses image_url
+      });
       await updateBlog({
         id: blog.id,
         ...blog,

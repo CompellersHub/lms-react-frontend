@@ -3,7 +3,7 @@
 export function WhatsAppButton() {
   const openWhatsApp = () => {
     // Replace with your WhatsApp number or group link
-    window.open("https://wa.me/1234567890", "_blank");
+    window.open("https://wa.me/+447539434403", "_blank");
   };
 
   return (

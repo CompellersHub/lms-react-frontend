@@ -5,8 +5,7 @@ export const blogPosts = [
     slug: "anti-money-laundering-beginners-guide-2025",
     author: "Titans Careers Editorial Team",
     authorRole: "AML/KYC Compliance Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    authorImage: "/favicon.ico",
     date: "March 10, 2025",
     category: "Compliance",
     tags: [
@@ -217,8 +216,7 @@ export const blogPosts = [
     slug: "how-criminals-launder-money-5-hidden-methods",
     author: "Titans Careers Editorial Team",
     authorRole: "AML/KYC Compliance Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    authorImage: "/favicon.ico",
     date: "February 5, 2025",
     category: "Compliance",
     tags: ["Money Laundering", "AML", "Financial Crime", "Compliance", "KYC"],
@@ -425,8 +423,7 @@ export const blogPosts = [
     slug: "biggest-money-laundering-scandals-1991-2025",
     author: "Titans Careers Editorial Team",
     authorRole: "AML/KYC Compliance Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    authorImage: "/favicon.ico",
     date: "January 15, 2025",
     category: "Compliance",
     tags: [
@@ -614,8 +611,7 @@ export const blogPosts = [
     slug: "know-your-customer-kyc-meaning-requirements-compliance",
     author: "Titans Careers Editorial Team",
     authorRole: "AML/KYC Compliance Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    authorImage: "/favicon.ico",
     date: "April 5, 2025",
     category: "Compliance",
     tags: [
@@ -801,8 +797,7 @@ export const blogPosts = [
     slug: "data-governance-challenges-and-solutions",
     author: "Titans Careers Editorial Team",
     authorRole: "Data Governance Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    authorImage: "/favicon.ico",
     date: "August 7, 2025",
     category: "Data Governance",
     tags: [
@@ -945,9 +940,8 @@ export const blogPosts = [
     slug: "know-your-customer-vs-know-your-business-a-complete-comparison",
     author: "Titans Careers Editorial Team",
     authorRole: "AML/KYC Compliance Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    date: "September 13, 2025",
+    authorImage: "/favicon.ico",
+    date: "August 5, 2025",
     category: "Compliance",
     tags: [
       "KYC vs KYB",
@@ -1065,9 +1059,8 @@ export const blogPosts = [
     slug: "ai-benefits-and-challenges-in-the-kyc-process",
     author: "Titans Careers Editorial Team",
     authorRole: "AML/KYC Compliance Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    date: "September 28, 2025",
+    authorImage: "/favicon.ico",
+    date: "August 1, 2025",
     category: "Compliance",
     tags: [
       "AI",
@@ -1181,9 +1174,8 @@ export const blogPosts = [
     slug: "project-management-8-proven-ways-to-overcome-challenges",
     author: "Titans Careers Editorial Team",
     authorRole: "Project Management Experts",
-    authorImage:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    date: "October 5, 2025",
+    authorImage: "/favicon.ico",
+    date: "August 5, 2025",
     category: "Project Management",
     tags: [
       "Project Management",

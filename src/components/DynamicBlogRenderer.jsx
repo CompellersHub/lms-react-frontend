@@ -25,7 +25,7 @@ const renderContentBlock = (block, index) => {
         </p>
       );
 
-    case "heading":
+    case "heading": {
       const HeadingTag = `h${block.level || 2}`;
       return React.createElement(
         HeadingTag,
@@ -42,6 +42,7 @@ const renderContentBlock = (block, index) => {
         },
         block.value || ""
       );
+    }
 
     case "infoBox":
       return (

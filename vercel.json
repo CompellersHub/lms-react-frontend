@@ -1,4 +1,62 @@
 {
+  "redirects": [
+    {
+      "source": "/:path((?!api/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.titanscareers.com"
+        }
+      ],
+      "destination": "https://titanscareers.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/student-portal",
+      "destination": "/portal",
+      "permanent": true
+    },
+    {
+      "source": "/story",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/expert-training",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/real-world-training",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/project",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/mentorship",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/aml-certification",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/regulatory-updates",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/get-started",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {

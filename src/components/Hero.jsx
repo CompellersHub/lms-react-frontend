@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import AwsVideoPlayer from "./AwsVideoPlayer";
 import bgImage from "@/assets/img/hero.png";
+import { RegistrationModal } from "./RegistrationModal"; // Import the new modal component
 
 export function Hero() {
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false); // New state for registration modal
   const [imageLoaded, setImageLoaded] = useState(false);
   const videoRef = useRef(null);
 
@@ -70,7 +72,9 @@ export function Hero() {
   }, [showVideoModal]);
 
   return (
-    <section className="relative h-[500px] w-full overflow-hidden">
+    <section className="relative min-h-[500px] h-screen w-full overflow-hidden flex items-center justify-center">
+      {" "}
+      {/* Adjusted height and added flex for centering */}
       {/* Blurred placeholder while image loads */}
       <div
         className={`absolute inset-0 bg-no-repeat bg-cover transition-all duration-700 ${
@@ -89,26 +93,36 @@ export function Hero() {
           onLoad={() => setImageLoaded(true)}
         />
       </div>
-
       {/* Content overlay */}
-      <div className="relative z-10 flex h-full flex-col items-start justify-center px-6 md:px-12 lg:px-16">
-        <div className="flex items-center gap-2 rounded-md bg-white/10 p-2 backdrop-blur-sm">
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-primary">
-            <Shield className="h-5 w-5" />
-          </span>
-          <span className="text-xl font-bold text-primary">TITANS CAREERS</span>
+      <div className="relative z-10 flex h-full flex-col items-start justify-center px-6 md:px-12 lg:px-16 py-16">
+        {" "}
+        {/* Added vertical padding */}
+        <div className="flex w-full flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {" "}
+          {/* Adjusted for responsiveness */}
+          <div className="flex items-center gap-2 rounded-md bg-white/10 p-2 backdrop-blur-sm">
+            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-primary">
+              <Shield className="h-5 w-5" />
+            </span>
+            <span className="text-xl font-bold text-primary">
+              TITANS CAREERS
+            </span>
+          </div>
+          <Button
+            onClick={() => setShowRegistrationModal(true)}
+            className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-105"
+          >
+            Register for Free Consultation
+          </Button>
         </div>
-
         <h1 className="mt-6 text-2xl font-bold text-white md:text-3xl lg:text-5xl">
           Accelerate your career with expert-led training in Business Analysis,
           Cybersecurity, Data Analytics, and Compliance.
         </h1>
-
         <p className="mt-4 max-w-2xl text-lg text-white">
           Get job-ready with Titans Careers. Learn global skills today and stand
           out wherever you go.
         </p>
-
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
           <Link to="/courses" className="relative group overflow-hidden">
             <Button className="w-full sm:w-auto px-8 py-6 bg-secondary text-foreground hover:bg-transparent hover:text-secondary hover:border border-secondary border rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transform transition-all duration-300">
@@ -127,7 +141,6 @@ export function Hero() {
           </button>
         </div>
       </div>
-
       {/* Video Modal */}
       {showVideoModal && (
         <div
@@ -171,6 +184,11 @@ export function Hero() {
           </div>
         </div>
       )}
+      {/* Registration Modal */}
+      <RegistrationModal
+        isOpen={showRegistrationModal}
+        onClose={() => setShowRegistrationModal(false)}
+      />
     </section>
   );
 }

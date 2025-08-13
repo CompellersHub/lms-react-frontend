@@ -4,23 +4,23 @@ import "slick-carousel/slick/slick-theme.css";
 
 const companyLogos = [
   {
-    url: "https://cdn.prod.website-files.com/66254039650e96e0e05713a3/66254039650e96e0e05713a6_Deloitte.svg",
+    url: "/assets/company-logos/deloitte.svg",
     alt: "Deloitte",
   },
   {
-    url: "https://cdn.prod.website-files.com/66254039650e96e0e05713a3/66254039650e96e0e0571416_Cipla.svg",
+    url: "/assets/company-logos/cipla.svg",
     alt: "Cipla",
   },
   {
-    url: "https://cdn.prod.website-files.com/66254039650e96e0e05713a3/66254039650e96e0e0571468_ASG.svg",
+    url: "/assets/company-logos/seeds.svg",
     alt: "ASG",
   },
   {
-    url: "https://cdn.prod.website-files.com/66254039650e96e0e05713a3/66254039650e96e0e0571498_Weylandts.svg",
+    url: "/assets/company-logos/wey.svg",
     alt: "Weylandts",
   },
   {
-    url: "https://cdn.prod.website-files.com/66254039650e96e0e05713a3/66cd7b89dc52b453def6fe7e_perno.png",
+    url: "assets/company-logos/pern.png",
     alt: "Perno",
   },
   {
@@ -54,6 +54,10 @@ const companyLogos = [
   {
     url: "https://cdn.prod.website-files.com/66254039650e96e0e05713a3/66cc5571b771073ceb212b24_FOM.svg",
     alt: "FOM",
+  },
+  {
+    url: "assets/company-logos/UKPro.jpeg",
+    alt: "UKPro",
   },
 ];
 
@@ -112,7 +116,7 @@ export function CompanyLogosCarousel() {
                   <img
                     src={logo.url}
                     alt={logo.alt}
-                    className="max-h-12 max-w-full object-contain"
+                    className="max-h-20 max-w-full object-contain"
                   />
                 </div>
               </div>

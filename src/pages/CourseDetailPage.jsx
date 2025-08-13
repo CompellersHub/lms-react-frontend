@@ -24,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import Spinner from "../components/Spinner";
 import AddToCartButton from "../components/AddToCartButton";
 import AwsVideoPlayer from "../components/AwsVideoPlayer";
-import { Helmet } from "react-helmet";
 
 function CourseDetailPage() {
   const { courseId } = useParams();
@@ -104,18 +103,6 @@ function CourseDetailPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{course.name} - Titans Careers</title>
-        <meta property="og:title" content={`${course.name} - Titans Careers`} />
-        <meta property="og:description" content={course.preview_description} />
-        <meta property="og:image" content={course.course_image} />
-        <meta
-          property="og:url"
-          content={`https://www.titanscareers.com/courses/${course.id}/`}
-        />
-        <meta property="og:type" content="article" />
-      </Helmet>
-
       <div className="container mx-auto px-4 py-12">
         {/* Breadcrumb */}
         <div className="text-sm text-foreground/70 mb-6">
@@ -202,23 +189,6 @@ function CourseDetailPage() {
               </div>
 
               <div className="md:hidden mb-6">
-                {/* Price Display for Mobile */}
-                <div className="mb-4">
-                  <span className="text-red-500 line-through block">
-                    £{course.original_price || (course.price * 2).toFixed(2)}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl font-bold text-primary">
-                      £{course.price}
-                    </span>
-                    {course.original_price && (
-                      <span className="text-green-600 font-semibold">
-                        Save £
-                        {(course.original_price - course.price).toFixed(2)}!
-                      </span>
-                    )}
-                  </div>
-                </div>
                 {isEnrolled ? (
                   <div className="text-center">
                     <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded-lg mb-4">
@@ -255,23 +225,6 @@ function CourseDetailPage() {
                 </div>
               </div>
               <div className="hidden md:block">
-                {/* Price Display for Desktop */}
-                <div className="mb-6">
-                  <span className="text-red-500 line-through block">
-                    £{course.original_price || (course.price * 2).toFixed(2)}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl font-bold text-primary">
-                      £{course.price}
-                    </span>
-                    {course.original_price && (
-                      <span className="text-green-600 font-semibold">
-                        Save £
-                        {(course.original_price - course.price).toFixed(2)}!
-                      </span>
-                    )}
-                  </div>
-                </div>
                 {isEnrolled ? (
                   <div className="text-center">
                     <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded-lg mb-4">
@@ -493,10 +446,6 @@ function CourseDetailPage() {
                             <span className="text-xs text-foreground/70 ml-1">
                               ({relatedCourse.reviews})
                             </span>
-                          </div>
-                          {/* Using primary color for related course price */}
-                          <div className="text-sm font-bold text-primary mt-1">
-                            ${relatedCourse.price}
                           </div>
                         </div>
                       </div>

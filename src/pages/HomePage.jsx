@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+import campaign from "/assets/campaign.png";
 import { FeaturesBanner } from "@/components/FeaturesBanner";
 import { Hero } from "@/components/Hero";
 import { CompanyLogosCarousel } from "@/components/CompanyLogosCarousel";
@@ -9,12 +11,18 @@ import { CourseIntroVideos } from "@/components/CourseIntroVideos";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
 import { EventsCarousel } from "@/components/EventsCarousel";
 import DownloadGuideSection from "@/components/DownloadGuideSection";
+import { EventRegistrationCard } from "@/components/EventRegistrationCard";
 
 function HomePage() {
+  const [showRegistration, setShowRegistration] = useState(false);
+
   return (
     <>
       <Hero />
       <FeaturesBanner />
+      <div onClick={() => setShowRegistration(true)} className="cursor-pointer">
+        <img src={campaign} alt="campaign" />
+      </div>
       <DownloadGuideSection />
       <CompanyLogosCarousel />
       <StatsSection />
@@ -23,6 +31,12 @@ function HomePage() {
       <CourseIntroVideos />
       <EventsCarousel />
       <PlatformFeatures />
+      {showRegistration && (
+        <EventRegistrationCard
+          className="animate-fade-in-up"
+          onClose={() => setShowRegistration(false)}
+        />
+      )}
     </>
   );
 }

@@ -113,7 +113,7 @@ function AdminLayout() {
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
           <div className="flex items-center mb-3">
             <img
-              src={user?.profile_pic_url || "/placeholder.svg"}
+              src={"/favicon.ico"}
               alt="Admin"
               className="w-8 h-8 rounded-full mr-3"
             />

@@ -181,6 +181,28 @@ export const coursesApi = createApi({
         { type: "Certificate", id: `${courseId}-${userId}` },
       ],
     }),
+
+    // Get all events
+    getEvents: builder.query({
+      query: () => "/courses/event",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Event", id })),
+              { type: "Event", id: "LIST" },
+            ]
+          : [{ type: "Event", id: "LIST" }],
+    }),
+
+    // Register for an event
+    registerForEvent: builder.mutation({
+      query: (body) => ({
+        url: "/courses/event-register/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "Event", id: "LIST" }],
+    }),
   }),
 });
 
@@ -200,4 +222,6 @@ export const {
   useGetLibraryMaterialByIdQuery,
   useGenerateCertificateMutation,
   useCheckCertificateAvailabilityQuery,
+  useGetEventsQuery,
+  useRegisterForEventMutation,
 } = coursesApi;

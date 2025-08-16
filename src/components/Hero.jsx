@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import AwsVideoPlayer from "./AwsVideoPlayer";
 import bgImage from "@/assets/img/hero.png";
-import { RegistrationModal } from "./RegistrationModal"; // Import the new modal component
+import { EventRegistrationModal } from "./EventRegistrationModal"; // Import the new modal component
 
 export function Hero() {
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -108,11 +108,17 @@ export function Hero() {
               TITANS CAREERS
             </span>
           </div>
-          <Button
+          {/* <Button
             onClick={() => setShowRegistrationModal(true)}
             className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-105"
           >
             Register for Free Consultation
+          </Button> */}
+          <Button
+            onClick={() => setShowRegistrationModal(true)}
+            className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-105"
+          >
+            Register for a Free Masterclass
           </Button>
         </div>
         <h1 className="mt-6 text-2xl font-bold text-white md:text-3xl lg:text-5xl">
@@ -185,7 +191,7 @@ export function Hero() {
         </div>
       )}
       {/* Registration Modal */}
-      <RegistrationModal
+      <EventRegistrationModal
         isOpen={showRegistrationModal}
         onClose={() => setShowRegistrationModal(false)}
       />

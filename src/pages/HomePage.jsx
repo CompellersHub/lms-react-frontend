@@ -11,16 +11,16 @@ import { CourseIntroVideos } from "@/components/CourseIntroVideos";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
 import { EventsCarousel } from "@/components/EventsCarousel";
 import DownloadGuideSection from "@/components/DownloadGuideSection";
-import { EventRegistrationCard } from "@/components/EventRegistrationCard";
+import { EventRegistrationModal } from "@/components/EventRegistrationModal";
 
 function HomePage() {
-  const [showRegistration, setShowRegistration] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
       <Hero />
       <FeaturesBanner />
-      <div onClick={() => setShowRegistration(true)} className="cursor-pointer">
+      <div onClick={() => setIsModalOpen(true)} className="cursor-pointer">
         <img src={campaign} alt="campaign" />
       </div>
       <DownloadGuideSection />
@@ -31,12 +31,10 @@ function HomePage() {
       <CourseIntroVideos />
       <EventsCarousel />
       <PlatformFeatures />
-      {showRegistration && (
-        <EventRegistrationCard
-          className="animate-fade-in-up"
-          onClose={() => setShowRegistration(false)}
-        />
-      )}
+      <EventRegistrationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 }

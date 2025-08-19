@@ -107,7 +107,13 @@ export function WorkshopEvents() {
 
                 <div className="flex items-center text-muted-foreground mb-3">
                   <Calendar className="h-4 w-4 mr-2" />
-                  <span className="text-sm">{event.date}</span>
+                  <span className="text-sm">
+                    {new Date(event.date).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
                 </div>
                 <div className="flex items-center text-muted-foreground mb-4">
                   <Clock className="h-4 w-4 mr-2" />

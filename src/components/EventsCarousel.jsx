@@ -81,6 +81,12 @@ export function EventsCarousel() {
   const isNextArrowDisabled =
     currentSlide >= events.length - sliderSettings.slidesToShow;
 
+  const formatTime = (time) => {
+    if (!time) return "";
+    const [hours, minutes] = time.split(":");
+    return `${hours}:${minutes}`;
+  };
+
   return (
     <section ref={sectionRef} className="py-16 bg-gray-100">
       <div className="container mx-auto px-4">
@@ -146,7 +152,7 @@ export function EventsCarousel() {
                       </div>
 
                       <div className="p-6 flex flex-col">
-                        <h3 className="text-lg h-14 font-bold text-foreground mb-3">
+                        <h3 className="text-lg h-18 sm:h-14 font-bold text-foreground mb-3">
                           {event.title}
                         </h3>
                         <p className="text-foreground/70 text-base mb-4 line-clamp-2">
@@ -183,7 +189,8 @@ export function EventsCarousel() {
                           <div className="flex items-center text-xs text-foreground/70">
                             <Clock className="h-4 w-4 mr-2" />
                             <span>
-                              {event.start_time} - {event.end_time}
+                              {formatTime(event.start_time)} -{" "}
+                              {formatTime(event.end_time)}
                             </span>
                           </div>
                           <div className="flex items-center text-xs text-foreground/70">

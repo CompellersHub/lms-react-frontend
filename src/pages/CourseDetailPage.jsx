@@ -295,14 +295,12 @@ function CourseDetailPage() {
                   What You'll Learn
                 </h3>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {Object.entries(course.learning_outcomes)
-                    .filter(([, value]) => value && value !== "")
-                    .map(([key, value]) => (
-                      <li key={key} className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>{value}</span>
-                      </li>
-                    ))}
+                  {course.learning_outcomes?.outcomes?.map((outcome, index) => (
+                    <li key={index} className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span>{outcome}</span>
+                    </li>
+                  ))}
                 </ul>
 
                 {course?.required_materials &&
@@ -314,11 +312,11 @@ function CourseDetailPage() {
                       </h3>
                       {/* Using default text color for list items, adjust if needed */}
                       <ul className="list-disc pl-5 space-y-1">
-                        {Object.entries(course.required_materials)
-                          .filter(([, value]) => value && value !== "")
-                          .map(([key, value]) => (
-                            <li key={key}>{value}</li>
-                          ))}
+                        {course.required_materials?.requirements?.map(
+                          (requirement, index) => (
+                            <li key={index}>{requirement}</li>
+                          )
+                        )}
                       </ul>
                     </>
                   )}
@@ -332,11 +330,11 @@ function CourseDetailPage() {
                       </h3>
                       {/* Using default text color for list items, adjust if needed */}
                       <ul className="list-disc pl-5 space-y-1">
-                        {Object.entries(course.target_audience)
-                          .filter(([, value]) => value && value !== "")
-                          .map(([key, value]) => (
-                            <li key={key}>{value}</li>
-                          ))}
+                        {course.target_audience?.audiences?.map(
+                          (audience, index) => (
+                            <li key={index}>{audience}</li>
+                          )
+                        )}
                       </ul>
                     </>
                   )}
@@ -357,7 +355,7 @@ function CourseDetailPage() {
                   >
                     {/* onClick={() => toggleModule(index)} */}
                     {/* Background and text color using foreground/light shade */}
-                    <div className="flex justify-between items-center p-4 bg-foreground/5 cursor-pointer">
+                    <div className="flex justify-between items-center p-4 bg-foreground/5">
                       <div className="font-medium">
                         {/* Using primary color for "Module X:" part */}
                         <span className="text-primary">
@@ -368,9 +366,9 @@ function CourseDetailPage() {
                       </div>
                       <div className="flex items-center">
                         {/* Using a foreground-like color for lesson count text */}
-                        <span className="text-sm text-foreground/70 mr-3">
+                        {/* <span className="text-sm text-foreground/70 mr-3">
                           {module?.lessons?.length} lessons
-                        </span>
+                        </span> */}
                         {/* {expandedModule === index ? (
                           <ChevronUp className="h-5 w-5 text-foreground/60" /> // Using foreground for icon
                         ) : (

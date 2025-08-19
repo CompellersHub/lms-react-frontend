@@ -48,7 +48,8 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
       }).unwrap();
       setFormStatus({
         status: "success",
-        message: "You have been registered successfully!",
+        message:
+          "🎉 You have been registered successfully! Please check your email for event details.",
       });
       setTimeout(() => {
         onClose();
@@ -111,7 +112,12 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
                   ) : (
                     events?.map((event) => (
                       <SelectItem key={event.id} value={event.id}>
-                        {event.course.name} - {event.date}
+                        {event.course.name} -{" "}
+                        {new Date(event.date).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
                       </SelectItem>
                     ))
                   )}

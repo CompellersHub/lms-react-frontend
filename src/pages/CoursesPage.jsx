@@ -6,8 +6,6 @@ import Spinner from "../components/Spinner";
 import ErrorMessage from "@/components/ErrorMessage";
 import { useSelector } from "react-redux";
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
-
 function CoursesPage() {
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -177,7 +175,7 @@ function CoursesPage() {
                     {course.instructor ? (
                       <>
                         <img
-                          src={`${baseUrl}${course.instructor.profile_picture}`}
+                          src={course.instructor.profile_picture}
                           alt={
                             course.instructor.first_name
                               ? `${course.instructor.first_name} ${course.instructor.last_name}`
@@ -199,7 +197,7 @@ function CoursesPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center mb-4">
+                  {/* <div className="flex items-center mb-4">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <Star
@@ -215,7 +213,7 @@ function CoursesPage() {
                     <span className="text-sm text-foreground/70 ml-2">
                       ({course.reviews} reviews)
                     </span>
-                  </div>
+                  </div> */}
 
                   <div className="mt-auto space-y-3">
                     <div className="flex flex-col">

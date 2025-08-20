@@ -22,6 +22,7 @@ import {
   useGetEventsQuery,
 } from "@/services/coursesApi";
 import { Checkbox } from "./ui/checkbox";
+import { parseEventDate } from "@/utils/dateUtils";
 
 export function EventRegistrationModal({ isOpen, onClose, event }) {
   const [firstName, setFirstName] = useState("");
@@ -116,11 +117,14 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
                     events?.map((event) => (
                       <SelectItem key={event.id} value={event.id}>
                         {event.course.name} -{" "}
-                        {new Date(event.date).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
+                        {parseEventDate(event.date).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
                       </SelectItem>
                     ))
                   )}

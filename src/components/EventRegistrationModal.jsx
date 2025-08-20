@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -20,11 +21,13 @@ import {
   useRegisterForEventMutation,
   useGetEventsQuery,
 } from "@/services/coursesApi";
+import { Checkbox } from "./ui/checkbox";
 
 export function EventRegistrationModal({ isOpen, onClose, event }) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [selectedEventId, setSelectedEventId] = useState(event?.id || "");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
 
   const { data: events, isLoading: isLoadingEvents } = useGetEventsQuery();
@@ -126,7 +129,33 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              checked={agreedToTerms}
+              onCheckedChange={setAgreedToTerms}
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I agree to the{" "}
+              <Link to="/terms" className="text-primary hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </label>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading || !agreedToTerms}
+          >
             {isLoading ? "Registering..." : "Submit"}
           </Button>
 

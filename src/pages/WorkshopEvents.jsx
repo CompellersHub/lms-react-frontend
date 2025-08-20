@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useGetEventsQuery } from "@/services/coursesApi";
 import { EventRegistrationModal } from "@/components/EventRegistrationModal";
+import { parseEventDate } from "@/utils/dateUtils";
 
 export function WorkshopEvents() {
   const { data: events = [] } = useGetEventsQuery();
@@ -108,7 +109,7 @@ export function WorkshopEvents() {
                 <div className="flex items-center text-muted-foreground mb-3">
                   <Calendar className="h-4 w-4 mr-2" />
                   <span className="text-sm">
-                    {new Date(event.date).toLocaleDateString("en-GB", {
+                    {parseEventDate(event.date).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "long",
                       year: "numeric",

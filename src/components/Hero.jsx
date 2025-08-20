@@ -131,14 +131,14 @@ export function Hero() {
         </p>
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
           <Link to="/courses" className="relative group overflow-hidden">
-            <Button className="w-full sm:w-auto px-8 py-6 bg-secondary text-foreground hover:bg-transparent hover:text-secondary hover:border border-secondary border rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transform transition-all duration-300">
+            <Button className="w-full sm:w-auto px-8 py-6 bg-primary text-foreground hover:bg-transparent hover:text-white hover:border border-primary border rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transform transition-all duration-300">
               Enrol Now
             </Button>
           </Link>
 
           <button
             onClick={() => setShowVideoModal(true)}
-            className="group flex items-center gap-3 px-6 py-3 text-white hover:text-secondary transition-colors duration-300"
+            className="group flex items-center gap-3 px-6 py-3 text-white hover:text-primary transition-colors duration-300"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors duration-300">
               <Play className="h-4 w-4" />

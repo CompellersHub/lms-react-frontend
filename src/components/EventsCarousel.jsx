@@ -176,14 +176,15 @@ export function EventsCarousel() {
                           <div className="flex items-center text-xs text-foreground/70">
                             <Calendar className="h-4 w-4 mr-2" />
                             <span>
-                              {new Date(event.date).toLocaleDateString(
+                              {event?.date}
+{/*                               {new Date(event.date).toLocaleDateString(
                                 "en-GB",
                                 {
                                   day: "numeric",
                                   month: "long",
                                   year: "numeric",
                                 }
-                              )}
+                              )} */}
                             </span>
                           </div>
                           <div className="flex items-center text-xs text-foreground/70">

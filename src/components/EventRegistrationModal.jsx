@@ -108,7 +108,7 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
                 <SelectTrigger>
                   <SelectValue placeholder="Select an event" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-60 max-w-80 md:max-w-fit overflow-y-auto">
                   {isLoadingEvents ? (
                     <SelectItem value="loading" disabled>
                       Loading events...

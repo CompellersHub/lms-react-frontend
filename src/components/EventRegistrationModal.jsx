@@ -58,7 +58,11 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
       setTimeout(() => {
         onClose();
         setFormStatus({ status: "idle", message: "" });
-      }, 2000);
+        setFirstName("");
+        setEmail("");
+        setSelectedEventId(event?.id || ""); // Reset to initial event or empty
+        setAgreedToTerms(false);
+      }, 10000);
     } catch (error) {
       setFormStatus({
         status: "error",
@@ -105,17 +109,24 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
                 onValueChange={setSelectedEventId}
                 value={selectedEventId}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select an event" />
+                <SelectTrigger className="w-full overflow-hidden">
+                  <SelectValue
+                    placeholder="Select an event"
+                    className="truncate max-w-full"
+                  />
                 </SelectTrigger>
-                <SelectContent className="max-h-60 max-w-80 md:max-w-fit overflow-y-auto">
+                <SelectContent className="max-h-60 max-w-80 overflow-y-auto">
                   {isLoadingEvents ? (
                     <SelectItem value="loading" disabled>
                       Loading events...
                     </SelectItem>
                   ) : (
                     events?.map((event) => (
-                      <SelectItem key={event.id} value={event.id}>
+                      <SelectItem
+                        key={event.id}
+                        value={event.id}
+                        className="max-h-60 max-w-80 overflow-y-auto"
+                      >
                         {event.course.name} -{" "}
                         {parseEventDate(event.date).toLocaleDateString(
                           "en-GB",

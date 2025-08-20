@@ -14,6 +14,7 @@ import { useInView } from "../hooks/useInView";
 import { useGetEventsQuery } from "@/services/coursesApi";
 import { EventRegistrationModal } from "./EventRegistrationModal";
 import { Button } from "@/components/ui/button";
+import { parseEventDate } from "@/utils/dateUtils";
 
 export function EventsCarousel() {
   const sliderRef = useRef(null);
@@ -176,15 +177,14 @@ export function EventsCarousel() {
                           <div className="flex items-center text-xs text-foreground/70">
                             <Calendar className="h-4 w-4 mr-2" />
                             <span>
-                              {event?.date}
-{/*                               {new Date(event.date).toLocaleDateString(
+                              {parseEventDate(event.date).toLocaleDateString(
                                 "en-GB",
                                 {
                                   day: "numeric",
                                   month: "long",
                                   year: "numeric",
                                 }
-                              )} */}
+                              )}
                             </span>
                           </div>
                           <div className="flex items-center text-xs text-foreground/70">

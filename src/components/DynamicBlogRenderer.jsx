@@ -6,6 +6,10 @@ import { Calendar, Tag, ArrowLeft, Share2 } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { SiX } from "react-icons/si";
 import { toast } from "sonner";
+import {
+  useGetAllBlogsQuery,
+  useGetBlogCategoriesQuery,
+} from "../services/blogsApi";
 
 // IMPROVED: Enhanced content block renderer with better error handling
 const renderContentBlock = (block, index) => {
@@ -116,7 +120,7 @@ const renderContentBlock = (block, index) => {
               )}
             </div>
           ) : (
-            <p className="text-yellow-800">{block.value}</p>
+            <p>{block.value}</p>
           )}
         </div>
       );
@@ -230,6 +234,22 @@ const renderContentBlock = (block, index) => {
 };
 
 function DynamicBlogRenderer({ blogPost, relatedPosts = [] }) {
+  const { data: allBlogsResponse } = useGetAllBlogsQuery();
+  const { data: categoriesResponse } = useGetBlogCategoriesQuery();
+
+  const allBlogs = allBlogsResponse?.blogs || [];
+  const categories = categoriesResponse || [];
+
+  // Calculate popular tags from all blogs
+  const allTags = allBlogs.flatMap((blog) => blog.tags || []);
+  const tagCounts = allTags.reduce((acc, tag) => {
+    acc[tag] = (acc[tag] || 0) + 1;
+    return acc;
+  }, {});
+  const popularTags = Object.keys(tagCounts)
+    .sort((a, b) => tagCounts[b] - tagCounts[a])
+    .slice(0, 10); // Limit to top 10 popular tags
+
   if (!blogPost) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
@@ -495,19 +515,44 @@ function DynamicBlogRenderer({ blogPost, relatedPosts = [] }) {
             </div>
           )}
 
-          {/* Newsletter Signup or CTA */}
-          <div className="bg-primary text-white rounded-lg p-6">
-            <h3 className="text-xl font-bold mb-4">Stay Updated</h3>
-            <p className="text-primary-100 mb-4">
-              Get the latest insights and tips delivered to your inbox.
-            </p>
-            <Link
-              to="/contact"
-              className="inline-block bg-white text-primary px-4 py-2 rounded-md font-semibold hover:bg-gray-100 transition-colors"
-            >
-              Subscribe Now
-            </Link>
+          {/* Categories */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 className="text-xl font-bold text-primary mb-4">Categories</h3>
+            <div className="space-y-2">
+              {categories.map((category) => (
+                <Link
+                  key={category.name}
+                  to={`/blog?category=${category.name}`}
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
+                >
+                  <span className="text-foreground">{category.name}</span>
+                  <span className="bg-gray-100 text-foreground rounded-full px-2 py-1 text-xs">
+                    {category.count}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
+
+          {/* Popular Tags */}
+          {popularTags.length > 0 && (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold text-primary mb-4">
+                Popular Tags
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {popularTags.map((tag, index) => (
+                  <Link
+                    key={index}
+                    to={`/blog?tag=${tag}`}
+                    className="px-3 py-1 bg-gray-100 text-foreground rounded-full text-sm hover:bg-gray-200"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

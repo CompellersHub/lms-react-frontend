@@ -1312,4 +1312,346 @@ export const blogPosts = [
     `;
     },
   },
+  {
+    id: 10,
+    title:
+      "7 Powerful Benefits of a Data-Driven Process And Why Your Business Needs It",
+    slug: "data-driven-process-7-powerful-benefits",
+    author: "Titans Careers Editorial Team",
+    authorRole: "Data Analytics Experts",
+    authorImage: "/favicon.ico",
+    date: "August 22, 2025",
+    category: "Data Analytics",
+    tags: [
+      "Data Analytics",
+      "Data-Driven Process",
+      "Business Intelligence",
+      "Data-Driven Decision Making",
+      "Operational Efficiency",
+      "Customer Experience",
+      "Data Forecasting",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    excerpt:
+      "Discover how implementing data-driven processes can transform your business operations, enhance decision-making, improve customer experience, and provide a significant competitive advantage in today's market.",
+    content: function () {
+      return `
+<div class="article-content mobile-optimized">
+<div class="article-body px-4 pb-6">
+<p class="mb-4 text-sm leading-relaxed">Businesses that rely dominantly on guess work or gut feelings are merely operating in the shadows of those who have utilized the power of data to make profitable decisions. Out-performing the non-data analytics/shallow driven data analytics businesses, with mind boggling returns to show for it, it is apt that towing the data analytics path is no longer an option but a compulsory, highly strategic one.</p><div class="bg-gray-100 p-4 rounded-lg mb-4 text-sm">
+        <h2 class="text-lg font-bold mb-2">Table of Contents</h2>
+        <ol class="list-decimal pl-4 space-y-1">
+          <li><a href="#what-is-data-driven" class="text-primary hover:underline">What Is A Data-Driven Process?</a></li>
+          <li><a href="#smarter-decisions" class="text-primary hover:underline">Smarter Decision-Making</a></li>
+          <li><a href="#operational-efficiency" class="text-primary hover:underline">Better Operational Efficiency</a></li>
+          <li><a href="#customer-experience" class="text-primary hover:underline">Better Customer Experience</a></li>
+          <li><a href="#data-forecasting" class="text-primary hover:underline">Data-Driven Forecasting</a></li>
+          <li><a href="#marketing-performance" class="text-primary hover:underline">Better Marketing Performance</a></li>
+          <li><a href="#reduced-fraud" class="text-primary hover:underline">Reduced Fraud</a></li>
+          <li><a href="#competitive-advantage" class="text-primary hover:underline">Competitive Advantage</a></li>
+        </ol>
+      </div>
+
+      <h2 id="what-is-data-driven" class="text-xl font-bold mt-6 mb-3 text-primary">What Is A Data-Driven Process?</h2>
+      <p class="mb-3 text-sm">A data-driven process is a method used in business decision-making and operations that depends on data analysis, insights, and measurable indicators, instead of past experiences or gut feeling. It uses data from different sources to guide the development of strategies and actions.</p>
+
+      <h2 id="smarter-decisions" class="text-xl font-bold mt-6 mb-3 text-primary">1. Smarter Decision-Making</h2>
+      <p class="mb-3 text-sm">A data-driven process replaces guesswork with facts, thus, helping decision makers to strategically, and timely reach decisions that are rooted in real time data. We've experienced how market conditions can change overnight, and every delayed or wrong decision made always leads to revenue loss or missed business opportunities.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Example:</p>
+        <p class="mt-1">A fashion brand (X Clothing) with retail stores and e-commerce platform used data analytics to discover that wine-colored blazers in medium size sold quickly in London but not in Manchester. This insight allowed them to optimize inventory and launch targeted marketing campaigns, resulting in reduced overstocking and higher sales conversion.</p>
+      </div>
+
+      <h2 id="operational-efficiency" class="text-xl font-bold mt-6 mb-3 text-primary">2. Better Operational Efficiency</h2>
+      <p class="mb-3 text-sm">Business owners are under pressure to do more with the limited time and resources that they have. However, by using a data driven process, they can discover areas where there's inefficiency and invariably optimize operations.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Example:</p>
+        <p class="mt-1">Manufacturing company "Zibah" installed sensors on machines to track performance data and used predictive analytics to anticipate failures. This proactive approach reduced maintenance costs significantly and decreased machine downtime by 40%, leading to improved production output and customer satisfaction.</p>
+      </div>
+
+      <h2 id="customer-experience" class="text-xl font-bold mt-6 mb-3 text-primary">3. Better Customer Experience</h2>
+      <p class="mb-3 text-sm">Customer expectations have shot through the roof with demands for personalized, value-driven experiences. A data-driven process enables businesses to meet and even exceed these expectations by accessing and using real-time insights from customer behaviour, feedback, and engagement metrics.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Example:</p>
+        <p class="mt-1">Amazon uses purchase history and browsing patterns to suggest products, send relevant offers, and anticipate reorders. Hotels use guest feedback and stay history to offer custom experiences such as preferred room types, amenities, or loyalty rewards.</p>
+      </div>
+
+      <h2 id="data-forecasting" class="text-xl font-bold mt-6 mb-3 text-primary">4. Data-Driven Forecasting</h2>
+      <p class="mb-3 text-sm">Businesses that use a data-driven process can correctly predict demand and use the right strategies rather than relying on intuition or obsolete forecast. In Data-driven forecasting, historical data, real-time analytics, and machine learning algorithms are used to predict future events.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Example:</p>
+        <p class="mt-1">Online fashion store "House of Filas" analyzes historical sales data, monitors Google Trends for seasonal items, and tracks competitor promotions to predict which products will sell most, when demand will peak, and how much stock to order.</p>
+      </div>
+
+      <h2 id="marketing-performance" class="text-xl font-bold mt-6 mb-3 text-primary">5. Better Marketing Performance</h2>
+      <p class="mb-3 text-sm">Data-driven marketing helps businesses focus spending on high-performing channels and cut waste by knowing what's working, what's not, and where they need to invest more.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Example:</p>
+        <p class="mt-1">A SaaS business tracked campaign performance across Facebook and Google Ads, discovering that Google Ads resulted in higher-quality leads with longer customer retention. They reallocated 70% of their budget to Google Ads, resulting in a 30% increase in qualified leads and 25% drop in cost-per-acquisition.</p>
+      </div>
+
+      <h2 id="reduced-fraud" class="text-xl font-bold mt-6 mb-3 text-primary">6. Reduced Fraud</h2>
+      <p class="mb-3 text-sm">Data-driven processes provide a powerful defence against cyber threats, regulatory violations, and financial fraud. AI-powered fraud detection systems analyze strange purchase locations, irregular spending spikes, and high-risk transaction patterns.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Example:</p>
+        <p class="mt-1">Banks use AI systems that automatically flag suspicious patterns (like multiple large transactions from different locations within minutes), freeze transactions, and alert both customers and fraud teams, significantly reducing fraud losses.</p>
+      </div>
+
+      <h2 id="competitive-advantage" class="text-xl font-bold mt-6 mb-3 text-primary">7. Competitive Advantage</h2>
+      <p class="mb-3 text-sm">Businesses that collect, analyze, and act on data gain a powerful edge over their competitors since they see what's coming, move fast, and quickly adapt.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Example:</p>
+        <p class="mt-1">Spotify uses listener data to create curated playlists and artist recommendations, which drive user engagement and retention. Tesla collects real-time vehicle data to enhance self-driving features and improve car safety with over-the-air updates.</p>
+      </div>
+      
+      <div class="bg-primary text-white p-6 rounded-lg mt-8">
+        <h3 class="text-xl font-bold mb-3">Master Data Analytics</h3>
+        <p class="mb-4 text-sm">Using data driven processes is highly beneficial to your business if you're thinking in terms of growth and sustainability. To learn everything you need to implement data-driven strategies in your organization, enroll in our comprehensive data analytics course today.</p>
+        <a href="https://titanscareers.com" class="inline-block bg-white text-primary px-4 py-2 rounded-md font-semibold text-sm hover:bg-gray-100 transition-colors">
+          Enroll Now
+        </a>
+      </div>
+    </div>
+  </div>
+`;
+    },
+  },
+  {
+    id: 11,
+    title:
+      "KYC: How Artificial Intelligence Has Taken Customer Verification To The Next Level",
+    slug: "ai-kyc-customer-verification-next-level",
+    author: "Titans Careers Editorial Team",
+    authorRole: "KYC & Compliance Experts",
+    authorImage: "/favicon.ico",
+    date: "August 22, 2025",
+    category: "Compliance",
+    tags: [
+      "KYC",
+      "Artificial Intelligence",
+      "Customer Verification",
+      "Compliance",
+      "Financial Technology",
+      "Anti-Money Laundering",
+      "Document Verification",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    excerpt:
+      "Discover how AI has revolutionized KYC processes, reducing verification time from weeks to minutes while achieving 99.5% accuracy in document verification and cutting operational costs by up to 40%.",
+    content: function () {
+      return `
+<div class="article-content mobile-optimized">
+<div class="article-body px-4 pb-6">
+<p class="mb-4 text-sm leading-relaxed">A few years ago, it was a herculean task trying to carry out Know Your Customer (KYC) process which spanned from reviewing documents manually, using phone calls to verify certain information to lengthy background checks that culminated into days and sometimes even weeks. Now with technological advancement and the power of artificial intelligence (AI), financial institutions carry out the KYC process in a matter of minutes.</p><div class="bg-yellow-100 border-l-4 border-yellow-500 p-3 mb-4 text-sm flex items-center">
+        <span class="text-2xl font-bold text-yellow-700 mr-3">90%</span>
+        <span class="text-gray-800">reduction in customer onboarding time achieved by JPMorgan Chase after implementing AI-powered KYC systems.</span>
+      </div>
+      
+      <div class="bg-gray-100 p-4 rounded-lg mb-4 text-sm">
+        <h2 class="text-lg font-bold mb-2">Table of Contents</h2>
+        <ol class="list-decimal pl-4 space-y-1">
+          <li><a href="#traditional-kyc" class="text-primary hover:underline">The Traditional KYC Process</a></li>
+          <li><a href="#ai-kyc" class="text-primary hover:underline">The AI KYC Process</a></li>
+          <li><a href="#document-verification" class="text-primary hover:underline">Document Verification and Authentication</a></li>
+          <li><a href="#identity-verification" class="text-primary hover:underline">Identity Verification and Background Screening</a></li>
+          <li><a href="#risk-assessment" class="text-primary hover:underline">Risk Assessment and Scoring</a></li>
+          <li><a href="#ai-technologies" class="text-primary hover:underline">The Technology Behind AI-Powered KYC</a></li>
+          <li><a href="#faqs" class="text-primary hover:underline">Frequently Asked Questions</a></li>
+        </ol>
+      </div>
+
+      <h2 id="traditional-kyc" class="text-xl font-bold mt-6 mb-3 text-primary">The Traditional KYC Process</h2>
+      <p class="mb-3 text-sm">The traditional KYC process uses manual verification, which creates challenges that can take as long as 5-15 business days to complete with human reviewers prone to making mistakes, one that occurs in approximately 15-20% of manual reviews. This delay impacts negatively on businesses with potential customers abandoning applications as a result of lengthy onboarding processes.</p>
+      <p class="mb-3 text-sm">Traditional screening systems generate false positive rates as high as 95% in some categories, requiring costly human review of thousands of flagged transactions which later turn out to be legitimate transactions.</p>
+
+      <h2 id="ai-kyc" class="text-xl font-bold mt-6 mb-3 text-primary">The AI KYC Process</h2>
+      <p class="mb-3 text-sm">AI systems create an entirely new approach to understanding and verifying the identity of the customer, moving beyond simply digitizing existing processes.</p>
+
+      <h2 id="document-verification" class="text-xl font-bold mt-6 mb-3 text-primary">Document Verification and Authentication</h2>
+      <p class="mb-3 text-sm">Powered by deep learning, modern optical character recognition (OCR) systems can instantly extract and verify information from identity documents with 99.5% accuracy which with certitude totally exceeds human performance.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Real-World Impact:</p>
+        <p class="mt-1">HSBC, J.P. Morgan, TSB, and other financial institutions have embraced AI-powered document verification systems that reduce processing time from 5 days to 5 minutes. These systems can automatically extract data from over 150 document types across various countries and cross-reference information against multiple databases in real-time.</p>
+      </div>
+
+      <h2 id="identity-verification" class="text-xl font-bold mt-6 mb-3 text-primary">Identity Verification and Background Screening</h2>
+      <p class="mb-3 text-sm">Machine learning algorithms excel at pattern recognition in customer data, identifying connections and irregularities that humans might miss. These systems analyze hundreds of data points simultaneously from device fingerprints and behavioural patterns to social media footprints and transaction histories.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Advanced Capabilities:</p>
+        <p class="mt-1">Modern Natural Language Processing (NLP) algorithms understand context, detect sentiment, and distinguish different individuals with similar names. Automated PEP and sanctions list checking now happens in real-time rather than periodically, with systems monitoring global databases continually.</p>
+      </div>
+
+      <h2 id="risk-assessment" class="text-xl font-bold mt-6 mb-3 text-primary">Risk Assessment and Scoring</h2>
+      <p class="mb-3 text-sm">Unlike traditional systems that apply static criteria, AI models continuously learn and adjust risk scores based on new data patterns. Machine learning models can spot suspicious patterns across millions of transactions simultaneously.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Key Benefit:</p>
+        <p class="mt-1">Anomaly detection algorithms identify suspicious activities by understanding normal patterns for different customer segments and flagging deviations that warrant investigation. This approach reduces false positives from 95% to less than 5% while improving detection of genuine risks.</p>
+      </div>
+
+      <h2 id="ai-technologies" class="text-xl font-bold mt-6 mb-3 text-primary">The Technology Behind AI-Powered KYC</h2>
+      <p class="mb-3 text-sm">AI-powered KYC systems leverage multiple advanced technologies including Machine Learning and Deep Learning, Natural Language Processing (NLP), Computer Vision, and Robotic Process Automation (RPA).</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Technology Integration:</p>
+        <p class="mt-1">API enables seamless data flow between different systems, while cloud-based infrastructure provides scalability. Blockchain integration creates incontrovertible audit trails, and real-time data feeds ensure risk assessment reflects the most current information available.</p>
+      </div>
+
+      <h2 id="faqs" class="text-xl font-bold mt-6 mb-3 text-primary">Frequently Asked Questions</h2>
+      <div class="space-y-4">
+        <div>
+          <h3 class="font-semibold text-primary">Q1: How long does AI-powered KYC take compared to traditional methods?</h3>
+          <p class="text-sm">AI-powered KYC systems can complete customer verification in 2-5 minutes, compared to traditional methods that take 5-15 business days.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-primary">Q2: What is the accuracy rate of AI document verification?</h3>
+          <p class="text-sm">Modern AI-powered OCR systems achieve 99.5% accuracy in document verification, significantly exceeding human performance.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-primary">Q3: How does AI reduce KYC compliance costs?</h3>
+          <p class="text-sm">AI reduces KYC costs by up to 40% through automation of manual processes, reduction in false positive rates, and elimination of lengthy manual review processes.</p>
+        </div>
+      </div>
+      
+      <div class="bg-primary text-white p-6 rounded-lg mt-8">
+        <h3 class="text-xl font-bold mb-3">Master KYC & Compliance</h3>
+        <p class="mb-4 text-sm">As fraudsters become more sophisticated and regulatory requirements continue to increase, AI systems are essential for creating and maintaining a seamless tripartite experience from KYC compliance, to security and greater customer experience. Learn everything you need to know about modern KYC processes and advance your career in compliance.</p>
+        <a href="https://titanscareers.com" class="inline-block bg-white text-primary px-4 py-2 rounded-md font-semibold text-sm hover:bg-gray-100 transition-colors">
+          Enroll Now
+        </a>
+      </div>
+    </div>
+  </div>
+`;
+    },
+  },
+  {
+    id: 12,
+    title: "Money Mule: How Criminals Target You (How to Stop Them Now)",
+    slug: "money-mule-how-criminals-target-you-how-to-stop-them",
+    author: "Titans Careers Editorial Team",
+    authorRole: "Financial Crime Prevention Experts",
+    authorImage: "/favicon.ico",
+    date: "August 22, 2025",
+    category: "Financial Crime",
+    tags: [
+      "Money Mule",
+      "Financial Crime",
+      "AML",
+      "Fraud Prevention",
+      "Scam Awareness",
+      "Financial Security",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    excerpt:
+      "Learn how criminals recruit money mules through employment scams and fake relationships, recognize the warning signs, and protect yourself from becoming an unwitting participant in financial crimes.",
+    content: function () {
+      return `
+<div class="article-content mobile-optimized">
+<div class="article-body px-4 pb-6">
+<p class="mb-4 text-sm leading-relaxed">It is rather worrisome that money muling has become one of the fastest-growing financial crimes in the world, with criminals becoming brazenly daring to target unsuspecting individuals who are usually students in need of part time work, desperate job seekers, those in need of additional income to pay bills or those interested in online relationships.</p><div class="bg-red-100 border-l-4 border-red-500 p-3 mb-4 text-sm flex items-center">
+        <span class="text-2xl font-bold text-red-700 mr-3">95%</span>
+        <span class="text-gray-800">of money mule recruits are unaware they're participating in criminal activities until it's too late, facing serious legal consequences.</span>
+      </div>
+      
+      <div class="bg-gray-100 p-4 rounded-lg mb-4 text-sm">
+        <h2 class="text-lg font-bold mb-2">Table of Contents</h2>
+        <ol class="list-decimal pl-4 space-y-1">
+          <li><a href="#recruitment-tactics" class="text-primary hover:underline">Recruitment Tactics In Money Muling</a></li>
+          <li><a href="#warning-signs" class="text-primary hover:underline">Signs Someone Is Trying To Make You A Money Mule</a></li>
+          <li><a href="#protection-strategies" class="text-primary hover:underline">Strategies For Protection Against Money Mule Recruiters</a></li>
+          <li><a href="#if-targeted" class="text-primary hover:underline">What To Do If You're A Money Mule Target</a></li>
+          <li><a href="#consequences" class="text-primary hover:underline">Consequences Of Being A Money Mule</a></li>
+          <li><a href="#faqs" class="text-primary hover:underline">Frequently Asked Questions</a></li>
+        </ol>
+      </div>
+
+      <h2 id="recruitment-tactics" class="text-xl font-bold mt-6 mb-3 text-primary">Recruitment Tactics In Money Muling</h2>
+      <p class="mb-3 text-sm">Criminals have perfected the art of creating convincing fake job opportunities that specifically target vulnerable populations such as students and the unemployed. They create professional-looking websites with fake company history and detailed job descriptions.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Common Scam Approaches:</p>
+        <ul class="list-disc pl-4 mt-1">
+          <li>Payment processing roles with remote work and lucrative compensation</li>
+          <li>Romance scams building emotional connections over weeks/months</li>
+          <li"Helping international clients with banking restrictions" schemes</li>
+        </ul>
+      </div>
+
+      <h2 id="warning-signs" class="text-xl font-bold mt-6 mb-3 text-primary">Signs Someone Is Trying To Make You A Money Mule</h2>
+      <p class="mb-3 text-sm">Any opportunity offering a lucrative high pay for minimal skills or experience should instantly make you skeptical. Legitimate employers pay fair market rates based on actual job responsibilities and experience.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Red Flags to Watch For:</p>
+        <ul class="list-disc pl-4 mt-1">
+          <li>Vague or confusing job descriptions</li>
+          <li>Companies that only exist through email or social media</li>
+          <li>Requests for personal banking details during application</li>
+          <li>Romantic partners avoiding video calls while asking for financial help</li>
+        </ul>
+      </div>
+
+      <h2 id="protection-strategies" class="text-xl font-bold mt-6 mb-3 text-primary">Strategies For Protection Against Money Mule Recruiters</h2>
+      <p class="mb-3 text-sm">When presented with opportunities to handle money, conduct in-depth verification of the company through official business registries and verified contact methods.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Protection Measures:</p>
+        <ul class="list-disc pl-4 mt-1">
+          <li>Never disclose banking details during initial application stages</li>
+          <li>Seek opinions from trusted friends, family, or professional advisors</li>
+          <li>Limit personal information shared on social media</li>
+          <li>Use reverse image searches and verify information across platforms</li>
+        </ul>
+      </div>
+
+      <h2 id="if-targeted" class="text-xl font-bold mt-6 mb-3 text-primary">What To Do If You're A Money Mule Target</h2>
+      <p class="mb-3 text-sm">If you suspect you're being recruited, don't try to "play along" to gather evidence. Instead, document all communications and report to appropriate authorities immediately.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Immediate Actions:</p>
+        <ul class="list-disc pl-4 mt-1">
+          <li>Stop all communication with the recruiter</li>
+          <li>Report fraudulent job postings or dating profiles to the platform</li>
+          <li>Contact your bank if you've already shared information</li>
+          <li>Consult with a lawyer specializing in financial crimes</li>
+        </ul>
+      </div>
+
+      <h2 id="consequences" class="text-xl font-bold mt-6 mb-3 text-primary">Consequences Of Being A Money Mule</h2>
+      <p class="mb-3 text-sm">Being involved in money muling activities can lead to severe legal consequences including criminal charges for money laundering, bank fraud, and conspiracy charges.</p>
+      <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm">
+        <p class="font-semibold text-blue-800">Potential Consequences:</p>
+        <ul class="list-disc pl-4 mt-1">
+          <li>Prison sentences and significant fines</li>
+          <li>Damaged credit ratings and banking relationships</li>
+          <li>Civil lawsuits from victims seeking to recover losses</li>
+          <li>Permanent exclusion from traditional banking services</li>
+        </ul>
+      </div>
+
+      <h2 id="faqs" class="text-xl font-bold mt-6 mb-3 text-primary">Frequently Asked Questions</h2>
+      <div class="space-y-4">
+        <div>
+          <h3 class="font-semibold text-primary">Q: Who is a money mule and how does he operate?</h3>
+          <p class="text-sm">A money mule is someone who transfers illegally obtained money through their personal bank accounts for criminals. They receive funds, then quickly transfer them elsewhere, helping criminals launder money while hiding their tracks.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-primary">Q: Can I get in trouble if I didn't know I was a money mule?</h3>
+          <p class="text-sm">Yes, even unwilling money mules can face serious legal consequences including federal charges, prison time, and permanent damage to credit and banking relationships.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-primary">Q: Who is mostly at risk of becoming a money mule?</h3>
+          <p class="text-sm">Criminals often target students, unemployed individuals, elderly people, new immigrants, and anyone experiencing financial difficulties or seeking additional income.</p>
+        </div>
+      </div>
+      
+      <div class="bg-primary text-white p-6 rounded-lg mt-8">
+        <h3 class="text-xl font-bold mb-3">Fight Financial Crime</h3>
+        <p class="mb-4 text-sm">Protecting yourself from money mule recruitment requires continual vigilance and skepticism about opportunities that seem too good to be true. Acquire in-depth knowledge about anti-money laundering (AML) and Know Your Customer (KYC) practices to start a successful career in financial crime prevention.</p>
+        <a href="https://titanscareers.com" class="inline-block bg-white text-primary px-4 py-2 rounded-md font-semibold text-sm hover:bg-gray-100 transition-colors">
+          Enroll Now
+        </a>
+      </div>
+    </div>
+  </div>
+`;
+    },
+  },
 ];

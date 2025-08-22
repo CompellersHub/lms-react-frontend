@@ -95,7 +95,7 @@ export function WorkshopEvents() {
             {events.map((event) => (
               <div
                 key={event.id}
-                className="bg-card p-6 rounded-xl border border-border hover:shadow-md transition-all h-full"
+                className="bg-card p-6 rounded-xl border border-border hover:shadow-md transition-all h-full flex flex-col justify-between"
               >
                 <div className="flex items-center mb-4">
                   <div className="bg-primary/10 p-2 rounded-full mr-3">
@@ -128,12 +128,12 @@ export function WorkshopEvents() {
                   {event.event_excerpt}
                 </p>
                 <div className="flex flex-col gap-2 h-fit space-y-6 mt-4">
-                  <div className="h-full">
+                  <div className="h-fit">
                     <h4 className="font-semibold mb-3 text-sm">
                       Workshop Highlights:
                     </h4>
 
-                    <ul className="space-y-2 text-muted-foreground h-80">
+                    <ul className="space-y-2 text-muted-foreground h-fit">
                       {event.workshop.workshop_highlights.map(
                         (highlight, index) => (
                           <li key={index} className="flex items-start text-sm">
@@ -154,7 +154,7 @@ export function WorkshopEvents() {
                     </p>
                   </div>
 
-                  <div className=" h-full">
+                  <div className="mt-4 h-full">
                     <div className="bg-muted/50 p-4 rounded-lg">
                       <h4 className="font-semibold mb-2 flex items-center text-sm">
                         <User className="h-4 w-4 mr-2" />
@@ -170,7 +170,7 @@ export function WorkshopEvents() {
                   </div>
                 </div>
 
-                <div className="mt-4">
+                <div className="w-full align-bottom self-end">
                   <Button
                     className="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm py-2 px-4 mt-4"
                     onClick={() => handleRegisterClick(event)}

@@ -24,9 +24,17 @@ import { Button } from "@/components/ui/button";
 import Spinner from "../components/Spinner";
 import AddToCartButton from "../components/AddToCartButton";
 import AwsVideoPlayer from "../components/AwsVideoPlayer";
+import { RegistrationModal } from "../components/RegistrationModal"; // Import RegistrationModal
+import { ConsultationSuccessModal } from "../components/ConsultationSuccessModal"; // Import ConsultationSuccessModal
+import { useToast } from "@/hooks/use-toast"; // Import useToast for notifications
 
 function CourseDetailPage() {
   const { courseId } = useParams();
+  const { toast } = useToast(); // Initialize toast
+
+  // State for registration modals
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const navigate = useNavigate();
   // const [expandedModule, setExpandedModule] = useState(null);
   const [relatedCourses, setRelatedCourses] = useState([]);
@@ -203,7 +211,15 @@ function CourseDetailPage() {
                     </Button>
                   </div>
                 ) : (
-                  <AddToCartButton course={course} />
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <AddToCartButton course={course} />
+                    <Button
+                      className=" px-4 p bg-secondary text-foreground hover:bg-secondary/90 text-sm font-semibold shadow-xl transition-all duration-300 hover:scale-105"
+                      onClick={() => setIsRegistrationModalOpen(true)}
+                    >
+                      Book Free Consultation
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
@@ -239,7 +255,15 @@ function CourseDetailPage() {
                     </Button>
                   </div>
                 ) : (
-                  <AddToCartButton course={course} />
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <AddToCartButton course={course} />
+                    <Button
+                      className=" px-4 p bg-secondary text-foreground hover:bg-secondary/90 text-sm font-semibold shadow-xl transition-all duration-300 hover:scale-105"
+                      onClick={() => setIsRegistrationModalOpen(true)}
+                    >
+                      Book Free Consultation
+                    </Button>
+                  </div>
                 )}
               </div>
               <div className="border-t border-gray-200 pt-4 mt-4">
@@ -459,6 +483,37 @@ function CourseDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Registration Modal */}
+      <RegistrationModal
+        isOpen={isRegistrationModalOpen}
+        onClose={() => setIsRegistrationModalOpen(false)}
+        onSuccess={() => {
+          setIsRegistrationModalOpen(false);
+          setIsSuccessModalOpen(true);
+          toast({
+            title: "Consultation Request Submitted",
+            description:
+              "We've received your request and will get back to you shortly.",
+            variant: "success",
+          });
+        }}
+        onError={(message) => {
+          toast({
+            title: "Consultation Request Failed",
+            description:
+              message || "There was an error submitting your request.",
+            variant: "destructive",
+          });
+          // Modal remains open on error, so user can retry
+        }}
+      />
+
+      {/* Success Modal */}
+      <ConsultationSuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+      />
     </>
   );
 }

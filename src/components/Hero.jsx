@@ -94,7 +94,7 @@ export function Hero() {
         />
       </div>
       {/* Content overlay */}
-      <div className="relative z-10 flex h-full flex-col items-start justify-center px-6 md:px-12 lg:px-16 py-16">
+      <div className="relative z-10 flex h-full flex-col items-start justify-center px-6 md:px-12 lg:px-16 py-16 space-y-8">
         {" "}
         {/* Added vertical padding */}
         <div className="flex w-full flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -116,7 +116,7 @@ export function Hero() {
           </Button> */}
           <Button
             onClick={() => setShowRegistrationModal(true)}
-            className="absolute top-14 left-6 sm:left-14 px-4 py-2 bg-secondary text-foreground hover:bg-secondary/90 rounded-full text-sm font-semibold shadow-xl z-[100] transition-all duration-300 hover:scale-105"
+            className="absolute top-14 left-6 md:left-12 lg:left-16 px-4 py-2 bg-secondary text-foreground hover:bg-secondary/90 rounded-full text-sm font-semibold shadow-xl z-[100] transition-all duration-300 hover:scale-105"
           >
             Register for a Free Masterclass
           </Button>

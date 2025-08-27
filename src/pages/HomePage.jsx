@@ -12,9 +12,11 @@ import { WhyChooseUs } from "@/components/WhyChooseUs";
 import { EventsCarousel } from "@/components/EventsCarousel";
 import DownloadGuideSection from "@/components/DownloadGuideSection";
 import { EventRegistrationModal } from "@/components/EventRegistrationModal";
+import { RegistrationModal } from "@/components/RegistrationModal";
 
 function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
 
   return (
     <>
@@ -29,11 +31,26 @@ function HomePage() {
       <WhyChooseUs />
       {/* <ProjectsCarousel /> */}
       <CourseIntroVideos />
+      {/* Consultation Banner */}
+      <div
+        onClick={() => setIsConsultationModalOpen(true)}
+        className="cursor-pointer my-12 flex justify-center px-4"
+      >
+        <img
+          src="/assets/consultation.png"
+          alt="Book a Free Consultation"
+          className="max-w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+        />
+      </div>
       <EventsCarousel />
       <PlatformFeatures />
       <EventRegistrationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+      <RegistrationModal
+        isOpen={isConsultationModalOpen}
+        onClose={() => setIsConsultationModalOpen(false)}
       />
     </>
   );

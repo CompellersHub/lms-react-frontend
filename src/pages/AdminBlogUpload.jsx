@@ -28,7 +28,7 @@ const initialBlogState = {
   author: "Titans Careers Editorial Team", // Default author
   authorRole: "AML/KYC Compliance Experts", // Default role
   authorImage:
-    "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", // Default author image
+    "Https://titanscareers.s3.amazonaws.com/profile_pictures/user_e9a513d2-1e98-48e8-9780-3b3693fc042e.png", // Default author image
   date: new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -179,10 +179,12 @@ function AdminBlogUpload() {
 
   // Move content block for drag and drop
   const moveContentBlock = (fromIndex, toIndex) => {
-    const updatedContent = [...blog.content];
-    const [movedBlock] = updatedContent.splice(fromIndex, 1);
-    updatedContent.splice(toIndex, 0, movedBlock);
-    setBlog((prev) => ({ ...prev, content: updatedContent }));
+    setBlog((prev) => {
+      const newContent = prev.content.filter((b) => b); // Remove any undefined entries
+      const [removed] = newContent.splice(fromIndex, 1);
+      newContent.splice(toIndex, 0, removed);
+      return { ...prev, content: newContent };
+    });
   };
 
   // Handle form submission
@@ -190,6 +192,12 @@ function AdminBlogUpload() {
     if (e && e.preventDefault) {
       e.preventDefault(); // Only prevent default if it's a form event
     }
+
+    // Cleanup empty content blocks before validation
+    const cleanedContent = blog.content.filter(
+      (block) => !(block.type.includes("Box") && block.value.length === 0)
+    );
+    setBlog((prev) => ({ ...prev, content: cleanedContent }));
 
     // Basic validation for main blog fields
     if (

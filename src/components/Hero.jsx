@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import AwsVideoPlayer from "./AwsVideoPlayer";
 import bgImage from "@/assets/img/hero.png";
-import { EventRegistrationModal } from "./EventRegistrationModal"; // Import the new modal component
+import { EventRegistrationModal } from "./EventRegistrationModal"; // Import the consultation modal component
 
 export function Hero() {
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -100,14 +100,14 @@ export function Hero() {
         <div className="flex w-full flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           {" "}
           {/* Adjusted for responsiveness */}
-          <div className="flex items-center gap-2 rounded-md bg-white/10 p-2 backdrop-blur-sm">
+          {/* <div className="flex items-center gap-2 rounded-md bg-white/10 p-2 backdrop-blur-sm">
             <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-primary">
               <Shield className="h-5 w-5" />
             </span>
             <span className="text-xl font-bold text-primary">
               TITANS CAREERS
             </span>
-          </div>
+          </div> */}
           {/* <Button
             onClick={() => setShowRegistrationModal(true)}
             className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-105"
@@ -116,7 +116,7 @@ export function Hero() {
           </Button> */}
           <Button
             onClick={() => setShowRegistrationModal(true)}
-            className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-105"
+            className="absolute top-14 left-6 sm:left-14 px-4 py-2 bg-secondary text-foreground hover:bg-secondary/90 rounded-full text-sm font-semibold shadow-xl z-[100] transition-all duration-300 hover:scale-105"
           >
             Register for a Free Masterclass
           </Button>

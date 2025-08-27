@@ -19,7 +19,7 @@ export const coursesApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Course", "Assignment", "Order"],
+  tagTypes: ["Course", "Assignment", "Order", "Consultation"],
   endpoints: (builder) => ({
     // Get all courses
     getAllCourses: builder.query({
@@ -203,6 +203,21 @@ export const coursesApi = createApi({
       }),
       invalidatesTags: [{ type: "Event", id: "LIST" }],
     }),
+
+    registerForConsultation: builder.mutation({
+      query: (body) => ({
+        url: "/courses/consultations/",
+        method: "POST",
+        body: {
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          whatsapp: body.whatsappNumber,
+          message: body.message,
+        },
+      }),
+      invalidatesTags: ["Consultation"],
+    }),
   }),
 });
 
@@ -224,4 +239,5 @@ export const {
   useCheckCertificateAvailabilityQuery,
   useGetEventsQuery,
   useRegisterForEventMutation,
+  useRegisterForConsultationMutation,
 } = coursesApi;

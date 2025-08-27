@@ -15,6 +15,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Checkbox } from "./ui/checkbox";
 
 import { useRegisterForConsultationMutation } from "../services/coursesApi";
 
@@ -27,6 +29,7 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // New state for in-form error
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const [bookConsultation] = useRegisterForConsultationMutation();
 
@@ -38,6 +41,7 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
     setMessage("");
     setIsMessageOpen(false);
     setErrorMessage(""); // Clear error message on reset
+    setAgreedToTerms(false);
   };
 
   // Effect to reset form when modal is opened/closed
@@ -50,6 +54,19 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(""); // Clear previous errors
+
+    if (!firstName || !email) {
+      setErrorMessage("Please fill in your first name and email.");
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setErrorMessage(
+        "You must agree to the Terms and Conditions and Privacy Policy."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const response = await bookConsultation({
@@ -77,7 +94,7 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Register for Free Consultation</DialogTitle>
           <DialogDescription>
@@ -159,7 +176,34 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
             <div className="text-red-500 text-sm mt-2">{errorMessage}</div>
           )}
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              checked={agreedToTerms}
+              onCheckedChange={setAgreedToTerms}
+              disabled={isSubmitting}
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I agree to the{" "}
+              <Link to="/terms" className="text-primary hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </label>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isSubmitting || !agreedToTerms || !firstName || !email}
+          >
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </form>

@@ -5,10 +5,12 @@ import { useGetAllCoursesQuery } from "../services/coursesApi";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "@/components/ErrorMessage";
 import { useSelector } from "react-redux";
+import { EventRegistrationModal } from "@/components/EventRegistrationModal";
 
 function CoursesPage() {
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch courses using RTK Query
   const { data: courses = [], isLoading, error } = useGetAllCoursesQuery();
@@ -192,7 +194,7 @@ function CoursesPage() {
                       </>
                     ) : (
                       <span className="text-sm text-foreground/60 italic">
-                        No instructor assigned
+                        "Titans Careers Team"
                       </span>
                     )}
                   </div>
@@ -253,7 +255,23 @@ function CoursesPage() {
             </p>
           </div>
         )}
+
+        <div
+          onClick={() => setIsModalOpen(true)}
+          className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+        >
+          <img
+            src="/assets/masterclass.jpeg"
+            alt="Masterclass Registration"
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+        </div>
       </div>
+
+      <EventRegistrationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

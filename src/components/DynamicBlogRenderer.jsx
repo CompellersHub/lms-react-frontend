@@ -6,6 +6,7 @@ import { Calendar, Tag, ArrowLeft, Share2 } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { SiX } from "react-icons/si";
 import { toast } from "sonner";
+import { marked } from "marked"; // Import marked library
 import {
   useGetAllBlogsQuery,
   useGetBlogCategoriesQuery,
@@ -385,7 +386,17 @@ function DynamicBlogRenderer({ blogPost, relatedPosts = [] }) {
 
               {/* Dynamically Rendered Article Body */}
               <div className="prose max-w-none">
-                {blogPost.content && Array.isArray(blogPost.content) ? (
+                {blogPost.htmlContent ? (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: blogPost.htmlContent }}
+                  />
+                ) : blogPost.markdownContent ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: marked(blogPost.markdownContent),
+                    }}
+                  />
+                ) : blogPost.content && Array.isArray(blogPost.content) ? (
                   blogPost.content.map(renderContentBlock)
                 ) : (
                   <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg">
@@ -394,8 +405,8 @@ function DynamicBlogRenderer({ blogPost, relatedPosts = [] }) {
                       in the expected structured format.
                     </p>
                     <p className="text-sm text-yellow-700">
-                      Expected an array of content blocks, but received:{" "}
-                      {typeof blogPost.content}
+                      Expected HTML, Markdown, or an array of content blocks,
+                      but received: {typeof blogPost.content}
                     </p>
                     {blogPost.content && (
                       <pre className="text-xs mt-2 bg-yellow-100 p-2 rounded overflow-auto">

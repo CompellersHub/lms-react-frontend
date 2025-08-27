@@ -34,12 +34,12 @@ function HomePage() {
       {/* Consultation Banner */}
       <div
         onClick={() => setIsConsultationModalOpen(true)}
-        className="cursor-pointer my-12 flex justify-center px-4"
+        className="cursor-pointer"
       >
         <img
           src="/assets/consultation.png"
           alt="Book a Free Consultation"
-          className="max-w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+          className=""
         />
       </div>
       <EventsCarousel />

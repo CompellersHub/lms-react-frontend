@@ -24,6 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 import {
   useRegisterForConsultationMutation,
@@ -41,7 +43,7 @@ export function RegistrationModal({
   const [email, setEmail] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [message, setMessage] = useState("");
-  const [selectedCourseName, setSelectedCourseName] = useState(""); // New state for selected course name
+  const [selectedCourse, setSelectedCourse] = useState(""); // New state for selected course
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // New state for in-form error
@@ -60,7 +62,7 @@ export function RegistrationModal({
     setEmail("");
     setWhatsappNumber("");
     setMessage("");
-    setSelectedCourseName(""); // Clear selected course name on reset
+    setSelectedCourse(""); // Clear selected course on reset
     setIsMessageOpen(false);
     setErrorMessage(""); // Clear error message on reset
     setAgreedToTerms(false);
@@ -82,7 +84,7 @@ export function RegistrationModal({
       return;
     }
 
-    if (!selectedCourseName) {
+    if (!selectedCourse) {
       setErrorMessage("Please select a course of interest.");
       return;
     }
@@ -102,7 +104,7 @@ export function RegistrationModal({
         email,
         whatsappNumber, // Map to 'whatsapp' as per API
         message,
-        course: selectedCourseName, // Include selected course name under the 'course' key
+        course: selectedCourse, // Include selected course under the 'course' key
       };
       console.log("Sending payload to backend:", payload); // Log payload
 
@@ -168,8 +170,8 @@ export function RegistrationModal({
           <div className="grid gap-2">
             <Label htmlFor="course">Course of Interest</Label>
             <Select
-              onValueChange={setSelectedCourseName}
-              value={selectedCourseName}
+              onValueChange={setSelectedCourse}
+              value={selectedCourse}
               disabled={isSubmitting || coursesLoading || coursesError}
             >
               <SelectTrigger id="course">
@@ -222,12 +224,13 @@ export function RegistrationModal({
             <CollapsibleContent className="space-y-2">
               <div className="grid gap-2">
                 <Label htmlFor="whatsapp">WhatsApp No.</Label>
-                <Input
+                <PhoneInput
                   id="whatsapp"
-                  type="tel"
+                  defaultCountry="GB"
                   value={whatsappNumber}
-                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  onChange={setWhatsappNumber}
                   disabled={isSubmitting}
+                  className="custom-phone-input flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <div className="grid gap-2">
@@ -282,7 +285,7 @@ export function RegistrationModal({
               !agreedToTerms ||
               !firstName ||
               !email ||
-              !selectedCourseName
+              !selectedCourse
             }
           >
             {isSubmitting ? "Submitting..." : "Submit"}

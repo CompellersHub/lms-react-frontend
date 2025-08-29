@@ -266,8 +266,8 @@ function CoursesPage() {
             alt="Masterclass Registration"
             className="w-full h-[80%] object-cover transition-transform duration-300 hover:scale-105"
           />
-          <Button className="bg-primary hover:bg-primary/90 text-white w-full">
-            "Enroll Now"
+          <Button className="bg-secondary text-foreground hover:bg-secondary/90 rounded-ful text-sm font-semibold shadow-xl transition-all duration-300 w-full">
+            Enroll Now
           </Button>
         </div>
       </div>

@@ -17,20 +17,43 @@ import {
 import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Checkbox } from "./ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
-import { useRegisterForConsultationMutation } from "../services/coursesApi";
+import {
+  useRegisterForConsultationMutation,
+  useGetAllCoursesQuery,
+} from "../services/coursesApi";
 
-export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
+export function RegistrationModal({
+  isOpen,
+  onClose,
+  onSuccess = () => {}, // Provide a default empty function
+  onError = () => {}, // Provide a default empty function
+}) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [message, setMessage] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(""); // New state for selected course
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // New state for in-form error
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+  const {
+    data: courses,
+    isLoading: coursesLoading,
+    error: coursesError,
+  } = useGetAllCoursesQuery();
   const [bookConsultation] = useRegisterForConsultationMutation();
 
   const resetForm = () => {
@@ -39,6 +62,7 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
     setEmail("");
     setWhatsappNumber("");
     setMessage("");
+    setSelectedCourse(""); // Clear selected course on reset
     setIsMessageOpen(false);
     setErrorMessage(""); // Clear error message on reset
     setAgreedToTerms(false);
@@ -60,6 +84,11 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
       return;
     }
 
+    if (!selectedCourse) {
+      setErrorMessage("Please select a course of interest.");
+      return;
+    }
+
     if (!agreedToTerms) {
       setErrorMessage(
         "You must agree to the Terms and Conditions and Privacy Policy."
@@ -69,13 +98,17 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
 
     setIsSubmitting(true);
     try {
-      const response = await bookConsultation({
+      const payload = {
         firstName,
         lastName,
         email,
-        whatsapp: whatsappNumber, // Map to 'whatsapp' as per API
+        whatsappNumber, // Map to 'whatsapp' as per API
         message,
-      });
+        course: selectedCourse, // Include selected course under the 'course' key
+      };
+      console.log("Sending payload to backend:", payload); // Log payload
+
+      const response = await bookConsultation(payload);
 
       if (response.error) {
         throw new Error(
@@ -134,6 +167,46 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
             />
           </div>
 
+          <div className="grid gap-2">
+            <Label htmlFor="course">Course of Interest</Label>
+            <Select
+              onValueChange={setSelectedCourse}
+              value={selectedCourse}
+              disabled={isSubmitting || coursesLoading || coursesError}
+            >
+              <SelectTrigger id="course">
+                <SelectValue placeholder="Select a course" />
+              </SelectTrigger>
+              <SelectContent>
+                {coursesLoading && (
+                  <SelectItem value="loading" disabled>
+                    Loading courses...
+                  </SelectItem>
+                )}
+                {coursesError && (
+                  <SelectItem value="error" disabled>
+                    Error loading courses
+                  </SelectItem>
+                )}
+                {!coursesLoading && !coursesError && courses?.length === 0 && (
+                  <SelectItem value="no-courses" disabled>
+                    No courses available
+                  </SelectItem>
+                )}
+                {courses?.map((course) => (
+                  <SelectItem key={course.id} value={course.name}>
+                    {course.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {coursesError && (
+              <p className="text-red-500 text-sm">
+                Failed to load courses. Please try again later.
+              </p>
+            )}
+          </div>
+
           <Collapsible
             open={isMessageOpen}
             onOpenChange={setIsMessageOpen}
@@ -151,12 +224,13 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
             <CollapsibleContent className="space-y-2">
               <div className="grid gap-2">
                 <Label htmlFor="whatsapp">WhatsApp No.</Label>
-                <Input
+                <PhoneInput
                   id="whatsapp"
-                  type="tel"
+                  defaultCountry="GB"
                   value={whatsappNumber}
-                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  onChange={setWhatsappNumber}
                   disabled={isSubmitting}
+                  className="custom-phone-input flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
               <div className="grid gap-2">
@@ -165,9 +239,13 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
                   id="message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
+                  maxLength={500} // Limit to 500 characters
                   className="flex h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={isSubmitting}
                 />
+                <p className="text-sm text-muted-foreground text-right">
+                  {message.length}/500 characters
+                </p>
               </div>
             </CollapsibleContent>
           </Collapsible>
@@ -202,7 +280,13 @@ export function RegistrationModal({ isOpen, onClose, onSuccess, onError }) {
           <Button
             type="submit"
             className="w-full"
-            disabled={isSubmitting || !agreedToTerms || !firstName || !email}
+            disabled={
+              isSubmitting ||
+              !agreedToTerms ||
+              !firstName ||
+              !email ||
+              !selectedCourse
+            }
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>

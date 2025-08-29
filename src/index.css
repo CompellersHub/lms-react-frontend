@@ -126,6 +126,12 @@
 }
 
 /* Global CSS */
+.PhoneInputInput:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0px var(--ring); /* Apply a custom focus ring */
+  border-color: var(--ring); /* Optional: change border color on focus */
+}
+
 @keyframes slideDown {
   from {
     max-height: var(--base-height, 6rem);

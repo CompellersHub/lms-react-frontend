@@ -214,6 +214,7 @@ export const coursesApi = createApi({
           email: body.email,
           whatsapp: body.whatsappNumber,
           message: body.message,
+          course: body.course,
         },
       }),
       invalidatesTags: ["Consultation"],

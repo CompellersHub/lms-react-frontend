@@ -13,10 +13,13 @@ import { EventsCarousel } from "@/components/EventsCarousel";
 import DownloadGuideSection from "@/components/DownloadGuideSection";
 import { EventRegistrationModal } from "@/components/EventRegistrationModal";
 import { RegistrationModal } from "@/components/RegistrationModal";
+import { ConsultationSuccessModal } from "@/components/ConsultationSuccessModal";
 
 function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
+  const [isConsultationSuccessModalOpen, setIsConsultationSuccessModalOpen] =
+    useState(false);
 
   return (
     <>
@@ -51,6 +54,14 @@ function HomePage() {
       <RegistrationModal
         isOpen={isConsultationModalOpen}
         onClose={() => setIsConsultationModalOpen(false)}
+        onSuccess={() => {
+          setIsConsultationModalOpen(false);
+          setIsConsultationSuccessModalOpen(true);
+        }}
+      />
+      <ConsultationSuccessModal
+        isOpen={isConsultationSuccessModalOpen}
+        onClose={() => setIsConsultationSuccessModalOpen(false)}
       />
     </>
   );

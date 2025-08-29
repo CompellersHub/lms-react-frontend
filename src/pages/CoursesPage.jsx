@@ -6,6 +6,7 @@ import Spinner from "../components/Spinner";
 import ErrorMessage from "@/components/ErrorMessage";
 import { useSelector } from "react-redux";
 import { EventRegistrationModal } from "@/components/EventRegistrationModal";
+import { Button } from "@/components/ui/button";
 
 function CoursesPage() {
   const [filter, setFilter] = useState("all");
@@ -258,13 +259,16 @@ function CoursesPage() {
 
         <div
           onClick={() => setIsModalOpen(true)}
-          className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+          className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer space-y-2"
         >
           <img
             src="/assets/masterclass.jpeg"
             alt="Masterclass Registration"
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            className="w-full h-[80%] object-cover transition-transform duration-300 hover:scale-105"
           />
+          <Button className="bg-primary hover:bg-primary/90 text-white w-full">
+            "Enroll Now"
+          </Button>
         </div>
       </div>
 

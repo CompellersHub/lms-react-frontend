@@ -42,11 +42,13 @@ export const coursesApi = createApi({
     "Progress",
     "Profile",
     "LiveClass",
+    "Event",
+    "Consultation",
   ],
   endpoints: (builder) => ({
     // 📚 Courses
     getAllCourses: builder.query({
-      query: () => "/courses/courses",
+      query: () => "/courses/courses/",
       providesTags: (result) =>
         result?.length
           ? [
@@ -57,7 +59,7 @@ export const coursesApi = createApi({
     }),
 
     getCourseById: builder.query({
-      query: (id) => `/courses/courses/${id}`,
+      query: (id) => `/courses/courses/${id}/`,
       providesTags: (result, error, id) => [{ type: "Course", id }],
     }),
 
@@ -94,19 +96,39 @@ export const coursesApi = createApi({
       providesTags: (result, error, id) => [{ type: "Assignment", id }],
     }),
 
-    // ✅ New: Get assignments by course
-    getAssignmentsByCourseId: builder.query({
-      query: (courseId) => `/courses/assignments/by_course/${courseId}/`,
-      providesTags: (result, error, courseId) => [
-        { type: "Assignment", id: `COURSE-${courseId}` },
+    // ✅ Assignments per student course (with submitted flag)
+    getAssignmentsForStudentCourse: builder.query({
+      async queryFn({ userId, courseId }, _queryApi, _extraOptions, baseQuery) {
+        const studentRes = await baseQuery(`/customuser/student/${userId}/`);
+        if (studentRes.error) return { error: studentRes.error };
+
+        const assignmentRes = await baseQuery(`/courses/assignments/`);
+        if (assignmentRes.error) return { error: assignmentRes.error };
+
+        const studentCourses = studentRes.data?.enrolled_courses || [];
+        const studentSubmissions = studentRes.data?.submissions || [];
+        const allAssignments = assignmentRes.data || [];
+
+        const filteredAssignments = allAssignments
+          .filter((a) => String(a.course?.id) === String(courseId))
+          .map((assignment) => {
+            const submitted = studentSubmissions.some(
+              (s) => String(s.assignment) === String(assignment.id)
+            );
+            return { ...assignment, submitted };
+          });
+
+        return { data: filteredAssignments };
+      },
+      providesTags: (result, error, { courseId }) => [
+        { type: "Assignment", id: `STUDENT-COURSE-${courseId}` },
       ],
     }),
 
     submitAssignment: builder.mutation({
       query: (submissionData) => {
         const formData = new FormData();
-        formData.append("assignment", submissionData.assignment);
-        formData.append("student", submissionData.student);
+        formData.append("assignment_id", submissionData.assignment);
         if (submissionData.file) formData.append("file", submissionData.file);
         if (submissionData.feedback)
           formData.append("feedback", submissionData.feedback);
@@ -117,12 +139,15 @@ export const coursesApi = createApi({
           body: formData,
         };
       },
-      invalidatesTags: [{ type: "Assignment", id: "LIST" }],
+      invalidatesTags: (result, error, { courseId }) => [
+        { type: "Assignment", id: "LIST" },
+        { type: "Assignment", id: `STUDENT-COURSE-${courseId}` },
+      ],
     }),
 
     // 📦 Orders & Enrollment
     getEnrolledCourses: builder.query({
-      query: (id) => `/customuser/student/${id}`,
+      query: (id) => `/customuser/student/${id}/`,
       providesTags: ["Order"],
     }),
 
@@ -166,7 +191,7 @@ export const coursesApi = createApi({
         },
       }),
       transformResponse: (response) => ({
-        success: true,
+        blob: response.blob,
         filename: response.filename,
         timestamp: new Date().toISOString(),
       }),
@@ -189,10 +214,8 @@ export const coursesApi = createApi({
     }),
 
     checkCertificateAvailability: builder.query({
-      query: ({ courseId, userId }) => ({
-        url: `/courses/certificates/check/${courseId}/${userId}/`,
-        method: "GET",
-      }),
+      query: ({ courseId, userId }) =>
+        `/courses/certificates/check/${courseId}/${userId}/`,
       providesTags: (result, error, { courseId, userId }) => [
         { type: "Certificate", id: `${courseId}-${userId}` },
       ],
@@ -223,9 +246,48 @@ export const coursesApi = createApi({
       query: () => `/student_profile/profile/`,
       providesTags: [{ type: "Profile", id: "CURRENT" }],
     }),
+
+    // 📅 Events
+    getEvents: builder.query({
+      query: () => "/courses/event/",
+      providesTags: (result) =>
+        result?.length
+          ? [
+              ...result.map(({ id }) => ({ type: "Event", id })),
+              { type: "Event", id: "LIST" },
+            ]
+          : [{ type: "Event", id: "LIST" }],
+    }),
+
+    registerForEvent: builder.mutation({
+      query: (body) => ({
+        url: "/courses/event-register/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "Event", id: "LIST" }],
+    }),
+
+    // 📞 Consultations
+    registerForConsultation: builder.mutation({
+      query: (body) => ({
+        url: "/courses/consultations/",
+        method: "POST",
+        body: {
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+          whatsapp: body.whatsappNumber,
+          message: body.message,
+          course: body.course,
+        },
+      }),
+      invalidatesTags: ["Consultation"],
+    }),
   }),
 });
 
+// ✅ Export hooks
 export const {
   useGetAllCoursesQuery,
   useGetCourseByIdQuery,
@@ -233,7 +295,7 @@ export const {
   useSearchCoursesQuery,
   useGetAllAssignmentsQuery,
   useGetAssignmentByIdQuery,
-  useGetAssignmentsByCourseIdQuery, // ✅ New hook
+  useGetAssignmentsForStudentCourseQuery,
   useSubmitAssignmentMutation,
   useGetEnrolledCoursesQuery,
   useGetCourseProgressDetailsQuery,
@@ -245,4 +307,7 @@ export const {
   useGetUpcomingLiveClassesQuery,
   useGetLiveClassByIdQuery,
   useGetStudentProfileQuery,
+  useGetEventsQuery,
+  useRegisterForEventMutation,
+  useRegisterForConsultationMutation,
 } = coursesApi;

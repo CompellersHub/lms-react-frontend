@@ -1,4 +1,3 @@
-import React from "react";
 import { Calendar, Tag } from "lucide-react";
 
 function BlogPreview({ blog }) {
@@ -11,20 +10,24 @@ function BlogPreview({ blog }) {
           </p>
         );
 
-      case "heading":
+      case "heading": {
         const HeadingTag = `h${block.level}`;
         return (
           <HeadingTag
             key={index}
             id={block.headingId}
             className={`font-bold text-primary mb-4 ${
-              block.level === 2 ? "text-2xl" : block.level === 3 ? "text-xl" : "text-lg"
+              block.level === 2
+                ? "text-2xl"
+                : block.level === 3
+                ? "text-xl"
+                : "text-lg"
             }`}
           >
             {block.value || "Empty heading..."}
           </HeadingTag>
         );
-
+      }
       case "list":
         return (
           <ul key={index} className="list-disc pl-6 mb-6 space-y-2">
@@ -41,7 +44,7 @@ function BlogPreview({ blog }) {
           <div key={index} className="mb-6">
             {block.src ? (
               <img
-                src={block.src}
+                src={block.src || "/placeholder.svg"}
                 alt={block.alt || "Blog image"}
                 className="w-full h-auto rounded-lg"
               />
@@ -64,33 +67,48 @@ function BlogPreview({ blog }) {
             <h3 className="text-lg font-semibold mb-3 text-gray-800">
               {block.title || "Info Box Title"}
             </h3>
-            <p className="text-gray-700">{block.value || "Info box content..."}</p>
+            <p className="text-gray-700">
+              {block.value || "Info box content..."}
+            </p>
           </div>
         );
 
       case "highlightBox":
         return (
-          <div key={index} className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+          <div
+            key={index}
+            className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6"
+          >
             <h3 className="text-lg font-semibold mb-3 text-blue-800">
               {block.title || "Highlight Box Title"}
             </h3>
-            <p className="text-blue-700">{block.value || "Highlight box content..."}</p>
+            <p className="text-blue-700">
+              {block.value || "Highlight box content..."}
+            </p>
           </div>
         );
 
       case "warningBox":
         return (
-          <div key={index} className="bg-red-50 border-l-4 border-red-500 p-6 mb-6">
+          <div
+            key={index}
+            className="bg-red-50 border-l-4 border-red-500 p-6 mb-6"
+          >
             <h3 className="text-lg font-semibold mb-3 text-red-800">
               {block.title || "Warning Box Title"}
             </h3>
-            <p className="text-red-700">{block.value || "Warning box content..."}</p>
+            <p className="text-red-700">
+              {block.value || "Warning box content..."}
+            </p>
           </div>
         );
 
       case "alertBox":
         return (
-          <div key={index} className="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6">
+          <div
+            key={index}
+            className="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6"
+          >
             <h3 className="text-lg font-semibold mb-3 text-yellow-800">
               {block.title || "Alert Box Title"}
             </h3>
@@ -98,7 +116,9 @@ function BlogPreview({ blog }) {
               {block.value.map((item, itemIndex) => (
                 <div key={itemIndex}>
                   {item.type === "paragraph" ? (
-                    <p className="text-yellow-700">{item.value || "Empty paragraph..."}</p>
+                    <p className="text-yellow-700">
+                      {item.value || "Empty paragraph..."}
+                    </p>
                   ) : (
                     <li className="text-yellow-700 ml-4">
                       {item.value || "Empty list item..."}
@@ -112,7 +132,10 @@ function BlogPreview({ blog }) {
 
       case "primaryBox":
         return (
-          <div key={index} className="bg-primary text-white p-8 rounded-lg mb-6">
+          <div
+            key={index}
+            className="bg-primary text-white p-8 rounded-lg mb-6"
+          >
             <h3 className="text-2xl font-bold mb-4">
               {block.title || "Call to Action Title"}
             </h3>
@@ -147,9 +170,9 @@ function BlogPreview({ blog }) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden max-h-screen overflow-y-auto">
       {/* Featured Image */}
-      {blog.image ? (
+      {blog.image_url ? ( // Changed from blog.image
         <img
-          src={blog.image}
+          src={blog.image_url || "/placeholder.svg"} // Changed from blog.image
           alt={blog.title || "Blog preview"}
           className="w-full h-64 object-cover"
         />
@@ -168,7 +191,8 @@ function BlogPreview({ blog }) {
           </span>
           <span className="text-sm text-gray-600 flex items-center">
             <Calendar className="h-4 w-4 mr-1" />
-            {blog.date}
+            {new Date(blog.date || blog.createdAt).toLocaleDateString()}{" "}
+            {/* Fail-safe for date */}
           </span>
         </div>
 
@@ -180,7 +204,7 @@ function BlogPreview({ blog }) {
         {/* Author */}
         <div className="flex items-center mb-6 border-b border-gray-200 pb-6">
           <img
-            src={blog.authorImage}
+            src={blog.authorImage || "/placeholder.svg"}
             alt={blog.author}
             className="w-12 h-12 rounded-full mr-4 object-cover"
           />
@@ -202,7 +226,9 @@ function BlogPreview({ blog }) {
           {blog.content.length > 0 ? (
             blog.content.map((block, index) => renderContentBlock(block, index))
           ) : (
-            <p className="text-gray-500 italic">No content blocks added yet...</p>
+            <p className="text-gray-500 italic">
+              No content blocks added yet...
+            </p>
           )}
         </div>
 

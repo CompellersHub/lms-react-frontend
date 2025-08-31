@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import AwsVideoPlayer from "./AwsVideoPlayer";
 import bgImage from "@/assets/img/hero.png";
+import { EventRegistrationModal } from "./EventRegistrationModal"; // Import the consultation modal component
 
 export function Hero() {
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false); // New state for registration modal
   const [imageLoaded, setImageLoaded] = useState(false);
   const videoRef = useRef(null);
 
@@ -70,7 +72,9 @@ export function Hero() {
   }, [showVideoModal]);
 
   return (
-    <section className="relative h-[500px] w-full overflow-hidden">
+    <section className="relative min-h-[500px] h-screen w-full overflow-hidden flex items-center justify-center">
+      {" "}
+      {/* Adjusted height and added flex for centering */}
       {/* Blurred placeholder while image loads */}
       <div
         className={`absolute inset-0 bg-no-repeat bg-cover transition-all duration-700 ${
@@ -89,36 +93,52 @@ export function Hero() {
           onLoad={() => setImageLoaded(true)}
         />
       </div>
-
       {/* Content overlay */}
-      <div className="relative z-10 flex h-full flex-col items-start justify-center px-6 md:px-12 lg:px-16">
-        <div className="flex items-center gap-2 rounded-md bg-white/10 p-2 backdrop-blur-sm">
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-primary">
-            <Shield className="h-5 w-5" />
-          </span>
-          <span className="text-xl font-bold text-primary">TITANS CAREERS</span>
+      <div className="relative z-10 flex h-full flex-col items-start justify-center px-6 md:px-12 lg:px-16 py-16 space-y-8">
+        {" "}
+        {/* Added vertical padding */}
+        <div className="flex w-full flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {" "}
+          {/* Adjusted for responsiveness */}
+          {/* <div className="flex items-center gap-2 rounded-md bg-white/10 p-2 backdrop-blur-sm">
+            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-primary">
+              <Shield className="h-5 w-5" />
+            </span>
+            <span className="text-xl font-bold text-primary">
+              TITANS CAREERS
+            </span>
+          </div> */}
+          {/* <Button
+            onClick={() => setShowRegistrationModal(true)}
+            className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-full text-sm font-semibold shadow-md transition-all duration-300 hover:scale-105"
+          >
+            Register for Free Consultation
+          </Button> */}
+          <Button
+            onClick={() => setShowRegistrationModal(true)}
+            className="absolute top-14 left-6 md:left-12 lg:left-16 px-4 py-2 bg-secondary text-foreground hover:bg-secondary/90 rounded-full text-sm font-semibold shadow-xl z-[100] transition-all duration-300 hover:scale-105"
+          >
+            Register for a Free Masterclass
+          </Button>
         </div>
-
         <h1 className="mt-6 text-2xl font-bold text-white md:text-3xl lg:text-5xl">
           Accelerate your career with expert-led training in Business Analysis,
           Cybersecurity, Data Analytics, and Compliance.
         </h1>
-
         <p className="mt-4 max-w-2xl text-lg text-white">
           Get job-ready with Titans Careers. Learn global skills today and stand
           out wherever you go.
         </p>
-
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
           <Link to="/courses" className="relative group overflow-hidden">
-            <Button className="w-full sm:w-auto px-8 py-6 bg-secondary text-foreground hover:bg-transparent hover:text-secondary hover:border border-secondary border rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transform transition-all duration-300">
+            <Button className="w-full sm:w-auto px-8 py-6 bg-primary text-foreground hover:bg-transparent hover:text-white hover:border border-primary border rounded-full text-lg font-semibold shadow-xl hover:shadow-2xl transform transition-all duration-300">
               Enrol Now
             </Button>
           </Link>
 
           <button
             onClick={() => setShowVideoModal(true)}
-            className="group flex items-center gap-3 px-6 py-3 text-white hover:text-secondary transition-colors duration-300"
+            className="group flex items-center gap-3 px-6 py-3 text-white hover:text-primary transition-colors duration-300"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors duration-300">
               <Play className="h-4 w-4" />
@@ -127,7 +147,6 @@ export function Hero() {
           </button>
         </div>
       </div>
-
       {/* Video Modal */}
       {showVideoModal && (
         <div
@@ -171,6 +190,11 @@ export function Hero() {
           </div>
         </div>
       )}
+      {/* Registration Modal */}
+      <EventRegistrationModal
+        isOpen={showRegistrationModal}
+        onClose={() => setShowRegistrationModal(false)}
+      />
     </section>
   );
 }

@@ -5,118 +5,30 @@ import {
   ChevronRight,
   MapPin,
   Clock,
-  CheckCircle,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useInView } from "../hooks/useInView";
-import { useGetAllCoursesQuery } from "@/services/coursesApi";
-import AddToCartButton from "./AddToCartButton";
-import { useSelector } from "react-redux";
-import {
-  selectCurrentUser,
-  selectIsAuthenticated,
-} from "../store/slices/authSlice";
+import { useGetEventsQuery } from "@/services/coursesApi";
+import { EventRegistrationModal } from "./EventRegistrationModal";
 import { Button } from "@/components/ui/button";
+import { parseEventDate } from "@/utils/dateUtils";
 
 export function EventsCarousel() {
   const sliderRef = useRef(null);
   const [sectionRef] = useInView({ threshold: 0.3 });
   const [currentSlide, setCurrentSlide] = useState(0);
-  const user = useSelector(selectCurrentUser);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  // Fetch all courses from backend
-  const { data: allCourses = [] } = useGetAllCoursesQuery();
+  // Fetch all events from backend
+  const { data: events = [] } = useGetEventsQuery();
 
-  // Events data - these are the static event descriptions
-  const events = [
-    {
-      id: 1,
-      title: "AML/KYC Compliance Workshop",
-      date: "17 August 2025",
-      time: "4:00 PM - 6:00 PM EST",
-      location: "Virtual Event",
-      description:
-        "Master complex regulatory frameworks, implement robust risk assessment methodologies, and harness cutting-edge compliance technologies to protect your organization.",
-      image: "/assets/illustrations/compliance-workshop.svg",
-    },
-    {
-      id: 2,
-      title: "Business Analysis/Project Management Workshop",
-      date: "04 October 2025",
-      time: "4:00 PM - 6:00 PM EST",
-      location: "Virtual Event",
-      description:
-        "Develop critical skills in requirements gathering, process optimization, and stakeholder management to effectively bridge technical and business objectives.",
-      image: "/assets/illustrations/data-masterclass.svg",
-    },
-    {
-      id: 3,
-      title: "Data Analytics Workshop",
-      date: "09 August 2025",
-      time: "4:00 PM - 6:00 PM EST",
-      location: "Virtual Event",
-      description:
-        "Transform complex datasets into strategic insights using advanced analytical techniques and powerful visualization tools that drive informed business decisions.",
-      image: "/assets/illustrations/career-growth.svg",
-    },
-    {
-      id: 4,
-      title: "Cybersecurity Workshop",
-      date: "11 October 2025",
-      time: "4:00 PM - 6:00 PM EST",
-      location: "Virtual Event",
-      description:
-        "Build expertise in proactive threat detection, comprehensive vulnerability assessment, and implementation of enterprise-grade security protocols to safeguard critical assets.",
-      image: "/assets/illustrations/cyber-security.svg",
-    },
-  ];
-
-  // Mapping from event title to backend course name (exact match with backend)
-  const eventToCourseName = {
-    "AML/KYC Compliance Workshop": "AML/KYC Compliance",
-    "Cybersecurity Workshop": "Cybersecurity",
-    "Business Analysis/Project Management Workshop":
-      "Business Analysis & Project Management",
-    "Data Analytics Workshop": "Data Analysis",
-  };
-
-  // Instructor mapping
-  const instructorMap = {
-    "AML/KYC Compliance Workshop": "LUMI OTOLORIN",
-    "Data Analytics Workshop": "TOBI OLADIPUPO",
-    "Business Analysis/Project Management Workshop": "WUNMI NWOGU",
-    "Cybersecurity Workshop": "FEMI OTOLORIN",
-  };
-
-  // Map each event to its corresponding backend course
-  const eventsWithCourse = events.map((event) => {
-    const backendCourseName = eventToCourseName[event.title];
-    const matchedCourse = allCourses.find(
-      (course) =>
-        course.name?.trim().toLowerCase() ===
-        backendCourseName?.trim().toLowerCase()
-    );
-
-    return {
-      ...event,
-      course: matchedCourse,
-      instructor: instructorMap[event.title],
-    };
-  });
-
-  // Check if user is enrolled in a specific course
-  const isUserEnrolled = (course) => {
-    if (!isAuthenticated || !user || !course) return false;
-
-    return user.course?.some(
-      (enrolledCourse) =>
-        String(enrolledCourse?.id ?? enrolledCourse) === String(course.id)
-    );
+  const handleRegisterClick = (event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
   };
 
   const handleBeforeChange = useCallback(() => {
@@ -168,7 +80,13 @@ export function EventsCarousel() {
 
   const isPrevArrowDisabled = currentSlide === 0;
   const isNextArrowDisabled =
-    currentSlide >= eventsWithCourse.length - sliderSettings.slidesToShow;
+    currentSlide >= events.length - sliderSettings.slidesToShow;
+
+  const formatTime = (time) => {
+    if (!time) return "";
+    const [hours, minutes] = time.split(":");
+    return `${hours}:${minutes}`;
+  };
 
   return (
     <section ref={sectionRef} className="py-16 bg-gray-100">
@@ -209,10 +127,7 @@ export function EventsCarousel() {
           {/* Slider content area */}
           <div className="mx-6">
             <Slider ref={sliderRef} {...sliderSettings}>
-              {eventsWithCourse.map((event) => {
-                // Check if user is enrolled in this event's course
-                const isEnrolled = isUserEnrolled(event.course);
-
+              {events.map((event) => {
                 return (
                   <div key={event.id} className="px-3 h-full">
                     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 group h-full">
@@ -228,39 +143,21 @@ export function EventsCarousel() {
 
                         {/* Hover overlay with enrollment status and cart button */}
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          {event.course ? (
-                            isEnrolled ? (
-                              <div className="text-center w-full px-4">
-                                <div className="bg-green-100 border border-green-400 text-green-700 p-2 rounded-lg mb-2 text-xs flex items-center justify-center">
-                                  <CheckCircle className="h-4 w-4 inline mr-1" />
-                                  Already enrolled in {event.course.name}
-                                </div>
-                                <Button
-                                  className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-2"
-                                  onClick={() => navigate("/portal")}
-                                >
-                                  Go to Dashboard →
-                                </Button>
-                              </div>
-                            ) : (
-                              <AddToCartButton course={event.course} />
-                            )
-                          ) : (
-                            <div className="text-center w-full px-4">
-                              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 p-2 rounded-lg text-xs">
-                                Course not available
-                              </div>
-                            </div>
-                          )}
+                          <Button
+                            className="w-full bg-primary hover:bg-primary/80 text-white text-xs py-1 px-2"
+                            onClick={() => handleRegisterClick(event)}
+                          >
+                            Register
+                          </Button>
                         </div>
                       </div>
 
-                      <div className="p-6">
-                        <h3 className="text-lg h-14 font-bold text-foreground mb-3">
+                      <div className="p-6 flex flex-col">
+                        <h3 className="text-lg h-18 sm:h-14 font-bold text-foreground mb-3">
                           {event.title}
                         </h3>
                         <p className="text-foreground/70 text-base mb-4 line-clamp-2">
-                          {event.description}
+                          {event.event_excerpt}
                         </p>
 
                         {/* Instructor Info */}
@@ -280,7 +177,7 @@ export function EventsCarousel() {
                           <div className="flex items-center text-xs text-foreground/70">
                             <Calendar className="h-4 w-4 mr-2" />
                             <span>
-                              {new Date(event.date).toLocaleDateString(
+                              {parseEventDate(event.date).toLocaleDateString(
                                 "en-GB",
                                 {
                                   day: "numeric",
@@ -292,28 +189,20 @@ export function EventsCarousel() {
                           </div>
                           <div className="flex items-center text-xs text-foreground/70">
                             <Clock className="h-4 w-4 mr-2" />
-                            <span>{event.time}</span>
+                            <span>
+                              {formatTime(event.start_time)} -{" "}
+                              {formatTime(event.end_time)}
+                            </span>
                           </div>
                           <div className="flex items-center text-xs text-foreground/70">
                             <MapPin className="h-4 w-4 mr-2" />
-                            <span>{event.location}</span>
+                            <span>Virtual</span>
                           </div>
                         </div>
 
                         {/* Course Info */}
                         {event.course && (
                           <div className="mt-4 pt-4 border-t border-gray-100">
-                            <div className="flex items-center justify-between">
-                              <div className="text-xs text-foreground/60">
-                                Includes access to:
-                              </div>
-                              <Link
-                                to={`/courses/${event.course.id}`}
-                                className="text-xs text-primary hover:text-primary/80 font-medium"
-                              >
-                                View Course
-                              </Link>
-                            </div>
                             <div className="text-sm font-medium text-foreground mt-1">
                               {event.course.name}
                             </div>
@@ -324,6 +213,14 @@ export function EventsCarousel() {
                             )}
                           </div>
                         )}
+                        <div className="mt-auto">
+                          <Button
+                            className="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm py-2 px-4 mt-4"
+                            onClick={() => handleRegisterClick(event)}
+                          >
+                            Enroll Now
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -335,7 +232,7 @@ export function EventsCarousel() {
           {/* Right Arrow */}
           <button
             onClick={goToNext}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -mr-4 transition-all duration-200 ease-in-out focus:outline-none
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -ml-4 transition-all duration-200 ease-in-out focus:outline-none
                      ${
                        isNextArrowDisabled
                          ? "cursor-not-allowed opacity-50"
@@ -361,6 +258,13 @@ export function EventsCarousel() {
           </Link>
         </div>
       </div>
+      {selectedEvent && (
+        <EventRegistrationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          event={selectedEvent}
+        />
+      )}
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { Trash2 } from "lucide-react";
+import ImageUpload from "../admin/ImageUpload"; // Updated path
 
 function ContentBlockEditor({
   block,
@@ -329,21 +330,26 @@ function ContentBlockEditor({
         </div>
       )}
 
-      {/* Image Block */}
+      {/* Image Block with Upload */}
       {block.type === "image" && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-foreground mb-1">
-            Image
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Image Block
           </label>
-          <input
-            type="url"
-            value={block.src}
-            onChange={(e) =>
-              updateContentBlock(blockIndex, "src", e.target.value)
-            }
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-            placeholder="Image URL (e.g., https://example.com/image.jpg)"
-          />
+
+          {/* Image Upload */}
+          <div className="mb-3">
+            <ImageUpload
+              value={block.src}
+              onChange={(imageUrl) =>
+                updateContentBlock(blockIndex, "src", imageUrl)
+              }
+              placeholder="Upload image for this content block"
+              className="mb-2"
+            />
+          </div>
+
+          {/* Alt Text */}
           <input
             type="text"
             value={block.alt}
@@ -353,6 +359,8 @@ function ContentBlockEditor({
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary mb-2"
             placeholder="Alt text (for accessibility)"
           />
+
+          {/* Caption */}
           <input
             type="text"
             value={block.caption}

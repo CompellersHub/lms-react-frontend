@@ -1,5 +1,6 @@
 // blogsApi.js - Fixed with missing queries and improved functionality
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { transformRankyakBlog } from "../utils/blogUtils";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -24,6 +25,15 @@ export const blogsApi = createApi({
       query: (params = {}) => "/blog/blogs/",
       transformResponse: (response, meta, arg) => {
         let blogs = response?.blogs || response || [];
+
+        // Transform Rankyak blogs if present
+        blogs = blogs.map((blog) => {
+          if (blog.source === "rankyak") {
+            // Assuming 'source' field indicates Rankyak posts
+            return transformRankyakBlog(blog);
+          }
+          return blog;
+        });
 
         // Filter to only published blogs for public view
         blogs = blogs.filter((blog) => blog.status === "published");
@@ -215,7 +225,10 @@ export const blogsApi = createApi({
       query: () => "/blog/blogs/",
       transformResponse: (response, meta, slug) => {
         const blogs = response?.blogs || response || [];
-        const blog = blogs.find((b) => b.slug === slug);
+        let blog = blogs.find((b) => b.slug === slug);
+        if (blog?.source === "rankyak") {
+          blog = transformRankyakBlog(blog);
+        }
         return blog || null;
       },
       providesTags: (result, error, slug) => [{ type: "Blog", id: slug }],
@@ -342,7 +355,7 @@ export const blogsApi = createApi({
     // Upload blog image (if supported)
     uploadBlogImage: builder.mutation({
       query: (formData) => ({
-        url: "/blog/upload-image/",
+        url: "/blog/api/upload/image/",
         method: "POST",
         body: formData,
         prepareHeaders: (headers) => {

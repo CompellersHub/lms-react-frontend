@@ -9,6 +9,7 @@ import {
   useGetBlogBySlugQuery,
   useGetRelatedBlogsQuery,
 } from "../services/blogsApi";
+import { transformRankyakBlog } from "../utils/blogUtils"; // Import the utility
 
 function BlogPostPage() {
   const { slug } = useParams();
@@ -16,7 +17,14 @@ function BlogPostPage() {
   const [isDynamicPost, setIsDynamicPost] = useState(false);
 
   // Try to get dynamic post first
-  const { data: dynamicPost, isLoading, error } = useGetBlogBySlugQuery(slug);
+  const { data: fetchedPost, isLoading /*, error */ } =
+    useGetBlogBySlugQuery(slug);
+
+  // Transform fetched post if it's from Rankyak
+  const dynamicPost =
+    fetchedPost?.source === "rankyak"
+      ? transformRankyakBlog(fetchedPost)
+      : fetchedPost;
 
   // Get related posts if we have a dynamic post
   const { data: relatedResponse } = useGetRelatedBlogsQuery(
@@ -43,7 +51,9 @@ function BlogPostPage() {
   }, [dynamicPost, slug]);
 
   const relatedPosts = isDynamicPost
-    ? relatedResponse?.blogs || []
+    ? (relatedResponse?.blogs || []).map((p) =>
+        p.source === "rankyak" ? transformRankyakBlog(p) : p
+      )
     : blogPosts
         .filter((p) => p.category === post?.category && p.id !== post?.id)
         .slice(0, 3);

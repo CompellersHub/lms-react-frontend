@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { useCreateBlogMutation } from "../services/blogsApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import BlogDetailsForm from "../components/BlogDetailsForm";
-import DraggableContentBlock from "../components/DraggableContentBlock";
-import BlogPreview from "../components/BlogPreview";
+import BlogDetailsForm from "../components/admin/BlogDetailsForm";
+import DraggableContentBlock from "../components/admin/DraggableContentBlock";
+import BlogPreview from "../components/admin/BlogPreview";
 import {
-  Plus,
   Heading1,
   FileText,
   Info,
   Lightbulb,
   AlertTriangle,
   Star,
-  Image as ImageIcon,
+  ImageIcon,
   List,
   Eye,
   Edit3,
@@ -27,7 +28,7 @@ const initialBlogState = {
   author: "Titans Careers Editorial Team", // Default author
   authorRole: "AML/KYC Compliance Experts", // Default role
   authorImage:
-    "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", // Default author image
+    "Https://titanscareers.s3.amazonaws.com/profile_pictures/user_e9a513d2-1e98-48e8-9780-3b3693fc042e.png", // Default author image
   date: new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -35,9 +36,10 @@ const initialBlogState = {
   }), // Auto-generated date
   category: "Compliance", // Default category
   tags: [], // Array for tags
-  image: "", // Featured image URL
+  image_url: "", // Changed from 'image' to 'image_url' to match backend
   excerpt: "", // Short summary
   content: [], // This will hold our structured content blocks
+  status: "draft", // Default status
 };
 
 function AdminBlogUpload() {
@@ -53,7 +55,7 @@ function AdminBlogUpload() {
       toast.success("Blog post uploaded successfully!");
       setBlog(initialBlogState); // Reset the form after successful upload
       setIsPreviewMode(false); // Reset to edit mode
-      navigate("/blog"); // Navigate to the blog listing page
+      navigate("/admin"); // Navigate to the blog listing page
     }
     if (isError) {
       toast.error(
@@ -71,7 +73,7 @@ function AdminBlogUpload() {
   const addContentBlock = (type) => {
     const id = Date.now().toString(); // Generate unique ID
     let newBlock;
-    
+
     // Initialize block based on its type to match JSON structure
     if (type === "heading") {
       newBlock = { id, type: "heading", level: 2, headingId: "", value: "" }; // Default to h2
@@ -177,10 +179,12 @@ function AdminBlogUpload() {
 
   // Move content block for drag and drop
   const moveContentBlock = (fromIndex, toIndex) => {
-    const updatedContent = [...blog.content];
-    const [movedBlock] = updatedContent.splice(fromIndex, 1);
-    updatedContent.splice(toIndex, 0, movedBlock);
-    setBlog((prev) => ({ ...prev, content: updatedContent }));
+    setBlog((prev) => {
+      const newContent = prev.content.filter((b) => b); // Remove any undefined entries
+      const [removed] = newContent.splice(fromIndex, 1);
+      newContent.splice(toIndex, 0, removed);
+      return { ...prev, content: newContent };
+    });
   };
 
   // Handle form submission
@@ -189,13 +193,19 @@ function AdminBlogUpload() {
       e.preventDefault(); // Only prevent default if it's a form event
     }
 
+    // Cleanup empty content blocks before validation
+    const cleanedContent = blog.content.filter(
+      (block) => !(block.type.includes("Box") && block.value.length === 0)
+    );
+    setBlog((prev) => ({ ...prev, content: cleanedContent }));
+
     // Basic validation for main blog fields
     if (
       !blog.title ||
       !blog.slug ||
       !blog.category ||
       !blog.excerpt ||
-      !blog.image
+      !blog.image_url // Changed from blog.image
     ) {
       toast.error(
         "Please fill in all basic blog details (Title, Slug, Category, Excerpt, Image URL)."
@@ -278,6 +288,7 @@ function AdminBlogUpload() {
     }
 
     try {
+      console.log("Blog data being sent for creation:", blog); // Add this line
       // Send the blog object (which now contains the structured content array) to the backend
       await createBlog(blog).unwrap();
     } catch (err) {
@@ -292,7 +303,7 @@ function AdminBlogUpload() {
         <h1 className="text-4xl font-bold text-primary">
           Upload New Blog Post
         </h1>
-        
+
         {/* Preview Toggle Button */}
         <button
           type="button"
@@ -317,7 +328,7 @@ function AdminBlogUpload() {
         /* Preview Mode */
         <div className="max-w-4xl mx-auto">
           <BlogPreview blog={blog} />
-          
+
           {/* Submit Button in Preview Mode */}
           <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
             <button
@@ -347,14 +358,14 @@ function AdminBlogUpload() {
               <span className="ml-2 text-sm text-gray-500">Uploading...</span>
             )}
           </h2>
-          
+
           {blog.content.length > 0 && (
             <p className="text-sm text-gray-600 mb-4 flex items-center gap-1">
               <GripVertical className="h-4 w-4" />
               Drag the grip handle to reorder content blocks
             </p>
           )}
-          
+
           <div className="space-y-6 mb-8 p-4 border border-gray-100 rounded-md bg-gray-50">
             {/* Render each content block dynamically */}
             {blog.content.map((block, blockIndex) => (

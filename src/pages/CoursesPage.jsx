@@ -5,12 +5,13 @@ import { useGetAllCoursesQuery } from "../services/coursesApi";
 import Spinner from "../components/Spinner";
 import ErrorMessage from "@/components/ErrorMessage";
 import { useSelector } from "react-redux";
-
-const baseUrl = import.meta.env.VITE_BASE_URL;
+import { EventRegistrationModal } from "@/components/EventRegistrationModal";
+import { Button } from "@/components/ui/button";
 
 function CoursesPage() {
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch courses using RTK Query
   const { data: courses = [], isLoading, error } = useGetAllCoursesQuery();
@@ -177,7 +178,7 @@ function CoursesPage() {
                     {course.instructor ? (
                       <>
                         <img
-                          src={`${baseUrl}${course.instructor.profile_picture}`}
+                          src={course.instructor.profile_picture}
                           alt={
                             course.instructor.first_name
                               ? `${course.instructor.first_name} ${course.instructor.last_name}`
@@ -194,12 +195,12 @@ function CoursesPage() {
                       </>
                     ) : (
                       <span className="text-sm text-foreground/60 italic">
-                        No instructor assigned
+                        "Titans Careers Team"
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center mb-4">
+                  {/* <div className="flex items-center mb-4">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <Star
@@ -215,31 +216,11 @@ function CoursesPage() {
                     <span className="text-sm text-foreground/70 ml-2">
                       ({course.reviews} reviews)
                     </span>
-                  </div>
+                  </div> */}
 
                   <div className="mt-auto space-y-3">
                     <div className="flex flex-col">
-                      <div className="flex items-center justify-between mb-1">
-                        {course.original_price && (
-                          <span className="text-red-500 line-through text-sm">
-                            £{course.original_price.toFixed(2)}
-                          </span>
-                        )}
-                        {course.original_price &&
-                          course.original_price > course.price && (
-                            <span className="text-green-600 text-xs font-medium">
-                              Save £
-                              {(course.original_price - course.price).toFixed(
-                                2
-                              )}
-                              !
-                            </span>
-                          )}
-                      </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-primary">
-                          £{course.price.toFixed(2)}
-                        </span>
                         <Link
                           to={`/courses/${course.id}`}
                           className="text-sm text-primary hover:text-primary/80 font-medium"
@@ -275,7 +256,26 @@ function CoursesPage() {
             </p>
           </div>
         )}
+
+        <div
+          onClick={() => setIsModalOpen(true)}
+          className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer space-y-2"
+        >
+          <img
+            src="/assets/masterclass.jpeg"
+            alt="Masterclass Registration"
+            className="w-full h-[80%] object-cover transition-transform duration-300 hover:scale-105"
+          />
+          <Button className="bg-secondary text-foreground hover:bg-secondary/90 rounded-ful text-sm font-semibold shadow-xl transition-all duration-300 w-full">
+            Enroll Now
+          </Button>
+        </div>
       </div>
+
+      <EventRegistrationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

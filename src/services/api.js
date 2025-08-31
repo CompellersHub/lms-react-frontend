@@ -64,7 +64,7 @@ export const api = createApi({
     // Logout endpoint
     logout: builder.mutation({
       query: () => ({
-        url: "/customuser/logout",
+        url: "/customuser/logout/",
         method: "POST",
       }),
     }),

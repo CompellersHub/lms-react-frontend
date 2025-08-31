@@ -8,9 +8,9 @@ import {
   useGetBlogByIdQuery,
   useUpdateBlogMutation,
 } from "../../services/blogsApi";
-import BlogDetailsForm from "../../components/BlogDetailsForm";
-import DraggableContentBlock from "../../components/DraggableContentBlock";
-import BlogPreview from "../../components/BlogPreview";
+import BlogDetailsForm from "../../components/admin/BlogDetailsForm";
+import DraggableContentBlock from "../../components/admin/DraggableContentBlock";
+import BlogPreview from "../../components/admin/BlogPreview";
 
 function AdminBlogEdit() {
   const { id } = useParams();
@@ -23,7 +23,8 @@ function AdminBlogEdit() {
 
   useEffect(() => {
     if (blogData) {
-      setBlog(blogData);
+      // Ensure the image field is mapped correctly from backend's image_url
+      setBlog({ ...blogData, image_url: blogData.image_url || blogData.image });
     }
   }, [blogData]);
 
@@ -146,7 +147,14 @@ function AdminBlogEdit() {
       e.preventDefault();
     }
 
-    if (!blog.title || !blog.slug || !blog.category || !blog.excerpt) {
+    if (
+      !blog.title ||
+      !blog.slug ||
+      !blog.category ||
+      !blog.excerpt ||
+      !blog.image_url
+    ) {
+      // Added blog.image_url
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -157,7 +165,16 @@ function AdminBlogEdit() {
     }
 
     try {
-      await updateBlog({ id: blog.id, ...blog }).unwrap();
+      console.log("Blog data being sent for update:", {
+        id: blog.id,
+        ...blog,
+        image_url: blog.image_url,
+      });
+      await updateBlog({
+        id: blog.id,
+        ...blog,
+        image_url: blog.image_url,
+      }).unwrap();
       toast.success("Blog updated successfully!");
       navigate("/admin/blog/list");
     } catch (err) {

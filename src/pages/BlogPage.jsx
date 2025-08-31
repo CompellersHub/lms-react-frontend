@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, Calendar, ChevronRight } from "lucide-react";
 import { blogPosts } from "../data/blogData"; // Static blog posts
@@ -12,13 +12,13 @@ function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "All"
   );
-  const [page, setPage] = useState(1);
+  const [page] = useState(1); // Removed setPage as it's not used
 
   // RTK Query for dynamic blogs
   const {
     data: blogResponse,
     isLoading,
-    error,
+    // error, // Kept for potential future use or debugging, but not directly used in rendering
   } = useGetAllBlogsQuery({
     page,
     limit: 10,
@@ -29,10 +29,7 @@ function BlogPage() {
   // Combine static and dynamic posts
   const allPosts = [
     ...blogPosts, // Static posts
-    ...(blogResponse?.blogs || []).map((post) => ({
-      ...post,
-      isDynamic: true,
-    })),
+    ...(blogResponse?.blogs || []),
   ];
 
   // Filter combined posts
@@ -75,11 +72,6 @@ function BlogPage() {
                     <Calendar className="h-4 w-4 mr-1" />
                     {post.date}
                   </span>
-                  {post.isDynamic && (
-                    <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
-                      New
-                    </span>
-                  )}
                 </div>
                 <h2 className="text-2xl font-bold text-primary mb-3">
                   {post.title}
@@ -119,15 +111,10 @@ function BlogPage() {
         <Link to={`/blog/${post.slug}`}>
           <div className="relative">
             <img
-              src={post.image || "/placeholder.svg"}
+              src={post.image || post.header_image_url || "/placeholder.svg"}
               alt={post.title}
               className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
             />
-            {post.isDynamic && (
-              <span className="absolute top-2 left-2 px-2 py-1 bg-green-500 text-white rounded text-xs font-medium">
-                New
-              </span>
-            )}
           </div>
         </Link>
         <div className="p-6">
@@ -137,7 +124,7 @@ function BlogPage() {
             </span>
             <span className="text-xs text-foreground/70 flex items-center">
               <Calendar className="h-3 w-3 mr-1" />
-              {post.date}
+              {new Date(post.date || post.published_at).toLocaleDateString()}
             </span>
           </div>
           <Link to={`/blog/${post.slug}`}>
@@ -151,7 +138,7 @@ function BlogPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <img
-                src={post.authorImage || "/placeholder.svg"}
+                src={post.authorImage || "/favicon.ico"}
                 alt={post.author}
                 className="w-8 h-8 rounded-full mr-2 object-cover"
               />

@@ -19,7 +19,7 @@ import {
 import { useSelector } from "react-redux";
 import {
   useGetEnrolledCoursesQuery,
-  useGetCourseProgressQuery,
+  useGetCourseProgressDetailsQuery, // ✅ fixed hook
 } from "@/services/coursesApi";
 
 const placeholderImg = "/def.jpg";
@@ -28,16 +28,14 @@ const placeholderImg = "/def.jpg";
 function CourseCard({ course }) {
   const navigate = useNavigate();
   const { data: progressData, isLoading: loadingProgress } =
-    useGetCourseProgressQuery(course.id);
+    useGetCourseProgressDetailsQuery({ userId: course.userId, courseId: course.id }); // ✅ fixed usage
 
-  const progress = progressData?.percentage ?? 0; // Adjust field name if API differs
+  const progress = progressData?.percentage ?? 0;
 
   const categoryName = course?.category?.name || "General";
   const levelName = course?.level || "Beginner";
   const instructorName = course?.instructor
-    ? `${course.instructor.first_name || ""} ${
-        course.instructor.last_name || ""
-      }`.trim()
+    ? `${course.instructor.first_name || ""} ${course.instructor.last_name || ""}`.trim()
     : "No instructor";
 
   const imgSrc = course?.course_image
@@ -73,18 +71,13 @@ function CourseCard({ course }) {
               </Badge>
             </div>
 
-            <h3 className="text-xl font-bold">
-              {course?.name || "Untitled Course"}
-            </h3>
+            <h3 className="text-xl font-bold">{course?.name || "Untitled Course"}</h3>
             <p className="text-sm text-muted-foreground mb-4">{instructorName}</p>
 
             <div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground">
               <div className="flex items-center">
                 <BookOpenIcon className="h-4 w-4 mr-1" />
-                {course?.curriculum?.reduce(
-                  (total, module) => total + (module?.video?.length || 0),
-                  0
-                ) || 0}{" "}
+                {course?.curriculum?.reduce((total, module) => total + (module?.video?.length || 0), 0) || 0}{" "}
                 lessons
               </div>
               <div className="flex items-center">
@@ -106,9 +99,7 @@ function CourseCard({ course }) {
               <>
                 <Progress value={progress} className="h-2 mb-2" />
                 <div className="flex justify-between items-center mt-4">
-                  <span className="text-sm font-medium">
-                    {progress}% Complete
-                  </span>
+                  <span className="text-sm font-medium">{progress}% Complete</span>
                   <Button onClick={() => navigate(`/portal/learn/${course.id}`)}>
                     <PlayIcon className="h-4 w-4 mr-2" />
                     {progress === 0
@@ -132,11 +123,7 @@ export default function MyCourses() {
   const navigate = useNavigate();
   const currentUserId = useSelector((state) => state.auth.user?.id);
 
-  const {
-    data: enrolledData,
-    isLoading,
-    error,
-  } = useGetEnrolledCoursesQuery(currentUserId);
+  const { data: enrolledData, isLoading, error } = useGetEnrolledCoursesQuery(currentUserId);
 
   const enrolledCourses = enrolledData?.course || [];
 
@@ -146,19 +133,14 @@ export default function MyCourses() {
     }
   }, [enrolledData]);
 
-  // 🟢 Filter courses by tab (progress is handled in CourseCard)
-  const filteredCourses = useMemo(() => {
-    return enrolledCourses; // no fake progress filtering
-  }, [enrolledCourses]);
+  const filteredCourses = useMemo(() => enrolledCourses, [enrolledCourses]);
 
   return (
     <Layout>
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
           <h1 className="text-2xl font-bold">My Courses</h1>
-          <Button onClick={() => navigate("/portal/library")}>
-            Browse More Courses
-          </Button>
+          <Button onClick={() => navigate("/portal/library")}>Browse More Courses</Button>
         </div>
 
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
@@ -184,23 +166,19 @@ export default function MyCourses() {
               </div>
             ) : error ? (
               <div className="text-center py-12">
-                <h3 className="text-lg font-medium text-red-500">
-                  Error loading your courses
-                </h3>
+                <h3 className="text-lg font-medium text-red-500">Error loading your courses</h3>
                 <Button onClick={() => window.location.reload()}>Retry</Button>
               </div>
             ) : filteredCourses.length > 0 ? (
               <div className="grid gap-6">
                 {filteredCourses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <CourseCard key={course.id} course={{ ...course, userId: currentUserId }} />
                 ))}
               </div>
             ) : (
               <div className="text-center py-12">
                 <h3 className="text-lg font-medium">No courses found</h3>
-                <Button onClick={() => navigate("/portal/library")}>
-                  Browse Course Library
-                </Button>
+                <Button onClick={() => navigate("/portal/library")}>Browse Course Library</Button>
               </div>
             )}
           </TabsContent>

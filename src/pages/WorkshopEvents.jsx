@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar,
   Clock,
@@ -12,11 +12,37 @@ import { Button } from "@/components/ui/button";
 import { useGetEventsQuery } from "@/services/coursesApi";
 import { EventRegistrationModal } from "@/components/EventRegistrationModal";
 import { parseEventDate } from "@/utils/dateUtils";
+import {
+  hasLiveSessions,
+  getPrimaryLiveSession,
+} from "@/utils/liveSessionUtils";
+import { LiveIndicator, LiveCardBorder } from "@/components/LiveIndicator";
+import { JoinLiveButton, LiveSessionBanner } from "@/components/JoinLiveButton";
 
 export function WorkshopEvents() {
   const { data: events = [] } = useGetEventsQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showLiveBanner, setShowLiveBanner] = useState(true);
+
+  // Live session state
+  const [liveSession, setLiveSession] = useState(null);
+  const [hasLive, setHasLive] = useState(false);
+
+  // Check for live sessions on component mount and every minute
+  useEffect(() => {
+    const checkLiveSessions = () => {
+      const isLive = hasLiveSessions();
+      const primarySession = getPrimaryLiveSession();
+      setHasLive(isLive);
+      setLiveSession(primarySession);
+    };
+
+    checkLiveSessions();
+    const interval = setInterval(checkLiveSessions, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleRegisterClick = (event) => {
     setSelectedEvent(event);
@@ -51,8 +77,28 @@ export function WorkshopEvents() {
     }
   };
 
+  // Check if an event matches the live session
+  const isEventLive = (event) => {
+    if (!liveSession) return false;
+    return event.course.name === liveSession.courseName;
+  };
+
+  // Handle joining live session
+  const handleJoinLive = (session) => {
+    window.open(session.zoomLink, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="bg-background">
+      {/* Live Session Banner */}
+      {hasLive && showLiveBanner && (
+        <LiveSessionBanner
+          session={liveSession}
+          onJoinClick={handleJoinLive}
+          onDismiss={() => setShowLiveBanner(false)}
+        />
+      )}
+
       {/* Hero Section */}
       <div className="py-20 px-6 md:px-12 lg:px-16 bg-primary/10 text-center">
         <div className="max-w-4xl mx-auto">
@@ -78,6 +124,14 @@ export function WorkshopEvents() {
               Learn More
             </Button>
           </div>
+
+          {/* Live Session Join Button */}
+          {hasLive && (
+            <JoinLiveButton
+              session={liveSession}
+              onJoinClick={handleJoinLive}
+            />
+          )}
         </div>
       </div>
 
@@ -92,94 +146,113 @@ export function WorkshopEvents() {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            {events.map((event) => (
-              <div
-                key={event.id}
-                className="bg-card p-6 rounded-xl border border-border hover:shadow-md transition-all h-full flex flex-col justify-between"
-              >
-                <div className="flex items-center mb-4">
-                  <div className="bg-primary/10 p-2 rounded-full mr-3">
-                    {getIcon(event.course.name)}
-                  </div>
-                  <h3 className="text-xl font-bold line-clamp-1">
-                    {event.title}
-                  </h3>
-                </div>
+            {events.map((event) => {
+              const eventIsLive = isEventLive(event);
 
-                <div className="flex items-center text-muted-foreground mb-3">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  <span className="text-sm">
-                    {parseEventDate(event.date).toLocaleDateString("en-GB", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
-                <div className="flex items-center text-muted-foreground mb-4">
-                  <Clock className="h-4 w-4 mr-2" />
-                  <span className="text-sm">
-                    {formatTime(event.start_time)} -{" "}
-                    {formatTime(event.end_time)}
-                  </span>
-                </div>
-
-                <p className="text-muted-foreground text-sm">
-                  {event.event_excerpt}
-                </p>
-                <div className="flex flex-col gap-2 h-fit space-y-6 mt-4">
-                  <div className="h-fit">
-                    <h4 className="font-semibold mb-3 text-sm">
-                      Workshop Highlights:
-                    </h4>
-
-                    <ul className="space-y-2 text-muted-foreground h-fit">
-                      {event.workshop.workshop_highlights.map(
-                        (highlight, index) => (
-                          <li key={index} className="flex items-start text-sm">
-                            <span className="mr-2">•</span>
-                            <span>{highlight}</span>
-                          </li>
-                        )
+              return (
+                <LiveCardBorder key={event.id} isLive={eventIsLive}>
+                  <div className="bg-card p-6 rounded-xl border border-border hover:shadow-md transition-all h-full flex flex-col justify-between">
+                    <div className="flex items-center mb-4 relative">
+                      {eventIsLive && (
+                        <div className="absolute -top-2 -right-2">
+                          <LiveIndicator variant="badge" size="sm" />
+                        </div>
                       )}
-                    </ul>
-                  </div>
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        {getIcon(event.course.name)}
+                      </div>
+                      <h3 className="text-xl font-bold line-clamp-1">
+                        {event.title}
+                      </h3>
+                      {eventIsLive && (
+                        <div className="ml-2">
+                          <LiveIndicator variant="dot" />
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="h">
-                    <h4 className="font-semibold mb-2 text-sm">
-                      Who Should Attend:
-                    </h4>
+                    <div className="flex items-center text-muted-foreground mb-3">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span className="text-sm">
+                        {parseEventDate(event.date).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center text-muted-foreground mb-4">
+                      <Clock className="h-4 w-4 mr-2" />
+                      <span className="text-sm">
+                        {formatTime(event.start_time)} -{" "}
+                        {formatTime(event.end_time)}
+                      </span>
+                    </div>
+
                     <p className="text-muted-foreground text-sm">
-                      {event.who_can_attend}
+                      {event.event_excerpt}
                     </p>
-                  </div>
+                    <div className="flex flex-col gap-2 h-fit space-y-6 mt-4">
+                      <div className="h-fit">
+                        <h4 className="font-semibold mb-3 text-sm">
+                          Workshop Highlights:
+                        </h4>
 
-                  <div className="mt-4 h-full">
-                    <div className="bg-muted/50 p-4 rounded-lg">
-                      <h4 className="font-semibold mb-2 flex items-center text-sm">
-                        <User className="h-4 w-4 mr-2" />
-                        Meet Your Instructor
-                      </h4>
-                      <p className="font-medium text-sm mb-1">
-                        {event.instructor}
-                      </p>
-                      <p className="text-muted-foreground text-sm">
-                        {event.instructor_info}
-                      </p>
+                        <ul className="space-y-2 text-muted-foreground h-fit">
+                          {event.workshop.workshop_highlights.map(
+                            (highlight, index) => (
+                              <li
+                                key={index}
+                                className="flex items-start text-sm"
+                              >
+                                <span className="mr-2">•</span>
+                                <span>{highlight}</span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+
+                      <div className="h">
+                        <h4 className="font-semibold mb-2 text-sm">
+                          Who Should Attend:
+                        </h4>
+                        <p className="text-muted-foreground text-sm">
+                          {event.who_can_attend}
+                        </p>
+                      </div>
+
+                      <div className="mt-4 h-full">
+                        <div className="bg-muted/50 p-4 rounded-lg">
+                          <h4 className="font-semibold mb-2 flex items-center text-sm">
+                            <User className="h-4 w-4 mr-2" />
+                            Meet Your Instructor
+                          </h4>
+                          <p className="font-medium text-sm mb-1">
+                            {event.instructor}
+                          </p>
+                          <p className="text-muted-foreground text-sm">
+                            {event.instructor_info}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="w-full align-bottom self-end">
+                      <Button
+                        className="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm py-2 px-4 mt-4"
+                        onClick={() => handleRegisterClick(event)}
+                      >
+                        Enroll Now
+                      </Button>
                     </div>
                   </div>
-                </div>
-
-                <div className="w-full align-bottom self-end">
-                  <Button
-                    className="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm py-2 px-4 mt-4"
-                    onClick={() => handleRegisterClick(event)}
-                  >
-                    Enroll Now
-                  </Button>
-                </div>
-              </div>
-            ))}
+                </LiveCardBorder>
+              );
+            })}
           </div>
         </div>
       </div>

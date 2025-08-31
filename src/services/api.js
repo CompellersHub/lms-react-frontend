@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Define our API base URL
-export const baseUrl = import.meta.env.VITE_BASE_URL || "";
+export const baseUrl = import.meta.env.VITE_BASE_URL || "https://api.titanscareers.com";
 
 export const api = createApi({
   reducerPath: "api",
@@ -64,7 +64,7 @@ export const api = createApi({
     // Logout endpoint
     logout: builder.mutation({
       query: () => ({
-        url: "/customuser/logout",
+        url: "/customuser/logout/",
         method: "POST",
       }),
     }),

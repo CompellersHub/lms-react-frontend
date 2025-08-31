@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/portal/layout";
 import { useSelector } from "react-redux";
+import { useGetCourseProgressDetailsQuery } from "@/services/coursesApi";
 import { useGetEnrolledCoursesQuery } from "@/services/coursesApi";
 import {
   Card,
@@ -39,70 +41,143 @@ import {
   CreditCardIcon,
 } from "lucide-react";
 
+
 export default function StudentProfile() {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Get current user from Redux store
   const currentUser = useSelector((state) => state.auth.user);
   const currentUserId = currentUser?.id;
 
-  // Fetch enrolled courses data
   const {
     data: studentData,
     isLoading,
     error,
   } = useGetEnrolledCoursesQuery(currentUserId);
 
-  // Extract courses from the enrolled data
   const enrolledCourses = studentData?.course || [];
 
-  // Calculate overall progress
-  const calculateOverallProgress = () => {
-    if (!enrolledCourses.length) return 0;
+   const [courseProgressMap, setCourseProgressMap] = useState({});
 
-    const totalProgress = enrolledCourses.reduce((acc, course) => {
-      return acc + getRandomProgress(course.id);
-    }, 0);
+useEffect(() => {
+  const fetchProgress = async () => {
+    if (enrolledCourses.length === 0) return;
 
-    return Math.round(totalProgress / enrolledCourses.length);
+    const progressMap = {};
+    for (const course of enrolledCourses) {
+      const res = await fetch(`${baseUrl}/course-progress/${currentUserId}/${course.id}`);
+      const data = await res.json();
+      progressMap[course.id] = data.progress ?? 0;
+    }
+    setCourseProgressMap(progressMap);
   };
 
-  // Mock function to generate progress (in a real app, this would come from the API)
-  const getRandomProgress = (courseId) => {
-    // Make the course id a string
-    courseId = String(courseId);
-    // Use the course ID to generate a consistent progress value
-    const hash = courseId
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return hash % 101; // 0-100
-  };
+  fetchProgress();
+}, [enrolledCourses, currentUserId, baseUrl]);
 
-  // Get completed courses count
-  const getCompletedCoursesCount = () => {
-    return enrolledCourses.filter(
-      (course) => getRandomProgress(course.id) === 100
-    ).length;
-  };
+const calculateOverallProgress = () => {
+  const total = enrolledCourses.length;
+  if (total === 0) return 0;
 
-  // Get in-progress courses count
-  const getInProgressCoursesCount = () => {
-    return enrolledCourses.filter((course) => {
-      const progress = getRandomProgress(course.id);
-      return progress > 0 && progress < 100;
-    }).length;
-  };
+  const sumProgress = enrolledCourses.reduce(
+    (sum, course) => sum + (courseProgressMap[course.id] ?? 0),
+    0
+  );
+  return Math.round(sumProgress / total);
+};
 
-  // Get not started courses count
-  //   const getNotStartedCoursesCount = () => {
-  //     return enrolledCourses.filter(
-  //       (course) => getRandomProgress(course.id) === 0
-  //     ).length;
-  //   };
 
-  // Format date for display
+
+
+const CourseProgressCard = ({ course, currentUserId }) => {
+  const { data: progressData, isLoading } = useGetCourseProgressDetailsQuery({
+    userId: currentUserId,
+    courseId: course.id,
+  });
+
+  const progress = progressData?.progress || 0;
+
+  return (
+    <div className="flex flex-col md:flex-row gap-4 pb-6 border-b last:border-0">
+      <div className="relative h-40 md:h-24 md:w-40 bg-muted rounded-md overflow-hidden">
+        <img
+          src={`${import.meta.env.VITE_BASE_URL}${course.course_image}`}
+          alt={course.name}
+          className="h-full w-full object-cover"
+        />
+        {progress === 100 && (
+          <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+            <CheckCircleIcon className="h-8 w-8 text-green-500" />
+          </div>
+        )}
+      </div>
+      <div className="flex-1">
+        <div className="flex flex-wrap gap-2 mb-2">
+          <Badge variant="outline" className="bg-muted/50">
+            {course.category?.name.charAt(0).toUpperCase() +
+              course.category?.name.slice(1)}
+          </Badge>
+          <Badge variant="outline">
+            {course.level?.charAt(0).toUpperCase() + course.level?.slice(1) || "N/A"}
+          </Badge>
+        </div>
+        <h3 className="text-lg font-medium">{course.name}</h3>
+        <div className="flex items-center gap-4 my-2 text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <BookOpenIcon className="h-4 w-4 mr-1" />
+            {course.curriculum?.reduce(
+              (total, module) => total + (module.video?.length || 0),
+              0
+            ) || 0}{" "}
+            lessons
+          </div>
+          <div className="flex items-center">
+            <ClockIcon className="h-4 w-4 mr-1" />
+            {course.estimated_time}
+          </div>
+        </div>
+        <div className="mt-2">
+          <div className="flex justify-between mb-1">
+            <span className="text-xs text-muted-foreground">Progress</span>
+            <span className="text-xs font-medium">{progress}%</span>
+          </div>
+          <Progress value={progress} className="h-1.5" />
+        </div>
+      </div>
+      <div className="flex md:flex-col justify-between items-end gap-2 mt-2 md:mt-0">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => navigate(`/portal/learn/${course._id}`)}
+        >
+          {progress === 0 ? "Start" : progress === 100 ? "Review" : "Continue"}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(`/portal/course/${course._id}`)}
+        >
+          Details
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const getCompletedCoursesCount = () => {
+  return Object.values(courseProgressMap).filter((progress) => progress === 100)
+    .length;
+};
+  
+const getInProgressCoursesCount = () => {
+  return enrolledCourses.filter((course) => {
+    const progress = courseProgressMap[course.id] ?? 0;
+    return progress > 0 && progress < 100;
+  }).length;
+};
+
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -112,12 +187,10 @@ export default function StudentProfile() {
     });
   };
 
-  // Handle course navigation
   const handleStartCourse = (courseId) => {
     navigate(`/portal/learn/${courseId}`);
   };
 
-  // Loading state
   if (isLoading) {
     return (
       <Layout>
@@ -138,7 +211,6 @@ export default function StudentProfile() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <Layout>
@@ -158,9 +230,9 @@ export default function StudentProfile() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Profile Header */}
+        
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Profile Card */}
+          
           <Card className="w-full md:w-1/3">
             <CardContent className="p-6">
               <div className="flex flex-col items-center text-center">
@@ -204,7 +276,7 @@ export default function StudentProfile() {
             </CardContent>
           </Card>
 
-          {/* Progress Overview */}
+          
           <Card className="w-full md:w-2/3">
             <CardHeader>
               <CardTitle>Learning Progress</CardTitle>
@@ -270,7 +342,6 @@ export default function StudentProfile() {
           </Card>
         </div>
 
-        {/* Tabs Navigation */}
         <Tabs
           defaultValue="overview"
           value={activeTab}
@@ -287,9 +358,9 @@ export default function StudentProfile() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          
           <TabsContent value="overview" className="space-y-6">
-            {/* Quick Stats */}
+          
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader className="pb-2">
@@ -487,91 +558,15 @@ export default function StudentProfile() {
               <CardContent>
                 {enrolledCourses.length > 0 ? (
                   <div className="space-y-6">
-                    {enrolledCourses.map((course, index) => {
-                      const progress = getRandomProgress(course.id);
-                      return (
-                        <div
-                          key={index}
-                          className="flex flex-col md:flex-row gap-4 pb-6 border-b last:border-0"
-                        >
-                          <div className="relative h-40 md:h-24 md:w-40 bg-muted rounded-md overflow-hidden">
-                            <img
-                              src={`${baseUrl}${course.course_image}`}
-                              alt={course.name}
-                              className="h-full w-full object-cover"
-                            />
-                            {progress === 100 && (
-                              <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
-                                <CheckCircleIcon className="h-8 w-8 text-green-500" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              <Badge variant="outline" className="bg-muted/50">
-                                {course.category?.name.charAt(0).toUpperCase() +
-                                  course.category?.name.slice(1)}
-                              </Badge>
-                              <Badge variant="outline">
-                                {course.level.charAt(0).toUpperCase() +
-                                  course.level.slice(1)}
-                              </Badge>
-                            </div>
-                            <h3 className="text-lg font-medium">
-                              {course.name}
-                            </h3>
-                            <div className="flex items-center gap-4 my-2 text-sm text-muted-foreground">
-                              <div className="flex items-center">
-                                <BookOpenIcon className="h-4 w-4 mr-1" />
-                                {course.curriculum?.reduce(
-                                  (total, module) =>
-                                    total + (module.video?.length || 0),
-                                  0
-                                ) || 0}{" "}
-                                lessons
-                              </div>
-                              <div className="flex items-center">
-                                <ClockIcon className="h-4 w-4 mr-1" />
-                                {course.estimated_time}
-                              </div>
-                            </div>
-                            <div className="mt-2">
-                              <div className="flex justify-between mb-1">
-                                <span className="text-xs text-muted-foreground">
-                                  Progress
-                                </span>
-                                <span className="text-xs font-medium">
-                                  {progress}%
-                                </span>
-                              </div>
-                              <Progress value={progress} className="h-1.5" />
-                            </div>
-                          </div>
-                          <div className="flex md:flex-col justify-between items-end gap-2 mt-2 md:mt-0">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleStartCourse(course._id)}
-                            >
-                              {progress === 0
-                                ? "Start"
-                                : progress === 100
-                                ? "Review"
-                                : "Continue"}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() =>
-                                navigate(`/portal/course/${course._id}`)
-                              }
-                            >
-                              Details
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })}
+             
+{enrolledCourses.map((course) => (
+  <CourseProgressCard
+    key={course.id}
+    course={course}
+    currentUserId={currentUserId}
+  />
+))}
+
                   </div>
                 ) : (
                   <div className="text-center py-12">
@@ -739,41 +734,41 @@ export default function StudentProfile() {
               </CardHeader>
               <CardContent>
                 {getCompletedCoursesCount() > 0 ? (
-                  <div className="space-y-4">
-                    {enrolledCourses
-                      .filter((course) => getRandomProgress(course.id) === 100)
-                      .map((course, index) => (
-                        <div
-                          key={index}
-                          className="flex flex-col md:flex-row items-center gap-4 p-4 border rounded-lg"
-                        >
-                          <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                            <GraduationCapIcon className="h-8 w-8 text-primary" />
-                          </div>
-                          <div className="flex-1 text-center md:text-left">
-                            <h4 className="font-medium">{course.name}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              Issued on{" "}
-                              {formatDate(
-                                new Date(
-                                  Date.now() -
-                                    Math.random() * 30 * 24 * 60 * 60 * 1000
-                                )
-                              )}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm">
-                              <FileTextIcon className="h-4 w-4 mr-2" />
-                              View
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              Download
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
+<div className="space-y-4">
+  {enrolledCourses
+    .filter((course) => courseProgressMap[course.id] === 100)
+    .map((course, index) => (
+      <div
+        key={index}
+        className="flex flex-col md:flex-row items-center gap-4 p-4 border rounded-lg"
+      >
+        <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+          <GraduationCapIcon className="h-8 w-8 text-primary" />
+        </div>
+        <div className="flex-1 text-center md:text-left">
+          <h4 className="font-medium">{course.name}</h4>
+          <p className="text-sm text-muted-foreground">
+            Issued on{" "}
+            {formatDate(
+              new Date(
+                Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+              )
+            )}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm">
+            <FileTextIcon className="h-4 w-4 mr-2" />
+            View
+          </Button>
+          <Button variant="outline" size="sm">
+            Download
+          </Button>
+        </div>
+      </div>
+    ))}
+</div>
+
                 ) : (
                   <div className="text-center py-12">
                     <GraduationCapIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />

@@ -19,7 +19,7 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   // Get redirect path from location state or default to portal
-  const from = location.state?.from?.pathname || "/portal";
+  const from = location.state?.from?.pathname || "/";
 
   // Use the login mutation hook
   const [login, { isLoading, isError, error, isSuccess, data }] =

@@ -1,28 +1,73 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { logout, updateTokens } from "../store/slices/authSlice"; // Import logout and updateTokens
 
 // Define our API base URL
 export const baseUrl = import.meta.env.VITE_BASE_URL || "";
 
+// Custom baseQuery with re-authentication logic
+const baseQuery = fetchBaseQuery({
+  baseUrl,
+  credentials: "include", // Enable sending cookies
+  prepareHeaders: (headers, { getState }) => {
+    // Get the access token from Redux state
+    const token = getState().auth.accessToken;
+
+    // Set Content-Type
+    headers.set("Content-Type", "application/json");
+
+    // Add Authorization header if token exists
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    return headers;
+  },
+});
+
+const reAuthBaseQuery = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  if (result.error && result.error.status === 401) {
+    // Try to get a new token
+    const refreshToken = api.getState().auth.refreshToken;
+    if (refreshToken) {
+      const refreshResult = await baseQuery(
+        {
+          url: "/customuser/api/token/refresh/", // Your token refresh endpoint
+          method: "POST",
+          body: { refresh: refreshToken },
+        },
+        api,
+        extraOptions
+      );
+
+      if (refreshResult.data) {
+        // Update tokens in Redux store and localStorage
+        api.dispatch(
+          updateTokens({
+            access: refreshResult.data.access,
+            refresh: refreshResult.data.refresh, // Backend should return new refresh token too
+          })
+        );
+
+        // Retry the original query with the new token
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        // Refresh token failed, logout user
+        api.dispatch(logout());
+      }
+    } else {
+      // No refresh token available, logout user
+      api.dispatch(logout());
+    }
+  }
+
+  return result;
+};
+
 export const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl,
-    credentials: "include", // Enable sending cookies
-    prepareHeaders: (headers, { getState }) => {
-      // Get the access token from Redux state
-      const token = getState().auth.accessToken;
-
-      // Set Content-Type
-      headers.set("Content-Type", "application/json");
-
-      // Add Authorization header if token exists
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
-  }),
+  baseQuery: reAuthBaseQuery, // Use the custom baseQuery
   tagTypes: ["User", "Courses", "Orders"],
   endpoints: (builder) => ({
     // Login endpoint
@@ -240,6 +285,15 @@ export const api = createApi({
         body: data,
       }),
     }),
+
+    // Token Refresh endpoint (used internally by reAuthBaseQuery)
+    refreshToken: builder.mutation({
+      query: (refreshToken) => ({
+        url: "/customuser/api/token/refresh/",
+        method: "POST",
+        body: refreshToken,
+      }),
+    }),
   }),
 });
 
@@ -264,4 +318,5 @@ export const {
   useSendGuideMutation,
   useRequestPasswordResetMutation,
   useConfirmPasswordResetMutation,
+  useRefreshTokenMutation, // Export the new hook
 } = api;

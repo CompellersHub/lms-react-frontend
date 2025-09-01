@@ -25,7 +25,7 @@ const GoogleAuthButton = ({ redirectPath = "/portal", className = "" }) => {
 
       console.log("Backend response:", response);
 
-      if (!response || !response.user) {
+      if (!response || !response.user_info) {
         console.error("Invalid backend response:", response);
         throw new Error("Invalid response from server");
       }
@@ -33,8 +33,9 @@ const GoogleAuthButton = ({ redirectPath = "/portal", className = "" }) => {
       // Handle successful authentication
       dispatch(
         login({
-          user: response.user,
-          isAuthenticated: true,
+          access: response.access,
+          refresh: response.refresh,
+          user_info: response.user_info,
         })
       );
 

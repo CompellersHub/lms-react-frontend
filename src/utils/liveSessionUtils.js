@@ -59,6 +59,22 @@ export const getPrimaryLiveSession = () => {
 };
 
 /**
+ * Get the next upcoming live session
+ * @returns {Object|null} - The next upcoming live session object or null
+ */
+export const getNextUpcomingLiveSession = () => {
+  const now = new Date();
+  const upcomingSessions = LIVE_SESSIONS.filter((session) => {
+    const startTime = new Date(session.startTime);
+    return startTime > now;
+  }).sort((a, b) => {
+    return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+  });
+
+  return upcomingSessions.length > 0 ? upcomingSessions[0] : null;
+};
+
+/**
  * Format time remaining until session starts
  * @param {Object} session - Live session object
  * @returns {string} - Formatted time string

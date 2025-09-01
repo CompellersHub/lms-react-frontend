@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux"; // Import useSelector
 import {
   Calendar,
   Clock,
@@ -15,9 +16,11 @@ import { parseEventDate } from "@/utils/dateUtils";
 import {
   hasLiveSessions,
   getPrimaryLiveSession,
+  getNextUpcomingLiveSession, // Import the new function
 } from "@/utils/liveSessionUtils";
 import { LiveIndicator, LiveCardBorder } from "@/components/LiveIndicator";
 import { JoinLiveButton, LiveSessionBanner } from "@/components/JoinLiveButton";
+import CountdownTimer from "@/components/CountdownTimer"; // Import CountdownTimer
 
 export function WorkshopEvents() {
   const { data: events = [] } = useGetEventsQuery();
@@ -25,17 +28,24 @@ export function WorkshopEvents() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showLiveBanner, setShowLiveBanner] = useState(true);
 
+  // Get user from Redux store
+  const { user } = useSelector((state) => state.auth);
+
   // Live session state
   const [liveSession, setLiveSession] = useState(null);
   const [hasLive, setHasLive] = useState(false);
+  const [upcomingLiveSession, setUpcomingLiveSession] = useState(null); // New state for upcoming session
 
   // Check for live sessions on component mount and every minute
   useEffect(() => {
     const checkLiveSessions = () => {
       const isLive = hasLiveSessions();
       const primarySession = getPrimaryLiveSession();
+      const nextUpcomingSession = getNextUpcomingLiveSession(); // Get upcoming session
+
       setHasLive(isLive);
       setLiveSession(primarySession);
+      setUpcomingLiveSession(nextUpcomingSession); // Set upcoming session
     };
 
     checkLiveSessions();
@@ -131,6 +141,13 @@ export function WorkshopEvents() {
               session={liveSession}
               onJoinClick={handleJoinLive}
             />
+          )}
+
+          {/* Countdown Timer for BLOGGER role */}
+          {user?.role === "BLOGGER" && upcomingLiveSession?.startTime && (
+            <div className="mt-8">
+              <CountdownTimer targetDate={upcomingLiveSession.startTime} />
+            </div>
           )}
         </div>
       </div>

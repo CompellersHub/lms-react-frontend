@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout, updateTokens } from "../store/slices/authSlice"; // Import logout and updateTokens
 
 // Define our API base URL
-export const baseUrl = import.meta.env.VITE_BASE_URL || "";
+export const baseUrl = import.meta.env.VITE_BASE_URL || "https://api.titanscareers.com";
 
 // Custom baseQuery with re-authentication logic
 const baseQuery = fetchBaseQuery({
@@ -109,7 +109,7 @@ export const api = createApi({
     // Logout endpoint
     logout: builder.mutation({
       query: () => ({
-        url: "/customuser/logout",
+        url: "/customuser/logout/",
         method: "POST",
       }),
     }),

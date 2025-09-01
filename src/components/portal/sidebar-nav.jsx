@@ -234,13 +234,13 @@ export default function SidebarNav() {
             Profile
           </NavItem>
 
-          {/* <NavItem
+          <NavItem
             href="/portal/settings"
             active={location.pathname.includes("/portal/settings")}
             icon={<Settings className="h-5 w-5" />}
           >
             Settings
-          </NavItem> */}
+          </NavItem>
 
           <NavItem
             href="#"

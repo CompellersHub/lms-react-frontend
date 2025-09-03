@@ -23,6 +23,9 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
+// ⬇️ import your websocket hook
+import { useWebSocketNotifications } from "@/hooks/use-websocket-notifications";
+
 function NavSection({ title, children }) {
   return (
     <div className="space-y-1">
@@ -57,7 +60,7 @@ function NavItem({ href, active, icon, children, onClick, badge }) {
     >
       <span className="mr-3 text-primary/80">{icon}</span>
       <span>{children}</span>
-      {badge && (
+      {badge > 0 && ( // only show badge if > 0
         <Badge variant="secondary" className="ml-auto">
           {badge}
         </Badge>
@@ -73,7 +76,8 @@ export default function SidebarNav() {
   const [triggerLogout] = useLogoutMutation();
   const { user } = useSelector((state) => state.auth);
 
-  const notificationCount = 3;
+  // ⬇️ get unread notifications from websocket hook
+  const { unreadCount } = useWebSocketNotifications(user?.id);
 
   const handleLogout = async () => {
     try {
@@ -86,10 +90,7 @@ export default function SidebarNav() {
       });
     } finally {
       dispatch(logoutAction());
-
-      // ✅ Hard redirect to homepage to bypass ProtectedRoute
       window.location.href = "/";
-
       toast({
         title: "Logged out successfully",
         description: "You have been redirected to the homepage.",
@@ -214,7 +215,7 @@ export default function SidebarNav() {
             href="/portal/notifications"
             active={location.pathname.includes("/portal/notifications")}
             icon={<BellIcon className="h-5 w-5" />}
-            badge={notificationCount}
+            badge={unreadCount} // ✅ coming from websocket hook
           >
             Notifications
           </NavItem>

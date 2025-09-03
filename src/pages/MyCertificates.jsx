@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useGetEnrolledCoursesQuery } from "@/services/coursesApi";
+import {
+  useGetEnrolledCoursesQuery,
+  useGenerateCertificateMutation,
+} from "@/services/coursesApi";
 import {
   GraduationCapIcon,
   SearchIcon,
@@ -22,44 +25,58 @@ import {
 import { useSelector } from "react-redux";
 import CertificateDownloadButton from "@/components/certificate-download-button";
 
+// extra libs for bulk download
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+
 export default function CertificatesPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
   const navigate = useNavigate();
   const currentUserId = useSelector((state) => state.auth.user?.id);
   const currentUser = useSelector((state) => state.auth.user);
 
-  const {
-    data: enrolledData,
-    isLoading,
-    error,
-  } = useGetEnrolledCoursesQuery(currentUserId);
+  const { data: enrolledData, isLoading, error } =
+    useGetEnrolledCoursesQuery(currentUserId);
 
-  // Extract courses from the enrolled data
+  const [generateCertificate] = useGenerateCertificateMutation();
+
+  // Extract courses
   const enrolledCourses = enrolledData?.course || [];
 
-  // Calculate progress for demo purposes (in a real app, this would come from the API)
-  const getRandomProgress = (courseId) => {
-    courseId = String(courseId);
-    const hash = courseId
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return hash % 101; // 0-100
-  };
-
-  // Filter for completed courses only
-  //   const completedCourses = enrolledCourses.filter((course) => {
-  //     const progress = getRandomProgress(course.id);
-  //     const isCompleted = progress === 100;
-  //     const matchesSearch =
-  //       course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       course.category?.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-  //     return isCompleted && matchesSearch;
-  //   });
+  // For now, treat all enrolled as completed (adjust later with real progress API)
   const completedCourses = enrolledCourses;
 
   const totalCertificates = completedCourses.length;
   const recentCertificates = completedCourses.slice(0, 3);
+
+  // Bulk download handler
+  const handleDownloadAll = async () => {
+    if (!completedCourses.length) return;
+
+    setIsDownloading(true);
+    const zip = new JSZip();
+
+    try {
+      for (const course of completedCourses) {
+        const { blob, filename } = await generateCertificate({
+          courseId: course.id,
+          userId: currentUserId,
+        }).unwrap();
+
+        const safeName = filename || `${course.name}-certificate.pdf`;
+        zip.file(safeName, blob);
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, "all-certificates.zip");
+    } catch (err) {
+      console.error("Error downloading all certificates:", err);
+      alert("Failed to download all certificates. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   // Loading state
   if (isLoading) {
@@ -290,14 +307,14 @@ export default function CertificatesPage() {
               <div className="flex flex-wrap gap-3">
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    // Download all certificates logic would go here
-                    console.log("Download all certificates");
-                  }}
+                  onClick={handleDownloadAll}
+                  disabled={isDownloading}
                   className="flex items-center gap-2"
                 >
                   <DownloadIcon className="h-4 w-4" />
-                  Download All Certificates
+                  {isDownloading
+                    ? "Downloading..."
+                    : "Download All Certificates"}
                 </Button>
                 <Button
                   variant="outline"

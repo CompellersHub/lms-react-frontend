@@ -263,14 +263,15 @@ const getInProgressCoursesCount = () => {
                   <span>@{studentData?.username}</span>
                 </div>
                 <div className="mt-6 w-full">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => navigate("/portal/settings")}
-                  >
-                    <SettingsIcon className="h-4 w-4 mr-2" />
-                    Edit Profile
-                  </Button>
+<Button
+  variant="outline"
+  className="w-full"
+  onClick={() => setActiveTab("settings")}
+>
+  <SettingsIcon className="h-4 w-4 mr-2" />
+  Edit Profile
+</Button>
+
                 </div>
               </div>
             </CardContent>

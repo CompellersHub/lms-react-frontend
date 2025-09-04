@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { Bell, Menu, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Bell, Menu, Search, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,9 +16,25 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
+// 🔥 If you already created liveClassSlice.js:
+import { fetchLiveClass } from "@/store/slices/liveClassSlice";
+
 export default function HeaderNav({ onMenuClick, showMenuButton }) {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { current: liveClass } = useSelector((state) => state.liveClass);
+
   const [showSearch, setShowSearch] = useState(false);
+
+  // 🔄 Load live class when component mounts
+  useEffect(() => {
+    dispatch(fetchLiveClass());
+    // Optional: refresh every 60s so banner updates in real-time
+    const interval = setInterval(() => {
+      dispatch(fetchLiveClass());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [dispatch]);
 
   // Mock notification count
   const notificationCount = 3;
@@ -35,6 +51,28 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
+      {/* 🔴 Live class banner */}
+      {liveClass?.isLive && (
+        <div className="w-full bg-red-600 text-white px-4 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <Radio className="h-4 w-4 animate-pulse" />
+            <span>
+              LIVE NOW:{" "}
+              <span className="font-semibold">{liveClass.title}</span>
+            </span>
+          </div>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="bg-white text-red-600 hover:bg-gray-100"
+            onClick={() => (window.location.href = liveClass.link)}
+          >
+            <Radio className="h-4 w-4 mr-1" /> Join Now
+          </Button>
+        </div>
+      )}
+
+      {/* Main header */}
       <div className="flex h-16 items-center px-4 md:px-6">
         {showMenuButton && (
           <Button

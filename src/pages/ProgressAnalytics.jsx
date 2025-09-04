@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Layout from "@/components/portal/layout";
@@ -14,7 +14,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetEnrolledCoursesQuery } from "@/services/coursesApi";
+import {
+  useGetEnrolledCoursesQuery,
+  useGetAssignmentsForStudentCourseQuery,
+  useGetCourseProgressDetailsQuery,
+} from "@/services/coursesApi";
 import {
   BarChart,
   Calendar,
@@ -24,6 +28,15 @@ import {
   PieChart,
 } from "lucide-react";
 import CourseProgressDetail from "@/components/dashboard/course-progress-detail";
+import {
+  ResponsiveContainer,
+  LineChart as ReLineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
 const placeholderImg = "/placeholder.png";
 
@@ -39,6 +52,44 @@ export default function ProgressAnalytics() {
   } = useGetEnrolledCoursesQuery(currentUserId);
 
   const enrolledCourses = enrolledData?.course || [];
+
+  // --- Fetch assignments for deadlines ---
+  const { data: assignmentsData } =
+    useGetAssignmentsForStudentCourseQuery(
+      { userId: currentUserId, courseId: null }, // null = fetch all
+      { skip: !currentUserId }
+    );
+
+  const upcomingDeadlines = useMemo(() => {
+    if (!assignmentsData) return [];
+    const now = new Date();
+    return assignmentsData
+      .filter((a) => a.due_date && new Date(a.due_date) > now)
+      .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
+      .slice(0, 5);
+  }, [assignmentsData]);
+
+  // --- Fetch weekly learning activity ---
+  const { data: progressData } = useGetCourseProgressDetailsQuery(
+    { userId: currentUserId, courseId: enrolledCourses[0]?.id },
+    { skip: !currentUserId || !enrolledCourses.length }
+  );
+
+  // Example transformation → group by week
+  const weeklyActivity = useMemo(() => {
+    if (!progressData?.activity_log) return [];
+    const grouped = {};
+    progressData.activity_log.forEach((log) => {
+      const week = new Date(log.date).toLocaleDateString("en-US", {
+        week: "numeric",
+      });
+      grouped[week] = (grouped[week] || 0) + log.hours;
+    });
+    return Object.entries(grouped).map(([week, hours]) => ({
+      week,
+      hours,
+    }));
+  }, [progressData]);
 
   return (
     <Layout>
@@ -115,108 +166,73 @@ export default function ProgressAnalytics() {
 
             {/* --- Analytics Cards --- */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Weekly Activity */}
               <Card>
                 <CardHeader>
                   <CardTitle>Weekly Learning Activity</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <div className="text-center">
-                    <LineChart className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                    <p className="text-muted-foreground">
-                      Learning activity data will appear here
-                    </p>
-                  </div>
+                <CardContent className="h-[300px]">
+                  {weeklyActivity.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <ReLineChart data={weeklyActivity}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="week" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="hours" stroke="#8884d8" />
+                      </ReLineChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center">
+                      <LineChart className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
+                      <p className="text-muted-foreground">
+                        No activity recorded yet
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
+              {/* Upcoming Deadlines */}
               <Card>
                 <CardHeader>
                   <CardTitle>Upcoming Deadlines</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <div className="text-center">
-                    <Calendar className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                    <p className="text-muted-foreground">
-                      Upcoming assignment deadlines will appear here
-                    </p>
-                  </div>
+                <CardContent className="h-[300px] overflow-y-auto space-y-3">
+                  {upcomingDeadlines.length > 0 ? (
+                    upcomingDeadlines.map((a) => (
+                      <div
+                        key={a.id}
+                        className="p-3 border rounded-lg flex justify-between items-center"
+                      >
+                        <div>
+                          <p className="font-medium">{a.title}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(a.due_date).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            navigate(`/portal/assignments/${a.id}`)
+                          }
+                        >
+                          View
+                        </Button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center">
+                      <Calendar className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
+                      <p className="text-muted-foreground">
+                        No upcoming deadlines
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
-
-          {/* --- Learning Analytics --- */}
-          <TabsContent value="analytics" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Learning Time Distribution</CardTitle>
-                </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <div className="text-center">
-                    <PieChart className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                    <p className="text-muted-foreground">
-                      Learning time analytics will appear here
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Performance by Subject</CardTitle>
-                </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <div className="text-center">
-                    <BarChart className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                    <p className="text-muted-foreground">
-                      Subject performance data will appear here
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Learning Streak</CardTitle>
-                </CardHeader>
-                <CardContent className="h-[300px] flex items-center justify-center">
-                  <div className="text-center">
-                    <Clock className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                    <p className="text-muted-foreground">
-                      Your learning streak will appear here
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* --- Achievements --- */}
-          <TabsContent value="achievements" className="mt-0">
-            <Card>
-              <CardHeader>
-                <CardTitle>Achievements & Badges</CardTitle>
-                <CardDescription>
-                  Track your learning milestones and achievements
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <GraduationCap className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-                  <h3 className="text-lg font-medium mb-2">
-                    No Achievements Yet
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Complete courses and assignments to earn achievements and
-                    badges
-                  </p>
-                  <Button onClick={() => navigate("/portal/courses")}>
-                    Continue Learning
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>

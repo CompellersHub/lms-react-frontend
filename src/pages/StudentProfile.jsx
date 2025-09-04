@@ -1,12 +1,20 @@
-"use client";
+"use client"; // ✅ stays at the very top
 
 import { useState, useEffect } from "react";
-
 import { useNavigate } from "react-router-dom";
-import Layout from "@/components/portal/layout";
 import { useSelector } from "react-redux";
-import { useGetCourseProgressDetailsQuery } from "@/services/coursesApi";
-import { useGetEnrolledCoursesQuery } from "@/services/coursesApi";
+
+import Layout from "@/components/portal/layout";
+
+// ✅ Hutch here: combine all API hooks into ONE import
+import {
+  useGetStudentProfileQuery,
+  useUpdateStudentProfileMutation,
+  useGetCourseProgressDetailsQuery,
+  useGetEnrolledCoursesQuery,
+} from "@/services/coursesApi";
+
+// ✅ keep UI imports grouped together
 import {
   Card,
   CardContent,
@@ -22,6 +30,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+
+// ✅ icon imports last
 import {
   BookOpenIcon,
   ClockIcon,
@@ -57,8 +67,26 @@ export default function StudentProfile() {
   } = useGetEnrolledCoursesQuery(currentUserId);
 
   const enrolledCourses = studentData?.course || [];
+  
+
 
    const [courseProgressMap, setCourseProgressMap] = useState({});
+
+const [formData, setFormData] = useState({
+  first_name: studentData?.first_name || "",
+  last_name: studentData?.last_name || "",
+  email: studentData?.email || "",
+  phone_number: studentData?.phone_number || "",
+  email_notifications: studentData?.email_notifications ?? false,
+  sms_notifications: studentData?.sms_notifications ?? false,
+});
+
+
+const [isEditing, setIsEditing] = useState(false);
+
+const [updateProfile, { isLoading: isSaving }] =
+  useUpdateStudentProfileMutation();
+   
 
 useEffect(() => {
   const fetchProgress = async () => {
@@ -75,6 +103,22 @@ useEffect(() => {
 
   fetchProgress();
 }, [enrolledCourses, currentUserId, baseUrl]);
+
+
+useEffect(() => {
+  if (studentData) {
+    setFormData({
+      first_name: studentData.first_name || "",
+      last_name: studentData.last_name || "",
+      email: studentData.email || "",
+      phone_number: studentData.phone_number || "",
+      email_notifications: studentData.email_notifications ?? false,
+      sms_notifications: studentData.sms_notifications ?? false,
+    });
+  }
+}, [studentData]);
+
+
 
 const calculateOverallProgress = () => {
   const total = enrolledCourses.length;
@@ -787,120 +831,187 @@ const getInProgressCoursesCount = () => {
           </TabsContent>
 
           {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Account Settings</CardTitle>
-                <CardDescription>
-                  Manage your account preferences
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Profile Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium">First Name</label>
-                      <input
-                        type="text"
-                        className="w-full mt-1 px-3 py-2 border rounded-md"
-                        value={studentData?.first_name || ""}
-                        readOnly
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Last Name</label>
-                      <input
-                        type="text"
-                        className="w-full mt-1 px-3 py-2 border rounded-md"
-                        value={studentData?.last_name || ""}
-                        readOnly
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Email</label>
-                      <input
-                        type="email"
-                        className="w-full mt-1 px-3 py-2 border rounded-md"
-                        value={studentData?.email || ""}
-                        readOnly
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        className="w-full mt-1 px-3 py-2 border rounded-md"
-                        value={studentData?.phone_number || ""}
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                  <Button variant="outline">Edit Profile</Button>
-                </div>
+<TabsContent value="settings" className="space-y-6">
+  <Card>
+    <CardHeader>
+      <CardTitle>Account Settings</CardTitle>
+      <CardDescription>
+        Manage your account preferences
+      </CardDescription>
+    </CardHeader>
 
-                <Separator />
+    <CardContent className="space-y-6">
+      {/* Profile Information */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Profile Information</h3>
 
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">
-                    Notification Preferences
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-sm font-medium">
-                          Email Notifications
-                        </h4>
-                        <p className="text-xs text-muted-foreground">
-                          Receive course updates via email
-                        </p>
-                      </div>
-                      <div className="h-6 w-11 bg-primary rounded-full relative cursor-pointer">
-                        <div className="h-5 w-5 bg-white rounded-full absolute top-0.5 right-0.5"></div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-sm font-medium">
-                          SMS Notifications
-                        </h4>
-                        <p className="text-xs text-muted-foreground">
-                          Receive course updates via SMS
-                        </p>
-                      </div>
-                      <div className="h-6 w-11 bg-muted rounded-full relative cursor-pointer">
-                        <div className="h-5 w-5 bg-white rounded-full absolute top-0.5 left-0.5"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium">First Name</label>
+            <input
+              type="text"
+              className="w-full mt-1 px-3 py-2 border rounded-md"
+              value={formData.first_name}
+              onChange={(e) =>
+                setFormData({ ...formData, first_name: e.target.value })
+              }
+              readOnly={!isEditing}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">Last Name</label>
+            <input
+              type="text"
+              className="w-full mt-1 px-3 py-2 border rounded-md"
+              value={formData.last_name}
+              onChange={(e) =>
+                setFormData({ ...formData, last_name: e.target.value })
+              }
+              readOnly={!isEditing}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">Email</label>
+            <input
+              type="email"
+              className="w-full mt-1 px-3 py-2 border rounded-md"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              readOnly={!isEditing}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">Phone Number</label>
+            <input
+              type="tel"
+              className="w-full mt-1 px-3 py-2 border rounded-md"
+              value={formData.phone_number}
+              onChange={(e) =>
+                setFormData({ ...formData, phone_number: e.target.value })
+              }
+              readOnly={!isEditing}
+            />
+          </div>
+        </div>
 
-                <Separator />
+        {/* Enable Editing button */}
+        {!isEditing && (
+          <Button
+            variant="outline"
+            onClick={() => setIsEditing(true)}
+          >
+          Edit Profile 
+          </Button>
+        )}
+      </div>
 
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Payment Information</h3>
-                  <div className="flex items-center gap-3 p-3 border rounded-md">
-                    <CreditCardIcon className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">•••• •••• •••• 4242</p>
-                      <p className="text-xs text-muted-foreground">
-                        Expires 12/25
-                      </p>
-                    </div>
-                    <Button variant="ghost" size="sm" className="ml-auto">
-                      Edit
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline">Cancel</Button>
-                <Button>Save Changes</Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
+      <Separator />
+
+      {/* Notification Preferences */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Notification Preferences</h3>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="text-sm font-medium">Email Notifications</h4>
+              <p className="text-xs text-muted-foreground">
+                Receive course updates via email
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              className="h-5 w-5"
+              checked={formData.email_notifications}
+              disabled={!isEditing}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  email_notifications: e.target.checked,
+                })
+              }
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="text-sm font-medium">SMS Notifications</h4>
+              <p className="text-xs text-muted-foreground">
+                Receive course updates via SMS
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              className="h-5 w-5"
+              checked={formData.sms_notifications}
+              disabled={!isEditing}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  sms_notifications: e.target.checked,
+                })
+              }
+            />
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Payment Info */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Payment Information</h3>
+        <div className="flex items-center gap-3 p-3 border rounded-md">
+          <CreditCardIcon className="h-5 w-5 text-muted-foreground" />
+          <div>
+            <p className="text-sm font-medium">•••• •••• •••• 4242</p>
+            <p className="text-xs text-muted-foreground">Expires 12/25</p>
+          </div>
+          <Button variant="ghost" size="sm" className="ml-auto">
+            Edit
+          </Button>
+        </div>
+      </div>
+    </CardContent>
+
+    {/* Save / Cancel */}
+    <CardFooter className="flex justify-between">
+      <Button
+        variant="outline"
+        disabled={!isEditing}
+        onClick={() => {
+          // Reset form fields to original data
+          setFormData({
+            first_name: studentData?.first_name || "",
+            last_name: studentData?.last_name || "",
+            email: studentData?.email || "",
+            phone_number: studentData?.phone_number || "",
+            email_notifications: studentData?.email_notifications ?? false,
+            sms_notifications: studentData?.sms_notifications ?? false,
+          });
+          setIsEditing(false);
+        }}
+      >
+        Cancel
+      </Button>
+
+      <Button
+        disabled={!isEditing || isSaving}
+        onClick={async () => {
+          await updateProfile(formData);
+          setIsEditing(false);
+        }}
+      >
+        {isSaving ? "Saving..." : "Save Changes"}
+      </Button>
+    </CardFooter>
+  </Card>
+</TabsContent>
+
+
+          
         </Tabs>
       </div>
     </Layout>

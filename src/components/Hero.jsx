@@ -136,15 +136,7 @@ export function Hero() {
             </Button>
           </Link>
 
-          <button
-            onClick={() => setShowVideoModal(true)}
-            className="group flex items-center gap-3 px-6 py-3 text-white hover:text-primary transition-colors duration-300"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors duration-300">
-              <Play className="h-4 w-4" />
-            </span>
-            <span className="text-lg">Watch Our Story</span>
-          </button>
+
         </div>
       </div>
       {/* Video Modal */}

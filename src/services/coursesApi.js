@@ -241,11 +241,21 @@ export const coursesApi = createApi({
       providesTags: (result, error, id) => [{ type: "LiveClass", id }],
     }),
 
-    // 👤 Student Profile
-    getStudentProfile: builder.query({
-      query: () => `/student_profile/profile/`,
-      providesTags: [{ type: "Profile", id: "CURRENT" }],
-    }),
+// 👤 Student Profile
+getStudentProfile: builder.query({
+  query: () => `/student_profile/profile/`,
+  providesTags: [{ type: "Profile", id: "CURRENT" }],
+}),
+
+updateStudentProfile: builder.mutation({
+  query: (profileData) => ({
+    url: `/student_profile/profile/`,
+    method: "PUT", // or "PATCH" depending on your backend
+    body: profileData,
+  }),
+  invalidatesTags: [{ type: "Profile", id: "CURRENT" }],
+}),
+
 
     // 📅 Events
     getEvents: builder.query({
@@ -307,6 +317,7 @@ export const {
   useGetUpcomingLiveClassesQuery,
   useGetLiveClassByIdQuery,
   useGetStudentProfileQuery,
+  useUpdateStudentProfileMutation,
   useGetEventsQuery,
   useRegisterForEventMutation,
   useRegisterForConsultationMutation,

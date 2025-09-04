@@ -16,7 +16,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
-// ✅ Import the RTK Query hook we added
 import { useGetOngoingLiveClassesQuery } from "@/services/coursesApi";
 
 export default function HeaderNav({ onMenuClick, showMenuButton }) {
@@ -25,7 +24,7 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
 
   const [showSearch, setShowSearch] = useState(false);
 
-  // Mock notification count
+  
   const notificationCount = 3;
 
   const getInitials = (name) => {
@@ -38,12 +37,12 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
       .substring(0, 2);
   };
 
-  // Pick the first ongoing class if any
+  
   const liveClass = ongoingClasses.length > 0 ? ongoingClasses[0] : null;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
-      {/* 🔴 Live class banner */}
+      
       {liveClass && (
         <div className="w-full bg-red-600 text-white px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm font-medium">
@@ -64,7 +63,7 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
         </div>
       )}
 
-      {/* Main header */}
+    
       <div className="flex h-16 items-center px-4 md:px-6">
         {showMenuButton && (
           <Button

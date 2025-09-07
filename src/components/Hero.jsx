@@ -121,11 +121,11 @@ export function Hero() {
             Register for a Free Masterclass
           </Button>
         </div>
-        <h1 className="mt-6 text-2xl font-bold text-black md:text-3xl lg:text-5xl">
+        <h1 className="mt-6 text-2xl font-bold text-black md:text-3xl lg:text-6xl">
           At Titans Careers, growth and learning drive us.
 Explore opportunities to develop your skills and shape the future with us
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-gray-800">
+        <p className="mt-4 max-w-2xl text-2xl text-gray-800">
           Get job-ready with Titans Careers. Learn global skills today and stand
           out wherever you go.
         </p>

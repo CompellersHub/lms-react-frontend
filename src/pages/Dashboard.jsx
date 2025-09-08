@@ -2,7 +2,7 @@
 
 import { Progress } from "@/components/ui/progress";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Layout from "@/components/portal/layout";
 import {
@@ -30,6 +30,8 @@ import {
   FileText,
   Video,
 } from "lucide-react";
+import { useGetAllLiveClassesQuery, useGetUpcomingLiveClassesQuery, useGetDeadlinesQuery,   } from "@/services/coursesApi";
+
 
 // Import dashboard components
 import CourseProgressCard from "@/components/dashboard/course-progress-card";
@@ -58,6 +60,26 @@ import {
 import { useGetEnrolledCoursesQuery } from "@/services/coursesApi";
 import CourseProgressDetail from "@/components/dashboard/course-progress-detail";
 
+
+const normalizeData = (data) => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.results)) return data.results;
+  if (Array.isArray(data.classes)) return data.classes;
+  return [];
+};
+
+
+const separateUpcomingClasses = (classes) => {
+  if (!Array.isArray(classes)) return [];
+  const now = new Date();
+  return classes
+    .filter((cls) => new Date(cls.start_time) > now)
+    .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+};
+
+
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState("week");
@@ -84,27 +106,37 @@ export default function Dashboard() {
   // const { data: stats, isLoading: isStatsLoading } = useGetStatsQuery()
 
   // Use mock data instead
+
+
+
   const user = authUser || mockUser;
   // mockEnrollments
   const enrollments = enrolledCourses || [];
-  const deadlines = mockDeadlines;
+
   const certificates = mockCertificates;
-  const upcomingClasses = mockUpcomingClasses;
   const attendanceData = mockAttendanceData[timeRange];
-  const activityData = mockActivityData;
   const learningTimeData = mockLearningTimeData[timeRange];
   const stats = mockStats;
 
   // Loading states
   const isUserLoading = false;
   const isEnrollmentsLoading = false;
-  const isDeadlinesLoading = false;
   const isCertificatesLoading = false;
-  const isClassesLoading = false;
   const isAttendanceLoading = false;
-  const isActivityLoading = false;
   const isLearningTimeLoading = false;
   const isStatsLoading = false;
+
+
+  const activityData = enrollments.map((course) => ({
+  id: course.id,
+  title: course.name,
+  description: `Enrolled in ${course.name}`,
+  date: course.date_enrolled || course.created_at, // depends on API
+  type: "course",
+}));
+
+const isActivityLoading = isLoading;
+
 
   // Calculate overall progress
   const totalProgress =
@@ -112,6 +144,40 @@ export default function Dashboard() {
   const averageProgress = enrollments.length
     ? Math.round(totalProgress / enrollments.length)
     : 0;
+
+
+
+    const {
+  data: allLiveClassesResponse,
+  isLoading: isLoadingClasses,
+  error: errorClasses,
+} = useGetAllLiveClassesQuery();
+
+
+
+const allLiveClasses = normalizeData(allLiveClassesResponse);
+
+const upcomingClasses = allLiveClasses
+  .filter((cls) => new Date(cls.start_time) > new Date())
+  .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+
+
+    useEffect(() => {
+    console.log("Live classes response:", allLiveClassesResponse);
+    console.log("Normalized:", allLiveClasses);
+  }, [allLiveClassesResponse]);
+
+
+
+
+const {
+  data: deadlines = [],
+  isLoading: isDeadlinesLoading,
+  error: deadlinesError,
+} = useGetDeadlinesQuery(currentUserId);
+
+
+
 
   return (
     <Layout>
@@ -343,116 +409,111 @@ export default function Dashboard() {
 
             {/* Upcoming Deadlines & Classes */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Upcoming Deadlines */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Calendar className="mr-2 h-5 w-5 text-muted-foreground" />
-                    Upcoming Deadlines
-                  </CardTitle>
-                </CardHeader>
+{/* Upcoming Deadlines */}
+<Card>
+  <CardHeader>
+    <CardTitle className="flex items-center">
+      <Calendar className="mr-2 h-5 w-5 text-muted-foreground" />
+      Upcoming Deadlines
+    </CardTitle>
+  </CardHeader>
 
-                <CardContent className="space-y-4">
-                  {isDeadlinesLoading ? (
-                    Array(2)
-                      .fill(0)
-                      .map((_, i) => (
-                        <div key={i} className="flex">
-                          <Skeleton className="h-16 w-16 rounded-md" />
-                          <div className="ml-4 space-y-2">
-                            <Skeleton className="h-4 w-32" />
-                            <Skeleton className="h-3 w-48" />
-                          </div>
-                        </div>
-                      ))
-                  ) : deadlines && deadlines.length > 0 ? (
-                    deadlines.map((deadline) => (
-                      <DeadlineCard
-                        key={deadline.id}
-                        title={deadline.title}
-                        description={deadline.description}
-                        dueDate={new Date(deadline.dueDate)}
-                        type={deadline.type}
-                        courseId={deadline.courseId}
-                        courseName={deadline.courseName}
-                      />
-                    ))
-                  ) : (
-                    <div className="text-center py-6">
-                      <p className="text-muted-foreground">
-                        No upcoming deadlines
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-
-                {deadlines && deadlines.length > 0 && (
-                  <CardFooter>
-                    <Button variant="ghost" size="sm" className="w-full">
-                      View All Deadlines
-                    </Button>
-                  </CardFooter>
-                )}
-              </Card>
-
-              {/* Upcoming Live Classes */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <PlayCircle className="mr-2 h-5 w-5 text-muted-foreground" />
-                    Upcoming Live Classes
-                  </CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  {isClassesLoading ? (
-                    Array(2)
-                      .fill(0)
-                      .map((_, i) => (
-                        <div key={i} className="flex">
-                          <Skeleton className="h-16 w-16 rounded-md" />
-                          <div className="ml-4 space-y-2">
-                            <Skeleton className="h-4 w-32" />
-                            <Skeleton className="h-3 w-48" />
-                          </div>
-                        </div>
-                      ))
-                  ) : upcomingClasses && upcomingClasses.length > 0 ? (
-                    upcomingClasses.map((classItem) => (
-                      <UpcomingClassCard
-                        key={classItem.id}
-                        id={classItem.id}
-                        title={classItem.title}
-                        instructor={classItem.instructor}
-                        startTime={new Date(classItem.startTime)}
-                        duration={classItem.duration}
-                        courseId={classItem.courseId}
-                        courseName={classItem.courseName}
-                      />
-                    ))
-                  ) : (
-                    <div className="text-center py-6">
-                      <p className="text-muted-foreground">
-                        No upcoming live classes
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-
-                {upcomingClasses && upcomingClasses.length > 0 && (
-                  <CardFooter>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => navigate("/portal/live-classes")}
-                    >
-                      View All Classes
-                    </Button>
-                  </CardFooter>
-                )}
-              </Card>
+  <CardContent className="space-y-4">
+    {isDeadlinesLoading ? (
+      Array(2)
+        .fill(0)
+        .map((_, i) => (
+          <div key={i} className="flex">
+            <Skeleton className="h-16 w-16 rounded-md" />
+            <div className="ml-4 space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-48" />
             </div>
+          </div>
+        ))
+    ) : deadlines && deadlines.length > 0 ? (
+      deadlines.map((deadline) => (
+        <DeadlineCard
+          key={deadline.id}
+          title={deadline.title}
+          description={deadline.description}
+          dueDate={deadline.dueDate} // ✅ match API field
+          type={deadline.type}
+          courseId={deadline.course_id} // ✅ match API field
+          courseName={deadline.course_name}
+        />
+      ))
+    ) : (
+      <div className="text-center py-6">
+        <p className="text-muted-foreground">No upcoming deadlines</p>
+      </div>
+    )}
+  </CardContent>
+
+  {deadlines && deadlines.length > 0 && (
+    <CardFooter>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-full"
+        onClick={() => navigate("/portal/courses")}
+      >
+        View All Deadlines
+      </Button>
+    </CardFooter>
+  )}
+</Card>
+
+{/* Upcoming Live Classes */}
+
+
+<Card>
+  <CardHeader>
+    <CardTitle className="text-xl font-semibold">Upcoming Live Classes</CardTitle>
+  </CardHeader>
+  <CardContent>
+    {isLoadingClasses ? (
+      <p className="text-center text-muted-foreground">Loading live classes...</p>
+    ) : errorClasses ? (
+      <p className="text-center text-destructive">Failed to load live classes</p>
+    ) : upcomingClasses.length > 0 ? (
+      <div className="grid md:grid-cols-1 gap-4">
+        {upcomingClasses.slice(0, 3).map((classItem) => (
+          <UpcomingClassCard
+            key={classItem.id}
+            title={classItem.title}
+            startTime={classItem.start_time}   // ✅ fixed (was "date")
+            duration={classItem.duration}
+            instructor={`${
+              classItem.teacher?.first_name || "Unknown"
+            } ${classItem.teacher?.last_name || ""}`}
+            courseName={classItem.course?.name || "Unknown Course"} // optional
+          />
+        ))}
+      </div>
+    ) : (
+      <p className="text-center text-muted-foreground">
+        No upcoming live classes scheduled
+      </p>
+    )}
+  </CardContent>
+
+  <CardFooter>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="w-full"
+      onClick={() => navigate("/portal/live-classes")}
+    >
+      View All Class
+    </Button>
+  </CardFooter>
+</Card>
+
+
+
+
+         </div>
           </div>
 
           {/* Right Column - Progress & Achievements */}
@@ -544,9 +605,16 @@ export default function Dashboard() {
               </CardContent>
 
               <CardFooter>
-                <Button variant="ghost" size="sm" className="w-full">
-                  View All Activity
-                </Button>
+                   <CardFooter>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-full"
+        onClick={() => navigate("/portal/courses")}
+      >
+        View All Activity
+      </Button>
+    </CardFooter>
               </CardFooter>
             </Card>
 

@@ -44,6 +44,7 @@ export const coursesApi = createApi({
     "LiveClass",
     "Event",
     "Consultation",
+    "Deadline", // ✅ added
   ],
   endpoints: (builder) => ({
     // 📚 Courses
@@ -241,21 +242,20 @@ export const coursesApi = createApi({
       providesTags: (result, error, id) => [{ type: "LiveClass", id }],
     }),
 
-// 👤 Student Profile
-getStudentProfile: builder.query({
-  query: () => `/student_profile/profile/`,
-  providesTags: [{ type: "Profile", id: "CURRENT" }],
-}),
+    // 👤 Student Profile
+    getStudentProfile: builder.query({
+      query: () => `/student_profile/profile/`,
+      providesTags: [{ type: "Profile", id: "CURRENT" }],
+    }),
 
-updateStudentProfile: builder.mutation({
-  query: (profileData) => ({
-    url: `/student_profile/profile/`,
-    method: "PUT", // or "PATCH" depending on your backend
-    body: profileData,
-  }),
-  invalidatesTags: [{ type: "Profile", id: "CURRENT" }],
-}),
-
+    updateStudentProfile: builder.mutation({
+      query: (profileData) => ({
+        url: `/student_profile/profile/`,
+        method: "PUT", // or "PATCH" depending on your backend
+        body: profileData,
+      }),
+      invalidatesTags: [{ type: "Profile", id: "CURRENT" }],
+    }),
 
     // 📅 Events
     getEvents: builder.query({
@@ -294,6 +294,40 @@ updateStudentProfile: builder.mutation({
       }),
       invalidatesTags: ["Consultation"],
     }),
+
+    // ✅ Deadlines (assignments → deadlines)
+    getDeadlines: builder.query({
+      async queryFn(userId, _queryApi, _extraOptions, baseQuery) {
+        // 1. Get student profile (for enrolled courses)
+        const studentRes = await baseQuery(`/customuser/student/${userId}/`);
+        if (studentRes.error) return { error: studentRes.error };
+
+        // 2. Get all assignments
+        const assignmentRes = await baseQuery(`/courses/assignments/`);
+        if (assignmentRes.error) return { error: assignmentRes.error };
+
+        const enrolledCourses = studentRes.data?.enrolled_courses || [];
+        const allAssignments = assignmentRes.data || [];
+
+        // 3. Filter assignments for enrolled courses only
+        const deadlines = allAssignments
+          .filter((a) =>
+            enrolledCourses.some((c) => String(c.id) === String(a.course?.id))
+          )
+          .map((assignment) => ({
+            id: assignment.id,
+            title: assignment.title,
+            description: assignment.description,
+            dueDate: assignment.due_date,
+            type: "assignment",
+            courseId: assignment.course?.id,
+            courseName: assignment.course?.name,
+          }));
+
+        return { data: deadlines };
+      },
+      providesTags: [{ type: "Deadline", id: "LIST" }],
+    }),
   }),
 });
 
@@ -321,4 +355,5 @@ export const {
   useGetEventsQuery,
   useRegisterForEventMutation,
   useRegisterForConsultationMutation,
+  useGetDeadlinesQuery, // ✅ new hook
 } = coursesApi;

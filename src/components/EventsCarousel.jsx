@@ -140,16 +140,6 @@ export function EventsCarousel() {
                             e.target.src = "/placeholder.svg";
                           }}
                         />
-
-                        {/* Hover overlay with enrollment status and cart button */}
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            className="w-full bg-primary hover:bg-primary/80 text-white text-xs py-1 px-2"
-                            onClick={() => handleRegisterClick(event)}
-                          >
-                            Register
-                          </Button>
-                        </div>
                       </div>
 
                       <div className="p-6 flex flex-col">

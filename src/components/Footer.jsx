@@ -19,7 +19,7 @@ export function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-4">Titans Careers</h3>
             <p className="text-blue-100 mb-4">
-              Only the skilled go far—learn what sets professionals apart.
+              learn what sets professionals apart.
             </p>
             <p className="text-blue-100">
               Specializing in high-impact masterclasses for AML/KYC Compliance,
@@ -133,6 +133,13 @@ export function Footer() {
 
           {/* Policy Links */}
           <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 mb-4 md:mb-0">
+            {/* UKRLP Provider Image - improved display */}
+            <img
+              src="/assets/company-logos/UKPro.jpeg"
+              alt="UKRLP Provider 10098472"
+              className="max-h-10 w-[120px] object-contain mr-2 rounded shadow border border-gray-300 bg-white"
+              style={{ padding: '2px' }}
+            />
             <Link
               to="/privacy"
               className="text-blue-100 hover:underline text-xs md:text-sm"

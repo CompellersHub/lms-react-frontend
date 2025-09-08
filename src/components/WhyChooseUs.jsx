@@ -35,7 +35,7 @@ export function WhyChooseUs() {
       icon: <Briefcase className="h-8 w-8 text-primary" />,
       title: "Practical, Job-Focused Learning",
       description:
-        "We don't just teach theory—we simulate real-world projects and scenarios. From AML/KYC case studies to Data Analysis projects, you'll be trained to think, act, and deliver like a professional from day one.",
+        "We don't just teach theory,we simulate real-world projects and scenarios. From AML/KYC case studies to Data Analysis projects, you'll be trained to think, act, and deliver like a professional from day one.",
     },
     {
       icon: <Award className="h-8 w-8 text-primary" />,

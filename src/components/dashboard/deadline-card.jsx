@@ -65,21 +65,33 @@ export default function DeadlineCard({
       {getIcon()}
       <div className="space-y-1 flex-1">
         <h4 className="font-medium">{title}</h4>
+
         {description && (
           <p className="text-sm text-muted-foreground">{description}</p>
         )}
+
         {courseName && (
-          <p className="text-xs text-muted-foreground">Course: {courseName}</p>
+          <p className="text-xs font-medium text-muted-foreground">
+            📘 Course: {courseName}
+          </p>
         )}
-        <div className="flex items-center gap-2">
-          <ClockIcon className="h-3 w-3 text-muted-foreground" />
-          <p
-            className={`text-xs font-medium ${
-              isUrgent() ? "text-red-600" : "text-orange-600"
-            }`}
-            title={getFullDate(dueDate)}
-          >
-            Due {formatDueDate(dueDate)}
+
+        <div className="flex flex-col gap-1">
+          {/* Relative deadline */}
+          <div className="flex items-center gap-2">
+            <ClockIcon className="h-3 w-3 text-muted-foreground" />
+            <p
+              className={`text-xs font-medium ${
+                isUrgent() ? "text-red-600" : "text-orange-600"
+              }`}
+            >
+              Due {formatDueDate(dueDate)}
+            </p>
+          </div>
+
+          {/* Absolute date */}
+          <p className="text-xs text-muted-foreground">
+            📅 {getFullDate(dueDate)}
           </p>
         </div>
       </div>

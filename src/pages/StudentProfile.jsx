@@ -514,7 +514,7 @@ const getInProgressCoursesCount = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleStartCourse(course._id)}
+                        onClick={() => navigate("/portal/courses")}
                       >
                         View
                       </Button>
@@ -523,9 +523,10 @@ const getInProgressCoursesCount = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" className="w-full">
+                <Button onClick={() => navigate("/portal/courses")} variant="outline" className="w-full">
                   View All Activity
                 </Button>
+
               </CardFooter>
             </Card>
 
@@ -595,7 +596,7 @@ const getInProgressCoursesCount = () => {
                       All courses you're currently enrolled in
                     </CardDescription>
                   </div>
-                  <Button onClick={() => navigate("/portal/my-courses")}>
+                  <Button onClick={() => navigate("/portal/courses")}>
                     View All Courses
                   </Button>
                 </div>
@@ -658,7 +659,7 @@ const getInProgressCoursesCount = () => {
                         <p className="text-xs text-muted-foreground">
                           {item === 1 ? "Software Skills" : "Finance"}
                         </p>
-                        <Button
+                        <Button onClick={() => navigate("/portal/courses")}
                           variant="link"
                           size="sm"
                           className="h-6 p-0 mt-1"
@@ -821,7 +822,7 @@ const getInProgressCoursesCount = () => {
                     <p className="text-muted-foreground mb-6">
                       Complete a course to earn your first certificate
                     </p>
-                    <Button onClick={() => navigate("/portal/my-courses")}>
+                    <Button onClick={() => navigate("/portal/courses")}>
                       Continue Learning
                     </Button>
                   </div>

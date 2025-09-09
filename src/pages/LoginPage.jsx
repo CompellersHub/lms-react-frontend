@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   // Get redirect path from location state or default to portal
   const from = location.state?.from?.pathname || "/portal";
@@ -48,9 +49,13 @@ function LoginPage() {
 
     // Redirect when logged in successfully
     if (isSuccess) {
-      navigate(from, { replace: true });
+      // Check if user is a BLOGGER and redirect accordingly
+      const isBlogger = user?.role === "BLOGGER";
+      const redirectPath = isBlogger ? "/admin" : from;
+
+      navigate(redirectPath, { replace: true });
     }
-  }, [isError, isSuccess, error, navigate, from]);
+  }, [isError, isSuccess, error, navigate, from, user]);
 
   const onSubmit = async (formData) => {
     try {

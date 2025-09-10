@@ -60,6 +60,7 @@ import Index from "./pages/data-analysis-tool/Index";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBlogList from "./pages/admin/AdminBlogList";
 import AdminBlogEdit from "./pages/admin/AdminBlogEdit";
+import AdminSettings from "./pages/admin/AdminSettings";
 import BloggerRoute from "./components/admin/BloggerRoute";
 import store from "./store";
 
@@ -103,9 +104,10 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route
-              path="/password-reset-confirm/:uid/:token"
+              path="/courses/password-reset/confirm"
               element={<ResetPasswordConfirmPage />}
             />
+
             {/* Portal Routes - Kept flat as in historical version */}
             <Route
               path="/portal"
@@ -243,6 +245,7 @@ function App() {
               <Route path="blog/list" element={<AdminBlogList />} />
               <Route path="blog/create" element={<AdminBlogUpload />} />
               <Route path="blog/edit/:id" element={<AdminBlogEdit />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
             {/* Data Analysis Tool - UPDATED: Now supports multiple tables with persistence */}
             <Route path="/analysis" element={<Index />} />

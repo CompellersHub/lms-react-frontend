@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout, updateTokens } from "../store/slices/authSlice"; // Import logout and updateTokens
 
 // Define our API base URL
-export const baseUrl = import.meta.env.VITE_BASE_URL || "https://api.titanscareers.com";
+export const baseUrl =
+  import.meta.env.VITE_BASE_URL || "https://api.titanscareers.com";
 
 // Custom baseQuery with re-authentication logic
 const baseQuery = fetchBaseQuery({
@@ -271,7 +272,7 @@ export const api = createApi({
     // Request Password Reset Email
     requestPasswordReset: builder.mutation({
       query: (email) => ({
-        url: "/api/password_reset/",
+        url: "/courses/password-reset/request/",
         method: "POST",
         body: email,
       }),
@@ -280,9 +281,18 @@ export const api = createApi({
     // Confirm Password Reset with Token
     confirmPasswordReset: builder.mutation({
       query: (data) => ({
-        url: "/customuser/password-reset-confirm/",
+        url: "/courses/password-reset/confirm/",
         method: "POST",
         body: data,
+      }),
+    }),
+
+    // Reset Password with Token
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: "/courses/password-reset/confirm/",
+        method: "POST",
+        body: data, // { password, token }
       }),
     }),
 
@@ -318,5 +328,6 @@ export const {
   useSendGuideMutation,
   useRequestPasswordResetMutation,
   useConfirmPasswordResetMutation,
+  useResetPasswordMutation,
   useRefreshTokenMutation, // Export the new hook
 } = api;

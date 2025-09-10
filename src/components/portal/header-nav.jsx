@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-
 import { useGetOngoingLiveClassesQuery } from "@/services/coursesApi";
 
 export default function HeaderNav({ onMenuClick, showMenuButton }) {
@@ -24,7 +23,6 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
 
   const [showSearch, setShowSearch] = useState(false);
 
-  
   const notificationCount = 3;
 
   const getInitials = (name) => {
@@ -37,12 +35,11 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
       .substring(0, 2);
   };
 
-  
   const liveClass = ongoingClasses.length > 0 ? ongoingClasses[0] : null;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
-      
+      {/* Live class banner */}
       {liveClass && (
         <div className="w-full bg-red-600 text-white px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm font-medium">
@@ -56,14 +53,14 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
             size="sm"
             variant="secondary"
             className="bg-white text-red-600 hover:bg-gray-100"
-            onClick={() => (window.location.href = liveClass.link)}
+            onClick={() => window.open(liveClass.link, "_blank")}
           >
             <Radio className="h-4 w-4 mr-1" /> Join Now
           </Button>
         </div>
       )}
 
-    
+      {/* Header content */}
       <div className="flex h-16 items-center px-4 md:px-6">
         {showMenuButton && (
           <Button
@@ -107,6 +104,7 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
             </Button>
           )}
 
+          {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
             {notificationCount > 0 && (
@@ -120,6 +118,7 @@ export default function HeaderNav({ onMenuClick, showMenuButton }) {
             <span className="sr-only">Notifications</span>
           </Button>
 
+          {/* Profile menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">

@@ -522,6 +522,8 @@ export default function LiveClassesSchedule() {
                           </Button>
                         )}
                       </CardFooter>
+
+                      
                     </Card>
                   );
                 })}

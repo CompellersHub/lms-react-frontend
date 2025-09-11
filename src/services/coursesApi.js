@@ -44,7 +44,7 @@ export const coursesApi = createApi({
     "LiveClass",
     "Event",
     "Consultation",
-    "Deadline", // ✅ added
+    "Deadline",
   ],
   endpoints: (builder) => ({
     // 📚 Courses
@@ -97,7 +97,6 @@ export const coursesApi = createApi({
       providesTags: (result, error, id) => [{ type: "Assignment", id }],
     }),
 
-    // ✅ Assignments per student course (with submitted flag)
     getAssignmentsForStudentCourse: builder.query({
       async queryFn({ userId, courseId }, _queryApi, _extraOptions, baseQuery) {
         const studentRes = await baseQuery(`/customuser/student/${userId}/`);
@@ -148,7 +147,12 @@ export const coursesApi = createApi({
 
     // 📦 Orders & Enrollment
     getEnrolledCourses: builder.query({
-      query: (id) => `/customuser/student/${id}/`,
+      async queryFn(_arg, { getState }, _extraOptions, baseQuery) {
+        const id = getState().auth.user?.id;
+        if (!id) return { error: { status: 400, data: "User ID not found" } };
+        const res = await baseQuery(`/customuser/student/${id}/`);
+        return res.error ? { error: res.error } : { data: res.data };
+      },
       providesTags: ["Order"],
     }),
 
@@ -244,16 +248,23 @@ export const coursesApi = createApi({
 
     // 👤 Student Profile
     getStudentProfile: builder.query({
-      query: () => `/student_profile/profile/`,
+      query: () => `/student_profile/profile/`, // ✅ fetch own profile
       providesTags: [{ type: "Profile", id: "CURRENT" }],
     }),
 
     updateStudentProfile: builder.mutation({
-      query: (profileData) => ({
-        url: `/student_profile/profile/`,
-        method: "PUT", // or "PATCH" depending on your backend
-        body: profileData,
-      }),
+      async queryFn(profileData, { getState }, _extraOptions, baseQuery) {
+        const id = getState().auth.user?.id; // 👈 current logged in user
+        if (!id) return { error: { status: 400, data: "User ID not found" } };
+
+        const result = await baseQuery({
+          url: `/customuser/student/${id}/`,
+          method: "PATCH", // ✅ use PATCH instead of PUT
+          body: profileData, // only send the fields you want to update
+        });
+
+        return result.error ? { error: result.error } : { data: result.data };
+      },
       invalidatesTags: [{ type: "Profile", id: "CURRENT" }],
     }),
 
@@ -295,21 +306,21 @@ export const coursesApi = createApi({
       invalidatesTags: ["Consultation"],
     }),
 
-    // ✅ Deadlines (assignments → deadlines)
+    // ✅ Deadlines
     getDeadlines: builder.query({
-      async queryFn(userId, _queryApi, _extraOptions, baseQuery) {
-        // 1. Get student profile (for enrolled courses)
-        const studentRes = await baseQuery(`/customuser/student/${userId}/`);
+      async queryFn(_arg, { getState }, _extraOptions, baseQuery) {
+        const id = getState().auth.user?.id;
+        if (!id) return { error: { status: 400, data: "User ID not found" } };
+
+        const studentRes = await baseQuery(`/customuser/student/${id}/`);
         if (studentRes.error) return { error: studentRes.error };
 
-        // 2. Get all assignments
         const assignmentRes = await baseQuery(`/courses/assignments/`);
         if (assignmentRes.error) return { error: assignmentRes.error };
 
         const enrolledCourses = studentRes.data?.enrolled_courses || [];
         const allAssignments = assignmentRes.data || [];
 
-        // 3. Filter assignments for enrolled courses only
         const deadlines = allAssignments
           .filter((a) =>
             enrolledCourses.some((c) => String(c.id) === String(a.course?.id))
@@ -355,5 +366,5 @@ export const {
   useGetEventsQuery,
   useRegisterForEventMutation,
   useRegisterForConsultationMutation,
-  useGetDeadlinesQuery, // ✅ new hook
+  useGetDeadlinesQuery,
 } = coursesApi;

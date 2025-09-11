@@ -11,7 +11,6 @@ import Layout from "./components/Layout";
 import AdminLayout from "./components/admin/AdminLayout";
 
 // Components
-import { WhatsAppButton } from "./components/WhatsAppButton";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { WorkshopEvents } from "./pages/WorkshopEvents";
 
@@ -63,6 +62,7 @@ import AdminBlogEdit from "./pages/admin/AdminBlogEdit";
 import AdminSettings from "./pages/admin/AdminSettings";
 import BloggerRoute from "./components/admin/BloggerRoute";
 import store from "./store";
+import ChatbotWidget from "./components/ChatbotWidget";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -304,7 +304,7 @@ function App() {
           {/* Global Components */}
           <Toaster />
           <ToastContainer />
-          <WhatsAppButton />
+          <ChatbotWidget />
         </Router>
       </GoogleOAuthProvider>
     </Provider>

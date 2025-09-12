@@ -12,7 +12,7 @@ const fullReviews = [
 	},
 	{
 		title: "My Legal Prowess, Reimagined for Compliance!",
-		text: `My legal background gave me a strong foundation, but I felt a missing piece in my career puzzle—a specialization that could elevate my impact. Titans Careers filled that void and so much more. This program wasn't just about learning; it was about strategically reimagining my skills. I gained the in-depth AML/KYC insights that propelled me into an influential Conflict Analyst role, where I'm driving critical decisions and seeing a remarkable progression in my career and income. It was the most strategic, life-affirming move I ever made!`,
+		text: `My legal background gave me a strong foundation, but I felt a missing piece in my career puzzle,a specialization that could elevate my impact. Titans Careers filled that void and so much more. This program wasn't just about learning; it was about strategically reimagining my skills. I gained the in-depth AML/KYC insights that propelled me into an influential Conflict Analyst role, where I'm driving critical decisions and seeing a remarkable progression in my career and income. It was the most strategic, life-affirming move I ever made!`,
 		author: "Rasheed P., Conflict Analyst",
 	},
 	{
@@ -22,7 +22,7 @@ const fullReviews = [
 	},
 	{
 		title: "Accelerating Ambition: My Leap to AML Leadership!",
-		text: `As a seasoned banker, I was good, but I aspired for greatness—to lead in the critical domain of AML. Titans Careers provided the fast-track. This wasn't just a course; it was an immersive journey into the heart of UK banking regulations, arming me with unparalleled insights and the specific compliance skillset to advance. I effortlessly transitioned into a crucial AML Specialist role, enjoying greater influence, a higher earning potential, and the satisfaction of shaping financial security. It's an investment that pays dividends daily!`,
+		text: `As a seasoned banker, I was good, but I aspired for greatness,to lead in the critical domain of AML. Titans Careers provided the fast-track. This wasn't just a course; it was an immersive journey into the heart of UK banking regulations, arming me with unparalleled insights and the specific compliance skillset to advance. I effortlessly transitioned into a crucial AML Specialist role, enjoying greater influence, a higher earning potential, and the satisfaction of shaping financial security. It's an investment that pays dividends daily!`,
 		author: "Wunmi T., AML Specialist",
 	},
 	{
@@ -32,7 +32,7 @@ const fullReviews = [
 	},
 	{
 		title: "Unlocking Potential: My Administrative Ascent!",
-		text: `I once believed my background in care limited my professional horizons, but Titans Careers completely shattered that misconception. They showed me the incredible transferability of my skills—my empathy, my organization, my dedication. This program provided the clear structure and comprehensive knowledge I needed to make a successful, confident transition into an administrative position. It wasn't just a career change; it was an awakening to my true potential, leading to a stable, rewarding role I truly cherish.`,
+		text: `I once believed my background in care limited my professional horizons, but Titans Careers completely shattered that misconception. They showed me the incredible transferability of my skills,my empathy, my organization, my dedication. This program provided the clear structure and comprehensive knowledge I needed to make a successful, confident transition into an administrative position. It wasn't just a career change; it was an awakening to my true potential, leading to a stable, rewarding role I truly cherish.`,
 		author: "James K., Office Administrator",
 	},
 	{
@@ -43,7 +43,7 @@ const fullReviews = [
 	{
 		title: "Educator's Evolution: Leading in Compliance!",
 		text: `After years in academia, I yearned for a dynamic career where I could leverage my expertise in a new, impactful way. The comprehensive training at Titans Careers was the springboard I needed. Beyond the robust curriculum, their unparalleled career support provided the confidence and connections to navigate a successful transition. I am now thriving as a Senior Compliance Consultant, leading critical projects and enjoying the profound satisfaction of a truly invaluable career evolution. It's been an incredible journey of growth and achievement!`,
-		author: "Professor Alex C., Senior Compliance Consultant",
+		author: "Dr. Alex C., Senior Compliance Consultant",
 	},
 ];
 

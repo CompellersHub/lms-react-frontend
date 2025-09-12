@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import campaign from "/assets/campaign.jpeg";
 import { FeaturesBanner } from "@/components/FeaturesBanner";
 import { Hero } from "@/components/Hero";
 import { CompanyLogosCarousel } from "@/components/CompanyLogosCarousel";
@@ -31,14 +32,12 @@ function HomePage() {
       <CompanyLogosCarousel />
       <StatsSection />
       <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[60vh] h-[60vh] flex items-center justify-center bg-white overflow-hidden">
-        <video
-          src="https://titanscareers.s3.eu-north-1.amazonaws.com/videos/Meeting+Landing+Page+1.mov"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
+        <img 
+          src={campaign} 
+          alt="campaign" 
+          className="w-full h-full object-cover" 
           style={{ display: 'block' }}
+          onClick={() => setIsModalOpen(true)}
         />
         <button
           onClick={() => setIsModalOpen(true)}
@@ -53,20 +52,13 @@ function HomePage() {
       {/* Consultation Banner */}
       <div
         onClick={() => setIsConsultationModalOpen(true)}
-        className="cursor-pointer relative w-full min-h-[240px] flex items-center justify-center overflow-hidden"
+        className="cursor-pointer"
       >
-        <video
-          src="https://titanscareers.s3.eu-north-1.amazonaws.com/videos/Free+Registration+Masterclass.mov"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
+        <img
+          src="/assets/consultation.png"
+          alt="Book a Free Consultation"
+          className=""
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-white text-7xl font-bold drop-shadow-lg">Book a Free Consultation</span>
-          
-        </div>
       </div>
       <EventsCarousel />
       <PlatformFeatures />

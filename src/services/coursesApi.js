@@ -254,13 +254,24 @@ export const coursesApi = createApi({
 
     updateStudentProfile: builder.mutation({
       async queryFn(profileData, { getState }, _extraOptions, baseQuery) {
-        const id = getState().auth.user?.id; // 👈 current logged in user
+        const id = getState().auth.user?.id;
         if (!id) return { error: { status: 400, data: "User ID not found" } };
+
+        // ✅ only send allowed fields (avoid id, course, etc.)
+        const allowedFields = ["first_name", "last_name", "phone_number"];
+        const cleanData = Object.fromEntries(
+          Object.entries(profileData).filter(
+            ([key, value]) =>
+              allowedFields.includes(key) && value !== undefined && value !== null
+          )
+        );
+
+        console.log("PATCH body:", cleanData);
 
         const result = await baseQuery({
           url: `/customuser/student/${id}/`,
-          method: "PATCH", // ✅ use PATCH instead of PUT
-          body: profileData, // only send the fields you want to update
+          method: "PATCH",
+          body: cleanData,
         });
 
         return result.error ? { error: result.error } : { data: result.data };

@@ -151,7 +151,7 @@ function CoursesPage() {
                   </div>
                 </div>
 
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-1 justify-between">
                   <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 min-h-[2.5rem]">
                     {course.name}
                   </h3>
@@ -200,24 +200,6 @@ function CoursesPage() {
                     )}
                   </div>
 
-                  {/* <div className="flex items-center mb-4">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < Math.floor(course.rating)
-                              ? "text-secondary fill-current"
-                              : "text-foreground/30"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-foreground/70 ml-2">
-                      ({course.reviews} reviews)
-                    </span>
-                  </div> */}
-
                   <div className="mt-auto space-y-3">
                     <div className="flex flex-col">
                       <div className="flex items-center justify-between">
@@ -259,16 +241,33 @@ function CoursesPage() {
 
         <div
           onClick={() => setIsModalOpen(true)}
-          className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer space-y-2"
+          className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer flex flex-col h-full"
         >
-          <img
-            src="/assets/masterclass.jpeg"
-            alt="Masterclass Registration"
-            className="w-full h-[80%] object-cover transition-transform duration-300 hover:scale-105"
-          />
-          <Button className="bg-secondary text-foreground hover:bg-secondary/90 rounded-ful text-sm font-semibold shadow-xl transition-all duration-300 w-full">
-            Enroll Now
-          </Button>
+          <div className="relative h-48 overflow-hidden">
+            <img
+              src="/assets/masterclass.jpeg"
+              alt="Masterclass Registration"
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+          <div className="p-6 flex flex-col flex-1 justify-between">
+            <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 min-h-[2.5rem]">
+              Free Masterclass
+            </h3>
+            <p className="text-foreground/80 text-sm mb-2 line-clamp-3 min-h-[3.75rem]">
+              Not ready to enroll? No problem. Join our free Titans Careers masterclass and explore practical skills before making a decision!
+            </p>
+            <div className="flex items-center mb-4">
+              <Clock className="h-4 w-4 text-foreground/60 mr-1" />
+              <span className="text-sm text-foreground/70">2 hours</span>
+            </div>
+            <div className="flex items-center mb-4">
+              <span className="text-sm text-foreground/60 italic">Titans Careers</span>
+            </div>
+            <Button className="bg-secondary text-foreground hover:bg-secondary/90 rounded-md text-sm font-semibold shadow-xl transition-all duration-300 w-full mt-4 py-2 px-4 min-h-[40px]">
+              Enroll Now
+            </Button>
+          </div>
         </div>
       </div>
 

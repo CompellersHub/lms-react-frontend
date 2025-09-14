@@ -110,47 +110,55 @@ export function WorkshopEvents() {
       )}
 
       {/* Hero Section */}
-      <div className="py-20 px-6 md:px-12 lg:px-16 bg-primary/10 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Professional Training Series: Expert-Led Workshops
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Intensive masterclasses designed to maximize your professional
-            growth and industry expertise
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button
-              className="bg-primary hover:bg-primary/90 px-8 py-6 rounded-full text-lg"
-              onClick={() => handleRegisterClick(null)}
-            >
-              Register Now
-            </Button>
-            <Button
-              variant="outline"
-              className="px-8 py-6 rounded-full text-lg"
-              onClick={scrollToWorkshops}
-            >
-              Learn More
-            </Button>
-          </div>
-
-          {/* Live Session Join Button */}
-          {hasLive && (
-            <JoinLiveButton
-              session={liveSession}
-              onJoinClick={handleJoinLive}
-            />
-          )}
-
-          {/* Countdown Timer for BLOGGER role */}
-          {user?.role === "BLOGGER" && upcomingLiveSession?.startTime && (
-            <div className="mt-8">
-              <CountdownTimer targetDate={upcomingLiveSession.startTime} />
-            </div>
-          )}
-        </div>
+      <div className="relative w-full min-h-[390px] flex items-center justify-center overflow-hidden">
+  {/* <video
+    autoPlay
+    loop
+    muted
+    playsInline
+    className="absolute inset-0 w-full h-full object-cover z-0"
+    src="https://titanscareers.s3.eu-north-1.amazonaws.com/videos/Professional+Training+Series+Page.mov"
+  /> */}
+  <div className="relative z-10 w-full px-6 md:px-12 lg:px-16 py-20 text-center flex flex-col items-center justify-cente bg-primary/10">
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-4xl md:text-5xl font-bold text-gray-950 mb-6 drop-shadow-lg">
+        Professional Training Series: Expert-Led Workshops
+      </h1>
+      <p className="text-xl text-gray-950 mb-8 drop-shadow">
+        Intensive masterclasses designed to maximize your professional
+        growth and industry expertise
+      </p>
+      <div className="flex flex-wrap justify-center gap-4">
+        <Button
+          className="bg-primary hover:bg-primary/90 px-8 py-6 rounded-full text-lg shadow-xl"
+          onClick={() => handleRegisterClick(null)}
+        >
+          Register Now
+        </Button>
+        <Button
+          variant="outline"
+          className="px-8 py-6 rounded-full text-lg bg-white/80 backdrop-blur"
+          onClick={scrollToWorkshops}
+        >
+          Learn More
+        </Button>
       </div>
+      {/* Live Session Join Button */}
+      {hasLive && (
+        <JoinLiveButton
+          session={liveSession}
+          onJoinClick={handleJoinLive}
+        />
+      )}
+      {/* Countdown Timer for BLOGGER role */}
+      {user?.role === "BLOGGER" && upcomingLiveSession?.startTime && (
+        <div className="mt-8">
+          <CountdownTimer targetDate={upcomingLiveSession.startTime} />
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
       {/* Workshops Grid */}
       <div

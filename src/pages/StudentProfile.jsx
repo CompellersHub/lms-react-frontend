@@ -88,6 +88,7 @@ const [updateProfile, { isLoading: isSaving }] =
   useUpdateStudentProfileMutation();
    
 
+
 useEffect(() => {
   const fetchProgress = async () => {
     if (enrolledCourses.length === 0) return;
@@ -104,7 +105,6 @@ useEffect(() => {
   fetchProgress();
 }, [enrolledCourses, currentUserId, baseUrl]);
 
-
 useEffect(() => {
   if (studentData) {
     setFormData({
@@ -117,7 +117,6 @@ useEffect(() => {
     });
   }
 }, [studentData]);
-
 
 
 const calculateOverallProgress = () => {

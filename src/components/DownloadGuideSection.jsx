@@ -9,9 +9,9 @@ function DownloadGuideSection() {
       <a
         href="#"
         download
-        className="absolute bottom-3 left-15 w-1/2 py-5 bg-yellow-400 text-black font-bold text-5xl text-center rounded-xl shadow-xl hover:bg-yellow-500 transition-all duration-300"
+        className="absolute bottom-8 left-15 w-cover p-5 py-2 bg-yellow-400 text-black font-bold text-5xl text-center rounded-xl shadow-xl hover:bg-yellow-500 transition-all duration-300"
       >
-        Download Free Uk Career Guide
+        Download
       </a>
     </section>
   );

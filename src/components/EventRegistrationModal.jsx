@@ -27,6 +27,7 @@ import { parseEventDate } from "@/utils/dateUtils";
 export function EventRegistrationModal({ isOpen, onClose, event }) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("")
   const [selectedEventId, setSelectedEventId] = useState(event?.id || "");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
@@ -98,6 +99,16 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+            <div className="grid gap-2">
+            <Label htmlFor="Phone">Phone</Label>
+            <Input
+              id="Phone"
+              type="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
           </div>

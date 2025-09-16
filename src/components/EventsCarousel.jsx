@@ -198,7 +198,7 @@ export function EventsCarousel() {
                             </div>
                             {event.course.level && (
                               <div className="text-xs text-foreground/60 mt-1">
-                                Level: {event.course.level}
+                                Level: {"Beginners Friendly"}
                               </div>
                             )}
                           </div>

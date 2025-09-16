@@ -41,7 +41,7 @@ function HomePage() {
         />
         <button
           onClick={() => setIsModalOpen(true)}
-          className="absolute bottom-8 right-8 px-6 py-3 bg-primary text-white rounded-full shadow-lg text-lg font-semibold hover:bg-primary/90 transition-all duration-200 z-10"
+          className="absolute bottom-8 right-8 px-6 py-3 bg-primary text-white rounded-xl shadow-lg text-lg font-semibold hover:bg-primary/90 transition-all duration-200 z-10"
         >
           Register
         </button>

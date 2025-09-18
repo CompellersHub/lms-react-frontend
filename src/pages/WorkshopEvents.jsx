@@ -111,20 +111,20 @@ export function WorkshopEvents() {
 
       {/* Hero Section */}
       <div className="relative w-full min-h-[390px] flex items-center justify-center overflow-hidden">
-  {/* <video
+  <video
     autoPlay
     loop
     muted
     playsInline
     className="absolute inset-0 w-full h-full object-cover z-0"
-    src="https://titanscareers.s3.eu-north-1.amazonaws.com/videos/Professional+Training+Series+Page.mov"
-  /> */}
+    src="https://titanscareers.s3.eu-north-1.amazonaws.com/videos/VID-20250917-WA0086.mp4"
+  />
   <div className="relative z-10 w-full px-6 md:px-12 lg:px-16 py-20 text-center flex flex-col items-center justify-cente bg-primary/10 ">
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-4xl md:text-5xl font-bold text-gray-950 mb-6 drop-shadow-lg">
+      <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
         Professional Training Series: Expert-Led Workshops
       </h1>
-      <p className="text-xl text-gray-950 mb-8 drop-shadow">
+      <p className="text-xl text-white mb-8 drop-shadow">
         Intensive masterclasses designed to maximize your professional
         growth and industry expertise
       </p>

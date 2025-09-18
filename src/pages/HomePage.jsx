@@ -51,14 +51,28 @@ function HomePage() {
       <CourseIntroVideos />
       {/* Consultation Banner */}
       <div
-        onClick={() => setIsConsultationModalOpen(true)}
-        className="cursor-pointer"
+        className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[40vh] h-[40vh] flex items-center justify-center bg-black overflow-hidden"
       >
-        <img
-          src="/assets/consultation.png"
-          alt="Book a Free Consultation"
-          className=""
+        <video
+          src="https://titanscareers.s3.eu-north-1.amazonaws.com/videos/VID-20250917-WA0087.mp4"
+          poster="/assets/consultation.png"
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{ display: 'block' }}
         />
+        <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+      </div>
+      {/* Book a Free Consultation Button (after video, before events) */}
+      <div className="flex justify-center my-8">
+        <button
+          onClick={() => setIsConsultationModalOpen(true)}
+          className="px-10 py-4 bg-primary text-white rounded-full shadow-lg text-xl font-bold hover:bg-primary/90 transition-all duration-200"
+        >
+          Book a Free Consultation
+        </button>
       </div>
       <EventsCarousel />
       <PlatformFeatures />

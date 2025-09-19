@@ -13,6 +13,7 @@ import {
   LogOutIcon,
   UserIcon,
   FolderKanban,
+  FileCheck2Icon, // ⬅️ new icon for Quiz
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLogoutMutation } from "@/services/api";
@@ -47,6 +48,26 @@ function NavItem({ href, active, icon, children, onClick, badge }) {
     }
   };
 
+  // allow external links with <a>
+  const isExternal = href?.startsWith("http");
+
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn(
+          "flex items-center px-4 py-2.5 text-sidebar rounded-md transition-colors !no-scrollbar",
+          "hover:bg-primary/5 text-primary/90"
+        )}
+      >
+        <span className="mr-3 text-primary/80">{icon}</span>
+        <span>{children}</span>
+      </a>
+    );
+  }
+
   return (
     <Link
       to={href}
@@ -60,7 +81,7 @@ function NavItem({ href, active, icon, children, onClick, badge }) {
     >
       <span className="mr-3 text-primary/80">{icon}</span>
       <span>{children}</span>
-      {badge > 0 && ( // only show badge if > 0
+      {badge > 0 && (
         <Badge variant="secondary" className="ml-auto">
           {badge}
         </Badge>
@@ -177,6 +198,17 @@ export default function SidebarNav() {
           >
             Assignments
           </NavItem>
+
+      
+
+          <NavItem
+          href="https://titans-quiz.vercel.app/"
+         icon={<FileCheck2Icon className="h-5 w-5" />}
+        >
+         Quiz
+           </NavItem>
+
+
           <NavItem
             href="/portal/live-classes"
             active={location.pathname.includes("/portal/live-classes")}
@@ -215,7 +247,7 @@ export default function SidebarNav() {
             href="/portal/notifications"
             active={location.pathname.includes("/portal/notifications")}
             icon={<BellIcon className="h-5 w-5" />}
-            badge={unreadCount} // ✅ coming from websocket hook
+            badge={unreadCount}
           >
             Notifications
           </NavItem>

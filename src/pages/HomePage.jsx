@@ -41,7 +41,7 @@ function HomePage() {
         />
         <button
           onClick={() => setIsModalOpen(true)}
-          className="absolute bottom-8 right-8 px-6 py-3 bg-primary text-white rounded-xl shadow-lg text-lg font-semibold hover:bg-primary/90 transition-all duration-200 z-10"
+          className="font-sans absolute bottom-8 right-8 px-6 py-3 bg-primary text-white rounded-xl shadow-lg text-lg font-semibold hover:bg-primary/90 transition-all duration-200 z-10"
         >
           Register
         </button>
@@ -49,9 +49,9 @@ function HomePage() {
       <WhyChooseUs />
       {/* <ProjectsCarousel /> */}
       <CourseIntroVideos />
-      {/* Consultation Banner */}
+      {/* Consultation Banner - Panoramic Video with Button Inside */}
       <div
-        className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[40vh] h-[40vh] flex items-center justify-center bg-black overflow-hidden"
+        className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[56vh] h-[56vh] flex items-center justify-center bg-black overflow-hidden"
       >
         <video
           src="https://titanscareers.s3.eu-north-1.amazonaws.com/videos/VID-20250917-WA0087.mp4"
@@ -64,12 +64,9 @@ function HomePage() {
           style={{ display: 'block' }}
         />
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
-      </div>
-      {/* Book a Free Consultation Button (after video, before events) */}
-      <div className="flex justify-center my-8">
         <button
           onClick={() => setIsConsultationModalOpen(true)}
-          className="px-10 py-4 bg-primary text-white rounded-full shadow-lg text-xl font-bold hover:bg-primary/90 transition-all duration-200"
+          className=" absolute bottom-10 left-10 px-10 py-4 bg-primary text-white rounded-full shadow-lg text-xl font-bold hover:bg-primary/90 transition-all duration-200 z-10 font-sans"
         >
           Book a Free Consultation
         </button>

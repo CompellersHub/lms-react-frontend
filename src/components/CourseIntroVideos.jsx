@@ -12,8 +12,7 @@ import Spinner from "./Spinner";
 export function CourseIntroVideos() {
   const [activeVideoId, setActiveVideoId] = useState(null);
   const sliderRef = useRef(null);
-  const [sectionRef, isInView] = useInView({ threshold: 0.3 });
-  const hasInitializedRef = useRef(false);
+  const [sectionRef] = useInView({ threshold: 0.3 });
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideCount, setSlideCount] = useState(0);
 
@@ -21,26 +20,6 @@ export function CourseIntroVideos() {
 
   // Fetch courses using RTK Query
   const { data: courses = [], error } = useGetAllCoursesQuery();
-
-  // Handle autoplay of first video when section comes into view
-  useEffect(() => {
-    if (
-      isInView &&
-      !hasInitializedRef.current &&
-      courses.length > 0 &&
-      activeVideoId === null
-    ) {
-      const timer = setTimeout(() => {
-        // Auto-play first video if it has a preview_id
-        if (courses[0].preview_id) {
-          setActiveVideoId(courses[0].id);
-        }
-        hasInitializedRef.current = true;
-      }, 500); // Slightly longer delay for smooth auto-play
-
-      return () => clearTimeout(timer);
-    }
-  }, [isInView, courses, activeVideoId]);
 
   // Stop video when slider changes
   const handleBeforeChange = useCallback(() => {
@@ -186,7 +165,7 @@ export function CourseIntroVideos() {
             </p>
             <Link
               to="/courses"
-              className="inline-block mt-6 px-8 py-3 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors duration-300 font-medium"
+              className="font-sans inline-block mt-6 px-8 py-3 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors duration-300 font-medium"
             >
               View All Courses
             </Link>
@@ -216,7 +195,7 @@ export function CourseIntroVideos() {
           {/* Left Arrow */}
           <button
             onClick={goToPrev}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -ml-4 transition-all duration-200 ease-in-out focus:outline-none
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -ml-4 transition-all duration-200 ease-in-out focus:outline-none font-sans
                        ${
                          isPrevArrowDisabled
                            ? "cursor-not-allowed opacity-50"
@@ -247,7 +226,6 @@ export function CourseIntroVideos() {
                             videoUrl={course.preview_id}
                             title={`${course.name} Preview`}
                             className="h-48 w-full"
-                            autoPlay={true} // Auto-play when video becomes active
                           />
                         ) : (
                           // Show image with play overlay when not active
@@ -270,7 +248,7 @@ export function CourseIntroVideos() {
                               <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                 <button
                                   onClick={() => handleVideoToggle(course.id)}
-                                  className="bg-white bg-opacity-90 text-primary p-4 rounded-full hover:bg-opacity-100 transition-all duration-200 transform hover:scale-110"
+                                  className="bg-white bg-opacity-90 text-primary font-sans p-4 rounded-full hover:bg-opacity-100 transition-all duration-200 transform hover:scale-110"
                                   aria-label={
                                     activeVideoId === course.id
                                       ? "Pause video"
@@ -342,7 +320,7 @@ export function CourseIntroVideos() {
           {/* Right Arrow */}
           <button
             onClick={goToNext}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -mr-4 transition-all duration-200 ease-in-out focus:outline-none
+            className={`absolute right-0 top-1/2 -translate-y-1/2 font-sans z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -mr-4 transition-all duration-200 ease-in-out focus:outline-none
                        ${
                          isNextArrowDisabled
                            ? "cursor-not-allowed opacity-50"

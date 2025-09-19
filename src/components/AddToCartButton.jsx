@@ -69,7 +69,7 @@ function AddToCartButton({ course }) {
   return (
     <Button
       onClick={handleAddToCart}
-      className={`flex items-center gap-2 ${
+      className={`font-sans flex items-center gap-2 ${
         isInCart
           ? "bg-green-600 text-white hover:bg-green-700"
           : "bg-primary text-white hover:bg-primary/90"

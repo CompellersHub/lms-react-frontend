@@ -67,7 +67,7 @@ export function JoinLiveButton({
           "bg-red-500 hover:bg-red-600 text-white font-bold",
           "px-8 py-6 rounded-full text-lg shadow-lg",
           "transform hover:scale-105 transition-all duration-200",
-          "flex items-center gap-2"
+          "flex items-center gap-2 font-sans"
         )}
         aria-label={`Join live masterclass: ${session.title}`}
       >
@@ -118,7 +118,7 @@ export function LiveSessionBanner({ session, onJoinClick, onDismiss }) {
             onClick={handleJoinClick}
             variant="secondary"
             size="sm"
-            className="bg-white text-red-600 hover:bg-red-50 font-semibold text-sm"
+            className="font-sans bg-white text-red-600 hover:bg-red-50 font-semibold text-sm"
             aria-label={`Join live session: ${session.title}`}
           >
             <Radio className="h-4 w-4 mr-1" aria-hidden="true" />
@@ -128,7 +128,7 @@ export function LiveSessionBanner({ session, onJoinClick, onDismiss }) {
           {onDismiss && (
             <button
               onClick={onDismiss}
-              className="text-white hover:text-red-200 transition-colors text-xl leading-none"
+              className="font-sans text-white hover:text-red-200 transition-colors text-xl leading-none"
               aria-label="Dismiss live session banner"
             >
               ×

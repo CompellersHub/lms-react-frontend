@@ -23,11 +23,12 @@ import {
 } from "@/services/coursesApi";
 import { Checkbox } from "./ui/checkbox";
 import { parseEventDate } from "@/utils/dateUtils";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 export function EventRegistrationModal({ isOpen, onClose, event }) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("")
+  const [phone, setPhone] = useState("");
   const [selectedEventId, setSelectedEventId] = useState(event?.id || "");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
@@ -102,13 +103,15 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
               required
             />
           </div>
-            <div className="grid gap-2">
+          <div className="grid gap-2">
             <Label htmlFor="Phone">Phone</Label>
-            <Input
+            <PhoneInput
               id="Phone"
-              type="Phone"
+              international
+              defaultCountry="GB"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={setPhone}
+              className="rounded-md border px-3 py-2 text-base w-full bg-white"
               required
             />
           </div>
@@ -179,7 +182,7 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full font-sans"
             disabled={isLoading || !agreedToTerms}
           >
             {isLoading ? "Registering..." : "Submit"}

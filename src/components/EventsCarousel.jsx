@@ -109,7 +109,7 @@ export function EventsCarousel() {
           {/* Left Arrow */}
           <button
             onClick={goToPrev}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -ml-4 transition-all duration-200 ease-in-out focus:outline-none
+            className={`font-sans absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -ml-4 transition-all duration-200 ease-in-out focus:outline-none
                      ${
                        isPrevArrowDisabled
                          ? "cursor-not-allowed opacity-50"
@@ -206,7 +206,7 @@ export function EventsCarousel() {
                         )}
                         <div className="mt-auto">
                           <Button
-                            className="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm py-2 px-4 mt-4"
+                            className="font-sans w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm py-2 px-4 mt-4"
                             onClick={() => handleRegisterClick(event)}
                           >
                             Enroll Now
@@ -223,7 +223,7 @@ export function EventsCarousel() {
           {/* Right Arrow */}
           <button
             onClick={goToNext}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -ml-4 transition-all duration-200 ease-in-out focus:outline-none
+            className={`font-sans absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md -ml-4 transition-all duration-200 ease-in-out focus:outline-none
                      ${
                        isNextArrowDisabled
                          ? "cursor-not-allowed opacity-50"

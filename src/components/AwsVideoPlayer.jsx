@@ -154,6 +154,7 @@ function AwsVideoPlayer({
         onCanPlay={() => setIsLoading(false)}
         preload="metadata"
         playsInline
+        controls={false}
       />
 
       {/* Loading overlay */}
@@ -167,7 +168,7 @@ function AwsVideoPlayer({
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <button
           onClick={handlePlayPause}
-          className="bg-black bg-opacity-50 text-white p-4 rounded-full hover:bg-opacity-75 transition-all duration-200"
+          className="font-sans bg-black bg-opacity-50 text-white p-4 rounded-full hover:bg-opacity-75 transition-all duration-200"
           aria-label={isPlaying ? "Pause video" : "Play video"}
         >
           {isPlaying ? (
@@ -178,62 +179,64 @@ function AwsVideoPlayer({
         </button>
       </div>
 
-      {/* Controls */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        {/* Progress bar */}
-        <div
-          className="w-full h-2 bg-white bg-opacity-30 rounded-full mb-3 cursor-pointer"
-          onClick={handleSeek}
-        >
+      {/* Controls - only show when not playing */}
+      {!isPlaying && (
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {/* Progress bar */}
           <div
-            className="h-full bg-white rounded-full transition-all duration-200"
-            style={{
-              width: `${duration ? (currentTime / duration) * 100 : 0}%`,
-            }}
-          />
-        </div>
-
-        {/* Control buttons */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={handlePlayPause}
-              className="text-white hover:text-gray-300 transition-colors"
-              aria-label={isPlaying ? "Pause" : "Play"}
-            >
-              {isPlaying ? (
-                <Pause className="h-5 w-5" />
-              ) : (
-                <Play className="h-5 w-5" />
-              )}
-            </button>
-
-            <button
-              onClick={handleMuteToggle}
-              className="text-white hover:text-gray-300 transition-colors"
-              aria-label={isMuted ? "Unmute" : "Mute"}
-            >
-              {isMuted ? (
-                <VolumeX className="h-5 w-5" />
-              ) : (
-                <Volume2 className="h-5 w-5" />
-              )}
-            </button>
-
-            <div className="text-white text-sm">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </div>
+            className="w-full h-2 bg-white bg-opacity-30 rounded-full mb-3 cursor-pointer"
+            onClick={handleSeek}
+          >
+            <div
+              className="h-full bg-white rounded-full transition-all duration-200"
+              style={{
+                width: `${duration ? (currentTime / duration) * 100 : 0}%`,
+              }}
+            />
           </div>
 
-          <button
-            onClick={handleFullscreen}
-            className="text-white hover:text-gray-300 transition-colors"
-            aria-label="Fullscreen"
-          >
-            <Maximize className="h-5 w-5" />
-          </button>
+          {/* Control buttons */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handlePlayPause}
+                className="text-white hover:text-gray-300 transition-colors font-sans"
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                {isPlaying ? (
+                  <Pause className="h-5 w-5" />
+                ) : (
+                  <Play className="h-5 w-5" />
+                )}
+              </button>
+
+              <button
+                onClick={handleMuteToggle}
+                className="text-white hover:text-gray-300 transition-colors font-sans"
+                aria-label={isMuted ? "Unmute" : "Mute"}
+              >
+                {isMuted ? (
+                  <VolumeX className="h-5 w-5" />
+                ) : (
+                  <Volume2 className="h-5 w-5" />
+                )}
+              </button>
+
+              <div className="text-white text-sm">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </div>
+            </div>
+
+            <button
+              onClick={handleFullscreen}
+              className="text-white hover:text-gray-300 transition-colors font-sans"
+              aria-label="Fullscreen"
+            >
+              <Maximize className="h-5 w-5" />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

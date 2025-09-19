@@ -14,7 +14,7 @@ const ErrorMessage = ({
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+          className="font-sans px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
         >
           {retryLabel}
         </button>

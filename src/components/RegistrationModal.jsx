@@ -24,8 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
+import PhoneInput from "@/components/ui/PhoneInput";
 
 import {
   useRegisterForConsultationMutation,
@@ -172,14 +171,16 @@ export function RegistrationModal({
 
           <div className="grid gap-2">
             <Label htmlFor="phone">Phone Number</Label>
-            <Input
+            <PhoneInput
               id="phone"
-              type="tel"
+              international
+              defaultCountry="GB"
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={setPhoneNumber}
+              className="rounded-md border px-3 py-2 text-base w-full bg-white"
               required
               disabled={isSubmitting}
-              placeholder="+234-9120-750-796"
+              placeholder="Enter phone number"
             />
           </div>
 
@@ -231,7 +232,7 @@ export function RegistrationModal({
             <div className="flex items-center justify-between space-x-4 px-4">
               <h4 className="text-sm font-semibold">Leave a message</h4>
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-9 p-0">
+                <Button variant="ghost" size="sm" className="w-9 p-0 font-sans">
                   <ChevronDown className="h-4 w-4" />
                   <span className="sr-only">Toggle message section</span>
                 </Button>

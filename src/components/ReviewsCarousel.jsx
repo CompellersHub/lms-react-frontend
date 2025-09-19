@@ -136,31 +136,33 @@ export function ReviewsCarousel() {
 											tabIndex={0}
 										>
 											{/* Front (summary) */}
-											<div className="absolute inset-0 bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-center shadow-xl p-8 [backface-visibility:hidden] h-full w-full overflow-hidden z-10">
-												<div className="flex flex-col items-center mb-4">
-													<div className="h-16 w-16 rounded-full bg-gray-100 border-2 border-primary flex items-center justify-center text-2xl font-bold text-primary mb-2">
-														{getInitials(name.trim())}
-													</div>
-													<div className="flex mb-2">
-														{[...Array(5)].map((_, i) => (
-															<Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-														))}
-													</div>
-												</div>
-												<h3 className="text-lg font-bold text-gray-900 mb-2 text-center">{review.title}</h3>
-												<p className="text-base text-gray-700 italic mb-4 line-clamp-3 px-2 text-center">{review.text}</p>
-												<div className="text-lg font-bold text-gray-900 mb-1 text-center">{name.trim()}</div>
-												{role && <div className="text-sm text-gray-500 mb-1 text-center">{role.trim()}</div>}
-												<span className="mt-2 text-xs text-primary font-semibold">Tap or hover to read more</span>
-											</div>
-											{/* Back (full review) */}
-											<div className="absolute inset-0 bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-start shadow-xl p-8 [backface-visibility:hidden] [transform:rotateY(180deg)] h-full w-full overflow-y-auto z-20">
-												<h3 className="text-lg font-bold text-gray-900 mb-3 text-center">{review.title}</h3>
-												<p className="text-base text-gray-700 italic mb-4 whitespace-pre-line px-2 text-center">{review.text}</p>
-												<div className="text-lg font-bold text-gray-900 mb-1 text-center">{name.trim()}</div>
-												{role && <div className="text-sm text-gray-500 mb-1 text-center">{role.trim()}</div>}
-												<span className="mt-2 text-xs text-primary font-semibold">Tap or hover to go back</span>
-											</div>
+<div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-blue-200 to-yellow-100 rounded-2xl border border-gray-300 flex flex-col items-center justify-center shadow-xl p-8 [backface-visibility:hidden] h-full w-full overflow-hidden z-10 text-black">
+  <div className="flex flex-col items-center mb-4">
+    <div className="h-16 w-16 rounded-full bg-black text-white border-2 border-yellow-400 flex items-center justify-center text-2xl font-bold mb-2 shadow-md">
+      {getInitials(name.trim())}
+    </div>
+    <div className="flex mb-2">
+      {[...Array(5)].map((_, i) => (
+        <Star key={i} className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+      ))}
+    </div>
+  </div>
+  <h3 className="text-lg font-bold text-black mb-2 text-center">{review.title}</h3>
+  <p className="text-base text-gray-800 italic mb-4 line-clamp-3 px-2 text-center">{review.text}</p>
+  <div className="text-lg font-bold text-black mb-1 text-center">{name.trim()}</div>
+  {role && <div className="text-sm text-gray-700 mb-1 text-center">{role.trim()}</div>}
+  <span className="mt-2 text-xs font-semibold bg-yellow-400 text-black px-3 py-1 rounded-full shadow-sm">Tap or hover to read more</span>
+</div>
+
+{/* Back (full review) */}
+<div className="absolute inset-0 bg-gradient-to-br from-yellow-100 via-blue-100 to-blue-200 rounded-2xl border border-gray-300 flex flex-col items-center justify-start shadow-xl p-8 [backface-visibility:hidden] [transform:rotateY(180deg)] h-full w-full overflow-y-auto z-20 text-black">
+  <h3 className="text-lg font-bold text-black mb-3 text-center">{review.title}</h3>
+  <p className="text-base text-gray-800 italic mb-4 whitespace-pre-line px-2 text-center">{review.text}</p>
+  <div className="text-lg font-bold text-black mb-1 text-center">{name.trim()}</div>
+  {role && <div className="text-sm text-gray-700 mb-1 text-center">{role.trim()}</div>}
+  <span className="mt-2 text-xs font-semibold bg-black text-yellow-400 px-3 py-1 rounded-full shadow-md">Tap or hover to go back</span>
+</div>
+
 										</div>
 									</div>
 								</div>

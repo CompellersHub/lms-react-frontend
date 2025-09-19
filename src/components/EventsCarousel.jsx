@@ -92,6 +92,7 @@ export function EventsCarousel() {
     <section ref={sectionRef} className="py-16 bg-gray-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
+          
           <span className="inline-block px-6 py-2 bg-primary/10 text-foreground rounded-full text-xs font-semibold uppercase tracking-wider mb-4">
             Upcoming Events
           </span>
@@ -198,7 +199,7 @@ export function EventsCarousel() {
                             </div>
                             {event.course.level && (
                               <div className="text-xs text-foreground/60 mt-1">
-                                Level: {event.course.level}
+                                Level: {"Beginners Friendly"}
                               </div>
                             )}
                           </div>

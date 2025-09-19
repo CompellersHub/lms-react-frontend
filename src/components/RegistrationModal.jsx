@@ -42,6 +42,7 @@ export function RegistrationModal({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(""); // New state for phone number
   const [message, setMessage] = useState("");
   const [selectedCourse, setSelectedCourse] = useState(""); // New state for selected course
   const [isMessageOpen, setIsMessageOpen] = useState(false);
@@ -61,6 +62,7 @@ export function RegistrationModal({
     setLastName("");
     setEmail("");
     setWhatsappNumber("");
+    setPhoneNumber(""); // Reset phone number
     setMessage("");
     setSelectedCourse(""); // Clear selected course on reset
     setIsMessageOpen(false);
@@ -103,6 +105,7 @@ export function RegistrationModal({
         lastName,
         email,
         whatsappNumber, // Map to 'whatsapp' as per API
+        phoneNumber, // New field
         message,
         course: selectedCourse, // Include selected course under the 'course' key
       };
@@ -164,6 +167,19 @@ export function RegistrationModal({
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+              disabled={isSubmitting}
+              placeholder="+234-9120-750-796"
             />
           </div>
 

@@ -19,7 +19,7 @@ export function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-4">Titans Careers</h3>
             <p className="text-blue-100 mb-4">
-              learn what sets professionals apart.
+              Learn what sets professionals apart.
             </p>
             <p className="text-blue-100">
               Specializing in high-impact masterclasses for AML/KYC Compliance,

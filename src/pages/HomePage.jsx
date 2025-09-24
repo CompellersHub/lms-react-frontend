@@ -3,7 +3,6 @@ import campaign from "/assets/campaign.jpeg";
 import { FeaturesBanner } from "@/components/FeaturesBanner";
 import { Hero } from "@/components/Hero";
 import { CompanyLogosCarousel } from "@/components/CompanyLogosCarousel";
-// import PartnerShowcase from "@/components/PartnerShowcase";
 import { ProjectsCarousel } from "@/components/ProjectsCarousel";
 import { StatsSection } from "@/components/StatsSection";
 import { PlatformFeatures } from "@/components/PlatformFeatures";
@@ -15,19 +14,118 @@ import { EventRegistrationModal } from "@/components/EventRegistrationModal";
 import { RegistrationModal } from "@/components/RegistrationModal";
 import { ConsultationSuccessModal } from "@/components/ConsultationSuccessModal";
 import { ReviewsCarousel } from "@/components/ReviewsCarousel";
+// import { useRegisterForEventMutation } from "@/services/coursesApi";
+
+// --- Add this import for the popup modal ---
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import PhoneInputLimited from "@/components/ui/PhoneInputLimited";
 
 function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
-  const [isConsultationSuccessModalOpen, setIsConsultationSuccessModalOpen] =
-    useState(false);
+  const [isConsultationSuccessModalOpen, setIsConsultationSuccessModalOpen] = useState(false);
+
+  // // --- Popup registration form state ---
+  // const [showPopup, setShowPopup] = useState(true);
+  // const [popupName, setPopupName] = useState("");
+  // const [popupEmail, setPopupEmail] = useState("");
+  // const [popupPhone, setPopupPhone] = useState("");
+  // const [popupLoading, setPopupLoading] = useState(false);
+  // const [popupStatus, setPopupStatus] = useState(null);
+
+  // const [registerForEvent] = useRegisterForEventMutation();
+
+  // const handlePopupSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setPopupLoading(true);
+  //   setPopupStatus(null);
+  //   try {
+  //     await registerForEvent({
+  //       first_name: popupName,
+  //       email: popupEmail,
+  //       phone: popupPhone,
+  //       // You can add more fields if needed, e.g. course_name
+  //     }).unwrap();
+  //     setPopupLoading(false);
+  //     setPopupStatus("success");
+  //     setShowPopup(false);
+  //   } catch {
+  //     setPopupLoading(false);
+  //     setPopupStatus("error");
+  //   }
+  // };
 
   return (
     <>
       <Hero />
       <FeaturesBanner />
+
+      {/* Popup Registration Form
+      <Dialog open={showPopup} onOpenChange={setShowPopup}>
+        <DialogContent className="max-w-[95vw] sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Quick Registration</DialogTitle>
+            <DialogDescription>
+              Fill in your details to register quickly.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePopupSubmit} className="grid gap-4 py-2">
+            <div className="grid gap-2">
+              <Label htmlFor="popupName">Full Name</Label>
+              <Input
+                id="popupName"
+                value={popupName}
+                onChange={(e) => setPopupName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="popupEmail">Email</Label>
+              <Input
+                id="popupEmail"
+                type="email"
+                value={popupEmail}
+                onChange={(e) => setPopupEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="popupPhone">Phone</Label>
+              <PhoneInputLimited
+                id="popupPhone"
+                international
+                defaultCountry="GB"
+                value={popupPhone}
+                onChange={setPopupPhone}
+                className="rounded-md border px-3 py-2 text-base w-full bg-white"
+                required
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full font-sans"
+              disabled={popupLoading}
+            >
+              {popupLoading ? "Registering..." : "Register"}
+            </Button>
+            {popupStatus === "success" && (
+              <p className="text-green-500 text-sm text-center">
+                Registration successful!
+              </p>
+            )}
+            {popupStatus === "error" && (
+              <p className="text-red-500 text-sm text-center">
+                Registration failed. Please try again.
+              </p>
+            )}
+          </form>
+        </DialogContent>
+      </Dialog> */}
+
       <ReviewsCarousel />
-      
       <DownloadGuideSection />
       <CompanyLogosCarousel />
       <StatsSection />

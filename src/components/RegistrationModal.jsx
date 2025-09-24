@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import PhoneInput from "@/components/ui/PhoneInput";
+import PhoneInputLimited from "@/components/ui/PhoneInputLimited";
 
 import {
   useRegisterForConsultationMutation,
@@ -171,7 +171,7 @@ export function RegistrationModal({
 
           <div className="grid gap-2">
             <Label htmlFor="phone">Phone Number</Label>
-            <PhoneInput
+            <PhoneInputLimited
               id="phone"
               international
               defaultCountry="GB"
@@ -241,8 +241,9 @@ export function RegistrationModal({
             <CollapsibleContent className="space-y-2">
               <div className="grid gap-2">
                 <Label htmlFor="whatsapp">WhatsApp No.</Label>
-                <PhoneInput
+                <PhoneInputLimited
                   id="whatsapp"
+                  international
                   defaultCountry="GB"
                   value={whatsappNumber}
                   onChange={setWhatsappNumber}

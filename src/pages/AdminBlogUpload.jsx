@@ -28,7 +28,7 @@ const initialBlogState = {
   author: "Titans Careers Editorial Team", // Default author
   authorRole: "AML/KYC Compliance Experts", // Default role
   authorImage:
-    "Https://titanscareers.s3.amazonaws.com/profile_pictures/user_e9a513d2-1e98-48e8-9780-3b3693fc042e.png", // Default author image
+    "Https://d2907c0nlcl1a.cloudfront.net//profile_pictures/user_e9a513d2-1e98-48e8-9780-3b3693fc042e.png", // Default author image
   date: new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

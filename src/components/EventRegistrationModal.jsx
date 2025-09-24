@@ -23,9 +23,9 @@ import {
 } from "@/services/coursesApi";
 import { Checkbox } from "./ui/checkbox";
 import { parseEventDate } from "@/utils/dateUtils";
-import PhoneInput from "@/components/ui/PhoneInput";
+import PhoneInputLimited from "@/components/ui/PhoneInputLimited";
 
-export function EventRegistrationModal({ isOpen, onClose, event }) {
+export function EventRegistrationModal({ isOpen, onClose, event, simple = false }) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -38,19 +38,22 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const eventToRegister =
-      event || events.find((e) => e.id === selectedEventId);
-
-    if (!eventToRegister) {
-      setFormStatus({ status: "error", message: "Please select an event." });
-      return;
+    let eventToRegister = null;
+    if (simple) {
+      eventToRegister = null;
+    } else {
+      eventToRegister = event || events.find((e) => e.id === selectedEventId);
+      if (!eventToRegister) {
+        setFormStatus({ status: "error", message: "Please select an event." });
+        return;
+      }
     }
-
     try {
       await registerForEvent({
         first_name: firstName,
         email,
-        course_name: eventToRegister.course.name,
+        phone,
+        course_name: simple ? "Cybersecurity" : (eventToRegister && eventToRegister.course?.name ? eventToRegister.course.name : ""),
       }).unwrap();
       setFormStatus({
         status: "success",
@@ -62,7 +65,8 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
         setFormStatus({ status: "idle", message: "" });
         setFirstName("");
         setEmail("");
-        setSelectedEventId(event?.id || ""); // Reset to initial event or empty
+        setPhone("");
+        setSelectedEventId(event?.id || "");
         setAgreedToTerms(false);
       }, 10000);
     } catch (error) {
@@ -105,7 +109,7 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="Phone">Phone</Label>
-            <PhoneInput
+            <PhoneInputLimited
               id="Phone"
               international
               defaultCountry="GB"
@@ -115,8 +119,28 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
               required
             />
           </div>
-
-          {!event && (
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              checked={agreedToTerms}
+              onCheckedChange={setAgreedToTerms}
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I agree to the{" "}
+              <Link to="/terms" className="text-primary hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </label>
+          </div>
+          {!simple && !event && (
             <div className="grid gap-2">
               <Label htmlFor="event">Event</Label>
               <Select
@@ -157,29 +181,6 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
               </Select>
             </div>
           )}
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="terms"
-              checked={agreedToTerms}
-              onCheckedChange={setAgreedToTerms}
-            />
-            <label
-              htmlFor="terms"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              I agree to the{" "}
-              <Link to="/terms" className="text-primary hover:underline">
-                Terms and Conditions
-              </Link>{" "}
-              and{" "}
-              <Link to="/privacy" className="text-primary hover:underline">
-                Privacy Policy
-              </Link>
-              .
-            </label>
-          </div>
-
           <Button
             type="submit"
             className="w-full font-sans"
@@ -187,7 +188,6 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
           >
             {isLoading ? "Registering..." : "Submit"}
           </Button>
-
           {formStatus.status === "success" && (
             <p className="text-green-500 text-sm text-center">
               {formStatus.message}

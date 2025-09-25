@@ -165,8 +165,8 @@ export function EventRegistrationModal({ isOpen, onClose, event, simple = false 
                         value={event.id}
                         className="max-h-60 max-w-80 overflow-y-auto"
                       >
-                        {event.course.name} -{" "}
-                        {parseEventDate(event.date).toLocaleDateString(
+                        {event.course?.name} -{" "}
+                        {event?.date && parseEventDate(event.date).toLocaleDateString(
                           "en-GB",
                           {
                             day: "numeric",

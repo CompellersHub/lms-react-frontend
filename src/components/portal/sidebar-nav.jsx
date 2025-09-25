@@ -13,7 +13,7 @@ import {
   LogOutIcon,
   UserIcon,
   FolderKanban,
-  FileCheck2Icon, // ⬅️ new icon for Quiz
+  FileCheck2Icon,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLogoutMutation } from "@/services/api";
@@ -23,8 +23,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-
-// ⬇️ import your websocket hook
 import { useWebSocketNotifications } from "@/hooks/use-websocket-notifications";
 
 function NavSection({ title, children }) {
@@ -48,7 +46,6 @@ function NavItem({ href, active, icon, children, onClick, badge }) {
     }
   };
 
-  // allow external links with <a>
   const isExternal = href?.startsWith("http");
 
   if (isExternal) {
@@ -97,7 +94,6 @@ export default function SidebarNav() {
   const [triggerLogout] = useLogoutMutation();
   const { user } = useSelector((state) => state.auth);
 
-  // ⬇️ get unread notifications from websocket hook
   const { unreadCount } = useWebSocketNotifications(user?.id);
 
   const handleLogout = async () => {
@@ -128,6 +124,12 @@ export default function SidebarNav() {
       .toUpperCase()
       .substring(0, 2);
   };
+
+  // ⬇️ Build dynamic quiz link
+  const userId = user?.id;
+  // TODO: Replace `123` with real courseId (from context, redux, or props)
+  const courseId = 123;
+  const quizUrl = `https://titans-quiz.vercel.app/?userId=${userId}&courseId=${courseId}`;
 
   return (
     <aside className="w-64 z-50 flex-shrink-0 h-full fixed bg-foreground text-primary flex flex-col !no-scrollbar">
@@ -199,15 +201,10 @@ export default function SidebarNav() {
             Assignments
           </NavItem>
 
-      
-
-          <NavItem
-          href="https://titans-quiz.vercel.app/"
-         icon={<FileCheck2Icon className="h-5 w-5" />}
-        >
-         Quiz
-           </NavItem>
-
+          {/* 🔥 Dynamic Quiz link */}
+          <NavItem href={quizUrl} icon={<FileCheck2Icon className="h-5 w-5" />}>
+            Quiz
+          </NavItem>
 
           <NavItem
             href="/portal/live-classes"

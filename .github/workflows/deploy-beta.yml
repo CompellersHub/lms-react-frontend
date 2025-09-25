@@ -71,3 +71,4 @@ jobs:
             task frontend:down -- -v
             task frontend:up
             task lbb:restart
+            docker image prune -f

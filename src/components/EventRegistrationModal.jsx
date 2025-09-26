@@ -121,7 +121,7 @@ export function EventRegistrationModal({ isOpen, onClose, event, simple = false 
           </div>
           <div className="flex flex-col items-center mt-2 mb-2">
             <a
-              href="https://wa.me/message/C3ZIQJ4PV7TVL1"
+              href="https://chat.whatsapp.com/BJnvGHfLUsxKsfAzKUrpxt"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-full font-semibold shadow transition-colors duration-200 text-sm"

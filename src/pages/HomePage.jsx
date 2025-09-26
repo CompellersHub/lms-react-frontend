@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import campaign from "/assets/campaign.jpeg";
-import popupImage from "/assets/illustrations/popup.jpeg";
+// import popupImage from "/assets/illustrations/popup.jpeg";
 import { FeaturesBanner } from "@/components/FeaturesBanner";
 import { Hero } from "@/components/Hero";
 import { CompanyLogosCarousel } from "@/components/CompanyLogosCarousel";
@@ -27,27 +27,28 @@ function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const [isConsultationSuccessModalOpen, setIsConsultationSuccessModalOpen] = useState(false);
-  const [showEventModal, setShowEventModal] = useState(false);
-  const [showImagePopup, setShowImagePopup] = useState(false);
+  // const [showEventModal, setShowEventModal] = useState(false);
+  // const [showImagePopup, setShowImagePopup] = useState(false);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("promo") === "true") {
-      setShowImagePopup(true);
-    } else {
-      const timer = setTimeout(() => {
-        setShowImagePopup(true);
-      }, 10000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const params = new URLSearchParams(window.location.search);
+  //   if (params.get("promo") === "true") {
+  //     setShowImagePopup(true);
+  //   } else {
+  //     const timer = setTimeout(() => {
+  //       setShowImagePopup(true);
+  //     }, 10000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, []);
 
   return (
     <>
       <Hero />
       <FeaturesBanner />
 
-      {/* Popup image modal with blur background and transition */}
+      {/*
+      Popup image modal with blur background and transition
       {showImagePopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 bg-black/40 backdrop-blur-sm">
           <div className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4 animate-fadeIn">
@@ -86,7 +87,7 @@ function HomePage() {
         onClose={() => setShowEventModal(false)}
         simple={false}
       />
-
+      */}
       <ReviewsCarousel />
       <DownloadGuideSection />
       <CompanyLogosCarousel />

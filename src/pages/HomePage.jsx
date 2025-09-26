@@ -37,7 +37,7 @@ function HomePage() {
     } else {
       const timer = setTimeout(() => {
         setShowImagePopup(true);
-      }, 15000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, []);

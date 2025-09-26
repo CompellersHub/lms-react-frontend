@@ -21,6 +21,11 @@ const fullReviews = [
 		author: "Ojukwu R., Compliance Officer",
 	},
 	{
+		title: "Educator's Evolution: Leading in Compliance!",
+		text: `After years in academia, I yearned for a dynamic career where I could leverage my expertise in a new, impactful way. The comprehensive training at Titans Careers was the springboard I needed. Beyond the robust curriculum, their unparalleled career support provided the confidence and connections to navigate a successful transition. I am now thriving as a Senior Compliance Consultant, leading critical projects and enjoying the profound satisfaction of a truly invaluable career evolution. It's been an incredible journey of growth and achievement!`,
+		author: "Dr. Alex C., Senior Compliance Consultant",
+	},
+	{
 		title: "Accelerating Ambition: My Leap to AML Leadership!",
 		text: `As a seasoned banker, I was good, but I aspired for greatness,to lead in the critical domain of AML. Titans Careers provided the fast-track. This wasn't just a course; it was an immersive journey into the heart of UK banking regulations, arming me with unparalleled insights and the specific compliance skillset to advance. I effortlessly transitioned into a crucial AML Specialist role, enjoying greater influence, a higher earning potential, and the satisfaction of shaping financial security. It's an investment that pays dividends daily!`,
 		author: "Wunmi T., AML Specialist",
@@ -40,11 +45,7 @@ const fullReviews = [
 		text: `As a lecturer, my world was research and critical thinking. While rewarding, I longed to apply these strengths to real-world impact, battling financial crime. Titans Careers was the bridge between academia and industry. They masterfully transformed my analytical rigor into practical compliance solutions, opening doors to an exhilarating career as a Compliance Analyst. I now apply my skills daily to complex challenges, making a tangible difference, and enjoying a dynamic, intellectually stimulating profession I never thought possible!`,
 		author: "Dr. Sola, Compliance Analyst",
 	},
-	{
-		title: "Educator's Evolution: Leading in Compliance!",
-		text: `After years in academia, I yearned for a dynamic career where I could leverage my expertise in a new, impactful way. The comprehensive training at Titans Careers was the springboard I needed. Beyond the robust curriculum, their unparalleled career support provided the confidence and connections to navigate a successful transition. I am now thriving as a Senior Compliance Consultant, leading critical projects and enjoying the profound satisfaction of a truly invaluable career evolution. It's been an incredible journey of growth and achievement!`,
-		author: "Dr. Alex C., Senior Compliance Consultant",
-	},
+	
 ];
 
 function getInitials(name) {

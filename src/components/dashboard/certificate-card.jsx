@@ -2,7 +2,7 @@ import { Award, ExternalLink } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 
-export default function CertificateCard({ id, title, issueDate, courseId, courseName }) {
+export default function CertificateCard({ title, issueDate,  courseName }) {
   const formattedDate = format(new Date(issueDate), "MMM d, yyyy")
 
   return (
@@ -13,7 +13,7 @@ export default function CertificateCard({ id, title, issueDate, courseId, course
       <div className="space-y-1 flex-1">
         <div className="flex items-center justify-between">
           <h4 className="font-medium">{title}</h4>
-          <Button variant="ghost" size="icon" className="h-6 w-6">
+          <Button variant="ghost" size="icon" className="h-6 w-6 font-sans">
             <ExternalLink className="h-4 w-4" />
           </Button>
         </div>

@@ -22,7 +22,7 @@ export function ConsultationSuccessModal({ isOpen, onClose }) {
           </DialogDescription>
         </DialogHeader>
         <div className="mt-6">
-          <Button onClick={onClose} className="w-full">
+          <Button onClick={onClose} className="w-full font-sans">
             Close
           </Button>
         </div>

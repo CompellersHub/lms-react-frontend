@@ -52,7 +52,7 @@ export function Hero() {
 
           {/* Enrol Now Button */}
           <Link to="/courses">
-            <Button className="w-full sm:w-48 rounded-full bg-blue-950 px-6 py-6 text-white hover:bg-blue-900 hover:shadow-lg transition-all duration-300">
+            <Button className="font-sans w-full sm:w-48 rounded-full bg-blue-950 px-6 py-6 text-white hover:bg-blue-900 hover:shadow-lg transition-all duration-300">
               Enrol Now
             </Button>
           </Link>

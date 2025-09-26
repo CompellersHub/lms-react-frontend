@@ -59,6 +59,18 @@ const companyLogos = [
     url: "assets/company-logos/UKPro.jpeg",
     alt: "UKPro",
   },
+  {
+    url: "assets/company-logos/zenith.png",
+    alt: "Zenith Bank",
+  },
+  {
+    url: "assets/company-logos/dangote.png",
+    alt: "Dangote",
+  },
+  {
+    url: "assets/company-logos/barclays.png",
+    alt: "Barclays Bank",
+  },
 ];
 
 export function CompanyLogosCarousel() {

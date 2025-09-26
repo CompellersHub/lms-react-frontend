@@ -440,28 +440,28 @@ function DynamicBlogRenderer({ blogPost, relatedPosts = [] }) {
                   Share this article:
                 </span>
                 <button
-                  className="p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
+                  className="font-sans p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
                   onClick={() => handleShare("facebook")}
                   aria-label="Share on Facebook"
                 >
                   <FaFacebookF className="h-5 w-5" />
                 </button>
                 <button
-                  className="p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
+                  className=" font-sans p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
                   onClick={() => handleShare("x")}
                   aria-label="Share on X"
                 >
                   <SiX className="h-5 w-5" />
                 </button>
                 <button
-                  className="p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
+                  className="font-sans p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
                   onClick={() => handleShare("linkedin")}
                   aria-label="Share on LinkedIn"
                 >
                   <FaLinkedinIn className="h-5 w-5" />
                 </button>
                 <button
-                  className="p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
+                  className="font-sans p-2 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
                   onClick={handleCopyLink}
                   aria-label="Copy link"
                 >

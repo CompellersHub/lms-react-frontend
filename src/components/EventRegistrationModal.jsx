@@ -23,11 +23,12 @@ import {
 } from "@/services/coursesApi";
 import { Checkbox } from "./ui/checkbox";
 import { parseEventDate } from "@/utils/dateUtils";
+import PhoneInputLimited from "@/components/ui/PhoneInputLimited";
 
-export function EventRegistrationModal({ isOpen, onClose, event }) {
+export function EventRegistrationModal({ isOpen, onClose, event, simple = false }) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("")
+  const [phone, setPhone] = useState("");
   const [selectedEventId, setSelectedEventId] = useState(event?.id || "");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
@@ -37,19 +38,22 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const eventToRegister =
-      event || events.find((e) => e.id === selectedEventId);
-
-    if (!eventToRegister) {
-      setFormStatus({ status: "error", message: "Please select an event." });
-      return;
+    let eventToRegister = null;
+    if (simple) {
+      eventToRegister = null;
+    } else {
+      eventToRegister = event || events.find((e) => e.id === selectedEventId);
+      if (!eventToRegister) {
+        setFormStatus({ status: "error", message: "Please select an event." });
+        return;
+      }
     }
-
     try {
       await registerForEvent({
         first_name: firstName,
         email,
-        course_name: eventToRegister.course.name,
+        phone,
+        course_name: simple ? "Cybersecurity" : (eventToRegister && eventToRegister.course?.name ? eventToRegister.course.name : ""),
       }).unwrap();
       setFormStatus({
         status: "success",
@@ -61,7 +65,8 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
         setFormStatus({ status: "idle", message: "" });
         setFirstName("");
         setEmail("");
-        setSelectedEventId(event?.id || ""); // Reset to initial event or empty
+        setPhone("");
+        setSelectedEventId(event?.id || "");
         setAgreedToTerms(false);
       }, 10000);
     } catch (error) {
@@ -102,18 +107,40 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
               required
             />
           </div>
-            <div className="grid gap-2">
+          <div className="grid gap-2">
             <Label htmlFor="Phone">Phone</Label>
-            <Input
+            <PhoneInputLimited
               id="Phone"
-              type="Phone"
+              international
+              defaultCountry="GB"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={setPhone}
+              className="rounded-md border px-3 py-2 text-base w-full bg-white"
               required
             />
           </div>
-
-          {!event && (
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              checked={agreedToTerms}
+              onCheckedChange={setAgreedToTerms}
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I agree to the{" "}
+              <Link to="/terms" className="text-primary hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </label>
+          </div>
+          {!simple && !event && (
             <div className="grid gap-2">
               <Label htmlFor="event">Event</Label>
               <Select
@@ -154,37 +181,13 @@ export function EventRegistrationModal({ isOpen, onClose, event }) {
               </Select>
             </div>
           )}
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="terms"
-              checked={agreedToTerms}
-              onCheckedChange={setAgreedToTerms}
-            />
-            <label
-              htmlFor="terms"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              I agree to the{" "}
-              <Link to="/terms" className="text-primary hover:underline">
-                Terms and Conditions
-              </Link>{" "}
-              and{" "}
-              <Link to="/privacy" className="text-primary hover:underline">
-                Privacy Policy
-              </Link>
-              .
-            </label>
-          </div>
-
           <Button
             type="submit"
-            className="w-full"
+            className="w-full font-sans"
             disabled={isLoading || !agreedToTerms}
           >
             {isLoading ? "Registering..." : "Submit"}
           </Button>
-
           {formStatus.status === "success" && (
             <p className="text-green-500 text-sm text-center">
               {formStatus.message}

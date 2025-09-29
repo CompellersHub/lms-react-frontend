@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import campaign from "/assets/campaign.jpeg";
-// import popupImage from "/assets/illustrations/popup.jpeg";
+import popupImage from "/assets/illustrations/popup.jpeg";
 import { FeaturesBanner } from "@/components/FeaturesBanner";
 import { Hero } from "@/components/Hero";
 import { CompanyLogosCarousel } from "@/components/CompanyLogosCarousel";
@@ -27,49 +27,54 @@ function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
   const [isConsultationSuccessModalOpen, setIsConsultationSuccessModalOpen] = useState(false);
-  // const [showEventModal, setShowEventModal] = useState(false);
-  // const [showImagePopup, setShowImagePopup] = useState(false);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [showImagePopup, setShowImagePopup] = useState(false);
+  const [eventRegistered, setEventRegistered] = useState(false);
 
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   if (params.get("promo") === "true") {
-  //     setShowImagePopup(true);
-  //   } else {
-  //     const timer = setTimeout(() => {
-  //       setShowImagePopup(true);
-  //     }, 10000);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("promo") === "true") {
+      setShowImagePopup(true);
+    } else {
+      const timer = setTimeout(() => {
+        setShowImagePopup(true);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <>
       <Hero />
       <FeaturesBanner />
 
-      {/*
+      
       Popup image modal with blur background and transition
-      {showImagePopup && (
+      {showImagePopup && !eventRegistered && (
         <div className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 bg-black/40 backdrop-blur-sm">
-          <div className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4 animate-fadeIn">
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
-              onClick={() => setShowImagePopup(false)}
-              aria-label="Close"
-              type="button"
-            >
-              &times;
-            </button>
+          <div className="relative animate-fadeIn">
             <img
               src={popupImage}
               alt="Add new skills to your toolbox"
-              className="w-full h-auto object-contain mb-4 cursor-pointer rounded-xl"
-              style={{ maxWidth: '600px' }}
-              onClick={() => {
-                setShowImagePopup(false);
-                setShowEventModal(true);
-              }}
+              className="w-full max-w-4xl h-auto object-contain rounded-xl"
+              style={{ minWidth: '400px' }}
             />
+            <button
+              className="absolute bottom-2 left-1/2 -translate-x-1/2 px-8 py-3 bg-yellow-400 text-black font-extrabold text-3xl rounded-xl shadow-lg hover:bg-yellow-300 transition-all duration-200 border-4 border-black"
+              style={{ zIndex: 2 }}
+              onClick={() => setShowEventModal(true)}
+            >
+              ENROLL NOW
+            </button>
+            <button
+              className="absolute top-4 left-4 text-white bg-black/60 hover:bg-black/80 text-3xl font-bold rounded-full w-12 h-12 flex items-center justify-center"
+              onClick={() => setShowImagePopup(false)}
+              aria-label="Close"
+              type="button"
+              style={{ zIndex: 3 }}
+            >
+              &times;
+            </button>
           </div>
         </div>
       )}
@@ -85,9 +90,14 @@ function HomePage() {
       <EventRegistrationModal
         isOpen={showEventModal}
         onClose={() => setShowEventModal(false)}
+        onSuccess={() => {
+          setShowEventModal(false);
+          setShowImagePopup(false);
+          setEventRegistered(true);
+        }}
         simple={false}
       />
-      */}
+     
       <ReviewsCarousel />
       <DownloadGuideSection />
       <CompanyLogosCarousel />

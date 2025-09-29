@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, Calendar, ChevronRight } from "lucide-react";
 import { blogPosts } from "../data/blogData"; // Static blog posts
@@ -12,25 +12,31 @@ function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "All"
   );
-  const [page] = useState(1); // Removed setPage as it's not used
+  const [allDynamicBlogs, setAllDynamicBlogs] = useState([]);
+  const [showAll, setShowAll] = useState(false);
 
   // RTK Query for dynamic blogs
   const {
     data: blogResponse,
     isLoading,
-    // error, // Kept for potential future use or debugging, but not directly used in rendering
   } = useGetAllBlogsQuery({
-    page,
+    page: 1,
     limit: 10,
     category: selectedCategory !== "All" ? selectedCategory : undefined,
     search: searchTerm || undefined,
   });
 
-  // Combine static and dynamic posts
+  useEffect(() => {
+    if (blogResponse?.blogs) {
+      setAllDynamicBlogs((prev) => [...prev, ...blogResponse.blogs]);
+    }
+  }, [blogResponse]);
+
+  // Combine static and dynamic posts, newest first
   const allPosts = [
     ...blogPosts, // Static posts
-    ...(blogResponse?.blogs || []),
-  ];
+    ...allDynamicBlogs,
+  ].sort((a, b) => new Date(b.date || b.published_at) - new Date(a.date || a.published_at));
 
   // Filter combined posts
   const filteredPosts = allPosts.filter((post) => {
@@ -49,6 +55,16 @@ function BlogPage() {
   });
 
   const categories = ["All", ...new Set(allPosts.map((post) => post.category))];
+
+  // Helper for formatted date
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
   const renderBlogCard = (post, isFeatured = false) => {
     if (isFeatured) {
@@ -70,7 +86,7 @@ function BlogPage() {
                   </span>
                   <span className="ml-4 text-sm text-foreground/70 flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
-                    {post.date}
+                    {formatDate(post.date || post.published_at)}
                   </span>
                 </div>
                 <h2 className="text-2xl font-bold text-primary mb-3">
@@ -124,7 +140,7 @@ function BlogPage() {
             </span>
             <span className="text-xs text-foreground/70 flex items-center">
               <Calendar className="h-3 w-3 mr-1" />
-              {new Date(post.date || post.published_at).toLocaleDateString()}
+              {formatDate(post.date || post.published_at)}
             </span>
           </div>
           <Link to={`/blog/${post.slug}`}>
@@ -230,8 +246,23 @@ function BlogPage() {
 
       {/* Blog Posts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredPosts.slice(1).map((post) => renderBlogCard(post))}
+        {(showAll
+          ? filteredPosts.slice(1)
+          : filteredPosts.slice(1, 7)
+        ).map((post) => renderBlogCard(post))}
       </div>
+
+      {/* Load More Button: only show if more than 6 posts and not showing all */}
+      {filteredPosts.length > 7 && !showAll && (
+        <div className="text-center mt-12">
+          <button
+            className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90"
+            onClick={() => setShowAll(true)}
+          >
+            Load More Articles
+          </button>
+        </div>
+      )}
 
       {/* No Results */}
       {filteredPosts.length === 0 && (
@@ -250,15 +281,6 @@ function BlogPage() {
             className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
           >
             Clear Filters
-          </button>
-        </div>
-      )}
-
-      {/* Load More Button (for pagination if needed) */}
-      {filteredPosts.length > 10 && (
-        <div className="text-center mt-12">
-          <button className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90">
-            Load More Articles
           </button>
         </div>
       )}

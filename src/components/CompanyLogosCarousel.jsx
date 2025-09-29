@@ -60,15 +60,15 @@ const companyLogos = [
     alt: "UKPro",
   },
   {
-    url: "assets/company-logos/zenith.png",
+    url: "assets/company-logos/zenith.jpg",
     alt: "Zenith Bank",
   },
   {
-    url: "assets/company-logos/dangote.png",
+    url: "assets/company-logos/dangote.jpg",
     alt: "Dangote",
   },
   {
-    url: "assets/company-logos/barclays.png",
+    url: "assets/company-logos/barclays.jpg",
     alt: "Barclays Bank",
   },
 ];

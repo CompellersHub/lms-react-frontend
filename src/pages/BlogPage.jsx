@@ -21,14 +21,14 @@ function BlogPage() {
     isLoading,
   } = useGetAllBlogsQuery({
     page: 1,
-    limit: 10,
+    limit: 100, // Increased limit to fetch all blogs
     category: selectedCategory !== "All" ? selectedCategory : undefined,
     search: searchTerm || undefined,
   });
 
   useEffect(() => {
     if (blogResponse?.blogs) {
-      setAllDynamicBlogs((prev) => [...prev, ...blogResponse.blogs]);
+      setAllDynamicBlogs(blogResponse.blogs); // Always replace, never append
     }
   }, [blogResponse]);
 

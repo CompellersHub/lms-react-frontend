@@ -54,7 +54,7 @@ export function EventRegistrationModal({ isOpen, onClose, event, simple = false 
       await registerForEvent({
         first_name: firstName,
         email,
-        phone: phone ? phone.replace(/\s/g, '') : '', // send phone in E.164 format, no spaces
+        phone_number: phone ? phone.replace(/\s/g, '') : '', // use phone_number key
         course_name: simple ? "Cybersecurity" : (eventToRegister && eventToRegister.course?.name ? eventToRegister.course.name : ""),
       }).unwrap();
       setFormStatus({

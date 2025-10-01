@@ -101,7 +101,7 @@ export function Hero() {
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center w-full">
           <Link to="/courses" className="relative group overflow-hidden w-full sm:w-auto">
             <Button className="w-full sm:w-auto px-4 py-2 sm:px-6 sm:py-6 bg-primary text-foreground hover:bg-transparent hover:text-white hover:border border-primary border rounded-full text-base sm:text-lg font-semibold shadow-xl hover:shadow-2xl transform transition-all duration-300 font-sans">
-              Enrol Now
+              Enroll Now
             </Button>
           </Link>
         </div>

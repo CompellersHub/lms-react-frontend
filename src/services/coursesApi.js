@@ -45,6 +45,7 @@ export const coursesApi = createApi({
     "Event",
     "Consultation",
     "Deadline",
+    "Job",
   ],
   endpoints: (builder) => ({
     // 📚 Courses
@@ -350,6 +351,22 @@ export const coursesApi = createApi({
       },
       providesTags: [{ type: "Deadline", id: "LIST" }],
     }),
+
+    // 💼 Jobs
+    getJobs: builder.query({
+      query: () => "/courses/jobs/",
+      providesTags: (result) =>
+        result?.length
+          ? [
+              ...result.map(({ id }) => ({ type: "Job", id })),
+              { type: "Job", id: "LIST" },
+            ]
+          : [{ type: "Job", id: "LIST" }],
+    }),
+    getJobDetails: builder.query({
+      query: (id) => `/courses/jobs/${id}/`,
+      providesTags: (result, error, id) => [{ type: "Job", id }],
+    }),
   }),
 });
 
@@ -378,4 +395,6 @@ export const {
   useRegisterForEventMutation,
   useRegisterForConsultationMutation,
   useGetDeadlinesQuery,
+  useGetJobsQuery,
+  useGetJobDetailsQuery,
 } = coursesApi;

@@ -15,6 +15,7 @@ import { EventRegistrationModal } from "@/components/EventRegistrationModal";
 import { RegistrationModal } from "@/components/RegistrationModal";
 import { ConsultationSuccessModal } from "@/components/ConsultationSuccessModal";
 import { ReviewsCarousel } from "@/components/ReviewsCarousel";
+import { JobsCarousel } from "@/components/JobsCarousel";
 
 // --- Add this import for the popup modal ---
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -144,6 +145,7 @@ function HomePage() {
       </div>
       <EventsCarousel />
       <PlatformFeatures />
+      <JobsCarousel />
       <EventRegistrationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

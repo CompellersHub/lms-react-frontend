@@ -54,6 +54,8 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordConfirmPage from "./pages/ResetPasswordConfirmPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import Index from "./pages/data-analysis-tool/Index";
+import JobDetailsPage from "./pages/JobDetailsPage";
+import JobsListPage from "./pages/JobsListPage";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -277,6 +279,7 @@ function App() {
               <Route path="events" element={<WorkshopEvents />} />
               <Route path="terms" element={<TermsAndConditions />} />
               <Route path="privacy" element={<PrivacyPolicy />} />
+              <Route path="jobs" element={<JobsListPage />} />
 
               {/* Protected Routes that should use main layout */}
               <Route
@@ -295,6 +298,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="/jobs/:id" element={<JobDetailsPage />} />
 
               {/* 404 catch-all route */}
               <Route path="*" element={<NotFound />} />

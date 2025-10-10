@@ -71,6 +71,10 @@ const companyLogos = [
     url: "assets/company-logos/barclays.jpg",
     alt: "Barclays Bank",
   },
+  {
+    url: "assets/company-logos/payl8r.jpg",
+    alt: "Payl8r",
+  },
 ];
 
 export function CompanyLogosCarousel() {

@@ -22,7 +22,7 @@ import {
   useGetEventsQuery,
 } from "@/services/coursesApi";
 import { Checkbox } from "./ui/checkbox";
-import { parseEventDate } from "@/utils/dateUtils";
+// import { parseEventDate } from "@/utils/dateUtils";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
@@ -182,15 +182,7 @@ export function EventRegistrationModal({ isOpen, onClose, event, simple = false 
                         value={event.id}
                         className="max-h-60 max-w-80 overflow-y-auto"
                       >
-                        {event.course?.name} -{" "}
-                        {event?.date && parseEventDate(event.date).toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )}
+                        {event.course?.name} - {event?.date ? `${new Date(event.date).toLocaleDateString("en-GB", { weekday: "long" })}s` : ""}
                       </SelectItem>
                     ))
                   )}

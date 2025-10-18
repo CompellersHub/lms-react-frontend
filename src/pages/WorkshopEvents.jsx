@@ -90,7 +90,7 @@ export function WorkshopEvents() {
   // Check if an event matches the live session
   const isEventLive = (event) => {
     if (!liveSession) return false;
-    return event.course.name === liveSession.courseName;
+    return event.course?.name === liveSession.courseName;
   };
 
   // Handle joining live session
@@ -184,7 +184,7 @@ export function WorkshopEvents() {
                         </div>
                       )}
                       <div className="bg-primary/10 p-2 rounded-full mr-3">
-                        {getIcon(event.course.name)}
+                        {getIcon(event.course?.name)}
                       </div>
                       <h3 className="text-xl font-bold line-clamp-1">
                         {event.title}

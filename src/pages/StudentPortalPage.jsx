@@ -1,7 +1,26 @@
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function StudentPortalPage() {
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+
+  // Check if user has purchased any course
+  const hasPaidCourse =
+    user?.course &&
+    Array.isArray(user.course) &&
+    user.course.length > 0;
+
+  useEffect(() => {
+    if (!hasPaidCourse) {
+      navigate("/courses");
+    }
+  }, [hasPaidCourse, navigate]);
+
+  if (!hasPaidCourse) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">

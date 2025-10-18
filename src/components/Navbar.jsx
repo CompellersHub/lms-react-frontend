@@ -56,6 +56,20 @@ export function Navbar() {
   const cartItems = useSelector(selectCartItems);
   const cartItemCount = cartItems.length;
 
+  // Check if user has paid for any course
+  const hasPaidCourse = user?.course && Array.isArray(user.course) && user.course.length > 0;
+
+  // Handler for Student Portal navigation
+  const handleStudentPortalNav = (e) => {
+    if (!hasPaidCourse) {
+      e.preventDefault();
+      navigate("/courses");
+      toast.info("You must purchase a course before accessing the student portal.");
+    } else {
+      navigate("/portal");
+    }
+  };
+
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
@@ -94,11 +108,11 @@ export function Navbar() {
     ...(user?.role === "BLOGGER" ? [{ title: "Admin", href: "/admin" }] : []),
   ];
 
-  // Profile options based on authentication status
+  // Profile options based on authentication status and course purchase
   const profileOptions = user
     ? [
         { title: "My Profile", href: "/profile", icon: User },
-        { title: "Student Portal", href: "/portal", icon: Layout },
+        { title: "Student Portal", href: "/portal", icon: Layout, onClick: handleStudentPortalNav },
         { title: "Logout", action: handleLogout, icon: LogOut },
       ]
     : [
@@ -268,19 +282,16 @@ export function Navbar() {
                   <DropdownMenuItem
                     key={index}
                     className="flex items-center gap-2 text-foreground hover:bg-gray-50 hover:text-secondary transition-colors duration-300 lg:hover:bg-gray-50 lg:hover:text-secondary"
-                    onClick={option.action ? option.action : undefined}
-                    asChild={!option.action}
+                    onClick={option.action ? option.action : option.onClick ? option.onClick : undefined}
+                    asChild={!option.action && !option.onClick}
                   >
-                    {option.action ? (
+                    {option.action || option.onClick ? (
                       <div className="flex items-center gap-2 cursor-pointer">
                         <option.icon className="h-4 w-4 text-foreground" />
                         <span>{option.title}</span>
                       </div>
                     ) : (
-                      <Link
-                        to={option.href}
-                        className="flex items-center gap-2"
-                      >
+                      <Link to={option.href} className="flex items-center gap-2">
                         <option.icon className="h-4 w-4 text-foreground" />
                         <span>{option.title}</span>
                       </Link>

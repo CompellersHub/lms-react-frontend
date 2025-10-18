@@ -140,6 +140,13 @@ export function Footer() {
               className="max-h-10 w-[120px] object-contain mr-2 rounded shadow border border-gray-300 bg-white"
               style={{ padding: '2px' }}
             />
+            {/* Payl8r logo */}
+            <img
+              src="/assets/company-logos/payl8r.jpg"
+              alt="Payl8r"
+              className="max-h-10 w-[120px] object-contain mr-2 rounded shadow border border-gray-300 bg-white"
+              style={{ padding: '2px' }}
+            />
             <Link
               to="/privacy"
               className="text-blue-100 hover:underline text-xs md:text-sm"

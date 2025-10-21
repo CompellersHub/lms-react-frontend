@@ -23,7 +23,7 @@ import {
 import { logout } from "../store/slices/authSlice";
 import { selectCartItems } from "../store/slices/cartSlice";
 import { toast } from "react-toastify";
-import logoImage from "@/assets/img/logo.png";
+import logoImage from "@/assets/img/output.gif"; // Updated logo image import
 
 function useResponsive() {
   const [isMobile, setIsMobile] = useState(false);
@@ -122,7 +122,7 @@ export function Navbar() {
       ];
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-sm backdrop-blur bg-opacit">
+    <header className="sticky top-0 z-50 w-full shadow-sm backdrop-blur" style={{ backgroundColor: "#fcfcfb" }}>
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Left side - Logo and Menu */}
@@ -132,7 +132,7 @@ export function Navbar() {
                 <img
                   src={logoImage || "/placeholder.svg"}
                   alt="Logo"
-                  className="w-48 rounded-md"
+                  className="h-16 w-auto object-contain rounded-md bg-white p-1"
                   aria-label="Logo"
                 />
               </div>

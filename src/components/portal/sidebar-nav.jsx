@@ -1,6 +1,7 @@
 "use client";
 
 import { Link, useLocation } from "react-router-dom";
+import { selectAccessToken } from "@/store/slices/authSlice";
 import {
   HomeIcon,
   BookIcon,
@@ -125,11 +126,11 @@ export default function SidebarNav() {
       .substring(0, 2);
   };
 
-  // ⬇️ Build dynamic quiz link
-  const userId = user?.id;
-  // TODO: Replace `123` with real courseId (from context, redux, or props)
-  const courseId = 123;
-  const quizUrl = `https://titans-quiz.vercel.app/?userId=${userId}&courseId=${courseId}`;
+// ✅ Build secure quiz link using access token
+
+const accessToken = useSelector(selectAccessToken);
+
+const quizUrl = `https://titans-quiz.vercel.app/?token=${encodeURIComponent(accessToken)}`;
 
   return (
     <aside className="w-64 z-50 flex-shrink-0 h-full fixed bg-foreground text-primary flex flex-col !no-scrollbar">

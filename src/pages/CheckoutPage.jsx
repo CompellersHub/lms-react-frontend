@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Trash2, ShieldCheck, Award, Clock, CreditCard } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { ErrorBoundary } from "react-error-boundary";
 
 // Components
 import { Card } from "@/components/ui/card";
@@ -12,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import CheckoutProtection from "@/components/CheckoutProtection";
 import StripeCheckoutForm from "@/components/StripeCheckoutForm";
 import PayPalCheckoutForm from "@/components/PayPalCheckoutForm";
+import Modal from "@/components/Modal";
 
 // Redux
 import {
@@ -21,12 +24,10 @@ import {
 } from "@/store/slices/cartSlice";
 
 // API
-import { useCreateStripePaymentIntentMutation } from "@/services/api";
+import { useCreateStripePaymentIntentMutation, baseUrl } from "@/services/api";
 
 // PayPal Services
 import { getCourseFromCart } from "@/services/paypalService";
-
-const baseUrl = import.meta.env.VITE_BASE_URL;
 
 // Initialize Stripe outside of the component to avoid re-creating the object on every render
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -36,6 +37,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotal);
+  const accessToken = useSelector(state => state.auth.accessToken);
 
   // State for managing payment method and Stripe client secret
   const [paymentMethod, setPaymentMethod] = useState("paypal"); // 'paypal' or 'stripe'
@@ -49,6 +51,14 @@ const CheckoutPage = () => {
     postalCode: "",
     country: "United Kingdom",
   });
+  // Add state for bank transfer
+  const [bankRef, setBankRef] = useState("");
+  const [bankFile, setBankFile] = useState(null);
+  const [bankLoading, setBankLoading] = useState(false);
+  const [bankDesc, setBankDesc] = useState("");
+  const [bankAmount, setBankAmount] = useState("");
+  // const [showPendingModal, setShowPendingModal] = useState(false);
+  const [modal, setModal] = useState({ open: false, type: "", message: "" });
 
   // RTK Query mutations
   const [createStripePaymentIntent, { isLoading: isCreatingStripeIntent }] =
@@ -127,324 +137,442 @@ const CheckoutPage = () => {
   // Get current course for display
   const currentCourse = getCourseFromCart(cartItems);
 
+  // If no course, show fallback UI
+  if (!currentCourse) {
+    return (
+      <CheckoutProtection>
+        <div className="container mx-auto px-4 py-12 max-w-2xl">
+          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">
+              No course selected
+            </h2>
+            <p className="text-lg mb-4">
+              Please add a course to your cart before checking out.
+            </p>
+            <Button
+              className="mt-6"
+              onClick={() => navigate("/courses")}
+            >
+              Browse Courses
+            </Button>
+          </div>
+        </div>
+      </CheckoutProtection>
+    );
+  }
+
+  const paypalOptions = {
+    "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
+    currency: "GBP",
+    components: "buttons",
+  };
+
+  function PaymentErrorFallback({ error }) {
+    return (
+      <div className="p-4 text-center text-red-600">
+        <h4 className="font-bold mb-2">Payment Error</h4>
+        <div>{error.message}</div>
+        <div className="mt-2 text-sm">
+          Please refresh or try another payment method.
+        </div>
+      </div>
+    );
+  }
+
+  // Guard all usages of currentCourse
   return (
     <CheckoutProtection>
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Billing Information and Order Summary */}
-          <div className="lg:col-span-2">
-            {/* Billing Information */}
-            <Card className="p-6 mb-8">
-              <h2 className="text-xl font-semibold mb-4">
-                Billing Information
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="firstName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    First Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={billingInfo.firstName}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="lastName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Last Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={billingInfo.lastName}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={billingInfo.email}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label
-                    htmlFor="address"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    id="address"
-                    name="address"
-                    value={billingInfo.address}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={billingInfo.city}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="postalCode"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Postal Code
-                  </label>
-                  <input
-                    type="text"
-                    id="postalCode"
-                    name="postalCode"
-                    value={billingInfo.postalCode}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label
-                    htmlFor="country"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Country
-                  </label>
-                  <select
-                    id="country"
-                    name="country"
-                    value={billingInfo.country}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="United States">United States</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-            </Card>
-
-            {/* Order Summary */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-              {currentCourse ? (
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center border-b pb-4">
-                    <div className="flex items-center">
-                      <img
-                        src={
-                          currentCourse.image.startsWith("http")
-                            ? currentCourse.image
-                            : `${baseUrl}${currentCourse.image}`
-                        }
-                        alt={currentCourse.name}
-                        className="w-16 h-16 object-cover rounded mr-4"
-                      />
-                      <div>
-                        <h3 className="font-medium">{currentCourse.name}</h3>
-                        <p className="text-sm text-gray-500">
-                          {currentCourse.level &&
-                            `Level: ${currentCourse.level}`}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <p className="font-semibold mr-4">
-                        £{currentCourse.price?.toFixed(2)}
-                      </p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => handleRemoveFromCart(currentCourse.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center pt-4 border-t font-semibold text-lg">
-                    <span>Total:</span>
-                    <span>£{cartTotal}</span>
-                  </div>
-                </div>
-              ) : (
-                <p>Your cart is empty.</p>
-              )}
-            </Card>
+      <div className="w-full min-h-screen ml-[2px] mr-[2px] px-0 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12" style={{background: 'linear-gradient(135deg, #ffe29e 0%, #a1c4fd 60%, #e0e7ff 100%)'}}>
+        {/* Left: Information & Billing */}
+        <div className="lg:col-span-2 rounded-2xl shadow-xl p-8" style={{background: 'linear-gradient(135deg, #ffe29e 0%, #a1c4fd 60%, #e0e7ff 100%)'}}>
+          <h1 className="text-3xl font-bold mb-8 text-primary">Checkout</h1>
+          {/* Information */}
+          <div className="mb-8">
+            <label className="block text-base font-semibold mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={billingInfo.email}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black text-lg mb-2"
+              required
+            />
+            <div className="text-xs text-blue-600">
+              Please send me emails with exclusive info
+            </div>
           </div>
-
-          {/* Right Column - Payment Section */}
-          <div className="lg:col-span-1">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Payment</h2>
-
-              {/* Total Display */}
-              <div className="flex justify-between items-center text-lg font-semibold border-b pb-4 mb-6">
-                <span>Total:</span>
-                <span>£{cartTotal}</span>
+          {/* Billing Address */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold mb-4 text-primary">
+              Billing Address
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-base font-semibold text-gray-700 mb-2"
+                >
+                  First Name *
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={billingInfo.firstName}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black text-lg"
+                  required
+                />
               </div>
-
-              {/* Payment Method Selector */}
-              <div className="grid grid-cols-2 gap-2 mb-6">
-                <Button
-                  variant={paymentMethod === "paypal" ? "default" : "outline"}
-                  onClick={() => setPaymentMethod("paypal")}
-                  className="w-full"
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-base font-semibold text-gray-700 mb-2"
                 >
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a.628.628 0 0 0-.663-.734h-3.021c-.524 0-.968.382-1.05.9L15.24 14.5c-.082.518.285.934.809.934h2.705c4.298 0 7.664-1.747 8.647-6.797.03-.149.054-.294.077-.437.292-1.867-.002-3.137-1.012-4.287-.17-.194-.36-.362-.57-.496z"
-                    />
-                  </svg>
-                  PayPal
-                </Button>
-                <Button
-                  variant={paymentMethod === "stripe" ? "default" : "outline"}
-                  onClick={() => setPaymentMethod("stripe")}
-                  className="w-full"
-                >
-                  <CreditCard className="w-5 h-5 mr-2" />
-                  Card
-                </Button>
+                  Last Name *
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={billingInfo.lastName}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black text-lg"
+                  required
+                />
               </div>
-
-              {/* Refund/Terms/Privacy Policy Links Section */}
-              <div className="text-xs text-gray-500 text-center my-4">
-                By proceeding, you agree to our{" "}
-                <a
-                  href="/terms-and-conditions"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-blue-600"
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="address"
+                  className="block text-base font-semibold text-gray-700 mb-2"
                 >
-                  Terms & Conditions
-                </a>
-                ,{" "}
-                <a
-                  href="/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-blue-600"
-                >
-                  Privacy Policy
-                </a>
-                , and{" "}
-                <a
-                  href="/refund-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-blue-600"
-                >
-                  Refund Policy
-                </a>
-                .
+                  House number and street name
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={billingInfo.address}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black text-lg"
+                />
               </div>
-
-              {/* Payment Form Section */}
-              {!isFormValid() && (
-                <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-                  <p className="text-sm text-yellow-800">
-                    Please fill in required billing information before
-                    proceeding with payment.
+              <div>
+                <label
+                  htmlFor="city"
+                  className="block text-base font-semibold text-gray-700 mb-2"
+                >
+                  Town / City
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={billingInfo.city}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black text-lg"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="postalCode"
+                  className="block text-base font-semibold text-gray-700 mb-2"
+                >
+                  Zip code
+                </label>
+                <input
+                  type="text"
+                  id="postalCode"
+                  name="postalCode"
+                  value={billingInfo.postalCode}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black text-lg"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="country"
+                  className="block text-base font-semibold text-gray-700 mb-2"
+                >
+                  Country
+                </label>
+                <select
+                  id="country"
+                  name="country"
+                  value={billingInfo.country}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-black rounded-xl focus:outline-none focus:ring-2 focus:ring-black text-lg"
+                >
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="United States">United States</option>
+                  <option value="Canada">Canada</option>
+                  <option value="Australia">Australia</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Right: Order & Payment */}
+        <div className="lg:col-span-1 rounded-2xl shadow-xl p-0 overflow-hidden" style={{background: 'linear-gradient(135deg, #ffe29e 0%, #a1c4fd 60%, #e0e7ff 100%)'}}>
+          <div className="p-8">
+            <h2 className="text-xl font-bold mb-6 text-primary">Your Order</h2>
+            {currentCourse && (
+              <div className="flex items-center gap-4 mb-6">
+                <img
+                  src={currentCourse.image}
+                  alt={currentCourse.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <div>
+                  <h3 className="font-medium text-lg">{currentCourse.name}</h3>
+                  <p className="text-sm text-gray-500">
+                    Level: {currentCourse.level}
                   </p>
                 </div>
-              )}
-
-              <div className="space-y-4">
-                {/* PayPal Button Section */}
+                <div className="ml-auto font-bold text-xl text-primary">
+                  £{currentCourse.price}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="ml-2"
+                  onClick={() => handleRemoveFromCart(currentCourse.id)}
+                  title="Remove from cart"
+                >
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                </Button>
+              </div>
+            )}
+            <div className="flex justify-between items-center pt-4 border-t font-semibold text-lg mb-6">
+              <span>Subtotal:</span>
+              <span>£{currentCourse ? currentCourse.price : 0}</span>
+            </div>
+            <div className="flex justify-between items-center font-bold text-lg mb-6">
+              <span>Total:</span>
+              <span>£{currentCourse ? currentCourse.price : 0}</span>
+            </div>
+            {/* Colorful Payment Method Buttons */}
+            <div className="flex flex-col gap-3 mb-6">
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold border-2 transition-all text-lg ${paymentMethod === "paypal" ? "bg-blue-100 border-blue-500 text-blue-700 shadow" : "bg-white border-gray-200 hover:border-blue-300"}`}
+                  onClick={() => setPaymentMethod("paypal")}
+                >
+                  <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" className="h-6 w-6" />
+                  PayPal
+                </button>
+                <button
+                  type="button"
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold border-2 transition-all text-lg ${paymentMethod === "stripe" ? "bg-blue-50 border-blue-600 text-blue-800 shadow" : "bg-white border-gray-200 hover:border-blue-300"}`}
+                  onClick={() => setPaymentMethod("stripe")}
+                >
+                  <CreditCard className="w-6 h-6 text-blue-600" />
+                  Card
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold border-2 transition-all text-lg ${paymentMethod === "transfer" ? "bg-green-100 border-green-500 text-green-700 shadow" : "bg-white border-gray-200 hover:border-green-300"}`}
+                  onClick={() => setPaymentMethod("transfer")}
+                >
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a5 5 0 00-10 0v2M5 9h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2z" /></svg>
+                  Bank Transfer
+                </button>
+                <button
+                  type="button"
+                  className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold border-2 transition-all text-lg ${paymentMethod === "payl8r" ? "bg-yellow-100 border-yellow-400 text-yellow-700 shadow" : "bg-white border-gray-200 hover:border-yellow-300"}`}
+                  onClick={() => setPaymentMethod("payl8r")}
+                  aria-label="Payl8r"
+                >
+                  <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-20 w-48 object-contain hover:scale-105 transition-transform" />
+                  {/* <span className="text-base font-semibold text-yellow-700">Apply with Payl8r</span> */}
+                </button>
+              </div>
+            </div>
+            {/* Payment Form Section - dynamic fields based on method */}
+            <div className="space-y-4">
+              <ErrorBoundary FallbackComponent={PaymentErrorFallback}>
                 {paymentMethod === "paypal" && isFormValid() && (
-                  <PayPalCheckoutForm
-                    cartTotal={cartTotal}
-                    cartItems={cartItems}
-                    billingInfo={billingInfo}
-                  />
+                  <PayPalScriptProvider options={paypalOptions}>
+                    <PayPalCheckoutForm
+                      cartTotal={cartTotal}
+                      cartItems={cartItems}
+                      billingInfo={billingInfo}
+                    />
+                  </PayPalScriptProvider>
                 )}
-
-                {/* Stripe Elements Section */}
-                {paymentMethod === "stripe" &&
-                  isFormValid() &&
-                  clientSecret && (
-                    <Elements options={stripeOptions} stripe={stripePromise}>
-                      <StripeCheckoutForm
-                        clientSecret={clientSecret}
-                        cartTotal={cartTotal}
-                        cartItems={cartItems}
-                        billingInfo={billingInfo}
-                      />
-                    </Elements>
-                  )}
-
-                {/* Loading States */}
-                {paymentMethod === "stripe" &&
-                  isFormValid() &&
-                  (isCreatingStripeIntent || !clientSecret) && (
-                    <div className="text-center py-4">
-                      <p className="text-sm text-gray-500">
-                        Initializing secure payment...
-                      </p>
+                {paymentMethod === "stripe" && isFormValid() && clientSecret && (
+                  <Elements options={stripeOptions} stripe={stripePromise}>
+                    <StripeCheckoutForm
+                      clientSecret={clientSecret}
+                      cartTotal={cartTotal}
+                      cartItems={cartItems}
+                      billingInfo={billingInfo}
+                    />
+                  </Elements>
+                )}
+                {paymentMethod === "transfer" && isFormValid() && (
+                  <div className="bg-white rounded-2xl shadow-xl p-8">
+                    <h4 className="font-semibold mb-2 text-lg">Bank Transfer Details</h4>
+                    <p className="mb-2 text-sm">Please transfer the total amount to the account below and enter your transaction reference.</p>
+                    <div className="mb-2 text-sm">
+                      <span className="font-bold">Bank Name:</span> Barclays Bank<br />
+                      <span className="font-bold">Account Name:</span> Titans Careers<br />
+                      <span className="font-bold">Sort Code:</span> 20-11-43<br />
+                      <span className="font-bold">Account Number:</span> 53818284<br />
+                      <span className="font-bold">Reference:</span> AML/KYC or Data Analysis
                     </div>
-                  )}
-              </div>
-            </Card>
-
-            {/* Security Features */}
-            <Card className="p-6 mt-6">
-              <h3 className="text-lg font-semibold mb-4">Secure Checkout</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <ShieldCheck className="h-5 w-5 text-green-500 mr-3" />
-                  <span className="text-sm">SSL encrypted payment</span>
-                </div>
-                <div className="flex items-center">
-                  <Award className="h-5 w-5 text-blue-500 mr-3" />
-                  <span className="text-sm">Instant course access</span>
-                </div>
-              </div>
-            </Card>
+                    <label className="block mt-4 mb-2 text-sm font-medium">Transaction Reference</label>
+                    <input
+                      type="text"
+                      value={bankRef}
+                      onChange={e => setBankRef(e.target.value)}
+                      placeholder="Enter your bank transfer reference"
+                      className="block w-full border border-gray-300 rounded-xl p-3 text-lg"
+                    />
+                    <label className="block mt-4 mb-2 text-sm font-medium">Upload Receipt <span className="text-red-600">*</span></label>
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
+                      onChange={e => setBankFile(e.target.files[0])}
+                      className="block w-full"
+                      required
+                    />
+                    {/* New fields for bank transfer */}
+                    <label className="block mt-4 mb-2 text-sm font-medium">Description</label>
+                    <input
+                      type="text"
+                      value={bankDesc}
+                      onChange={e => setBankDesc(e.target.value)}
+                      placeholder="Payment description (e.g. Course fee)"
+                      className="block w-full border border-gray-300 rounded-xl p-3 text-lg"
+                    />
+                    <label className="block mt-4 mb-2 text-sm font-medium">Amount (£)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={bankAmount}
+                      onChange={e => setBankAmount(e.target.value)}
+                      placeholder="Amount paid"
+                      className="block w-full border border-gray-300 rounded-xl p-3 text-lg"
+                    />
+                    <Button
+                      className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold"
+                      disabled={bankLoading || !bankRef || !bankFile || !bankDesc || !bankAmount}
+                      onClick={async () => {
+                        if (!bankFile) {
+                          setModal({ open: true, type: "error", message: "Please upload a receipt before submitting." });
+                          return;
+                        }
+                        setBankLoading(true);
+                        const formData = new FormData();
+                        formData.append("reference", bankRef);
+                        formData.append("receipt", bankFile);
+                        formData.append("course_id", currentCourse.id);
+                        formData.append("title", currentCourse.name || "Bank Transfer Receipt");
+                        formData.append("description", bankDesc);
+                        formData.append("amount", parseFloat(bankAmount));
+                        // Do NOT append date
+                        const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+                        try {
+                          const res = await fetch(`${baseUrl}/courses/receipts/upload/`, {
+                            method: "POST",
+                            body: formData,
+                            credentials: "include",
+                            headers,
+                          });
+                          const resBody = await res.text();
+                          if (!res.ok) throw new Error(resBody || "Upload failed");
+                          setModal({ open: true, type: "success", message: "Your bank transfer receipt has been submitted and is pending approval. You will be notified by email once your course is activated." });
+                          setBankRef("");
+                          setBankFile(null);
+                          setBankDesc("");
+                          setBankAmount("");
+                          // setBankDate(""); // Optionally clear date state if you want
+                        } catch (err) {
+                          let msg = err?.message || "Failed to upload receipt. Please try again.";
+                          // Try to parse backend error
+                          try {
+                            const parsed = JSON.parse(msg);
+                            if (parsed.errors) msg = Object.values(parsed.errors).flat().join(" ");
+                          } catch {err}
+                          setModal({ open: true, type: "error", message: msg });
+                        } finally {
+                          setBankLoading(false);
+                        }
+                      }}
+                    >
+                      {bankLoading ? "Uploading..." : "I Have Made The Transfer"}
+                    </Button>
+                    <Modal open={modal.open} onClose={() => {
+                      setModal({ ...modal, open: false });
+                      if (modal.type === "success") navigate("/courses");
+                    }}>
+                      <div className="p-6 text-center">
+                        <h2 className={`text-xl font-bold mb-4 ${modal.type === "error" ? "text-red-600" : "text-green-600"}`}>{modal.type === "error" ? "Error" : "Success"}</h2>
+                        <p>{modal.message}</p>
+                        <Button className="mt-6" onClick={() => {
+                          setModal({ ...modal, open: false });
+                          if (modal.type === "success") navigate("/courses");
+                        }}>
+                          {modal.type === "error" ? "Close" : "Go to Courses"}
+                        </Button>
+                      </div>
+                    </Modal>
+                  </div>
+                )}
+                {paymentMethod === "payl8r" && isFormValid() && (
+                  <div className="bg-white rounded-2xl shadow-xl p-8">
+                    <div className="flex flex-col items-center mb-4">
+                      <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-20 w-48 object-contain hover:scale-105 transition-transform" />
+                      <span className="mt-2 text-lg font-semibold text-yellow-700">Apply with Payl8r</span>
+                    </div>
+                    <p className="mb-2 text-sm text-center">Apply for flexible payment options with Payl8r. Complete your application below.</p>
+                    <div className="w-full mt-4">
+                      <iframe
+                        src="https://payl8r.com/retailers/payment-detail?retailer=titanscar1020f2ucstj"
+                        title="Payl8r Application"
+                        width="100%"
+                        height="800"
+                        frameBorder="0"
+                        className="rounded-xl border border-gray-200 shadow"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                    <div className="mt-4 text-center text-xs text-gray-700">
+                      <a href="https://payl8r.com/retailers/payment-detail?retailer=titanscar1020f2ucstj" target="_blank" rel="noopener noreferrer" className="underline">Payl8r Information Page</a>
+                    </div>
+                  </div>
+                )}
+                {paymentMethod === "stripe" && isFormValid() && (isCreatingStripeIntent || !clientSecret) && (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-gray-500">Initializing secure payment...</p>
+                  </div>
+                )}
+              </ErrorBoundary>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Security Features */}
+      <Card className="p-6 mt-6">
+        <h3 className="text-lg font-semibold mb-4">Secure Checkout</h3>
+        <div className="space-y-3">
+          <div className="flex items-center">
+            <ShieldCheck className="h-5 w-5 text-green-500 mr-3" />
+            <span className="text-sm">SSL encrypted payment</span>
+          </div>
+          <div className="flex items-center">
+            <Award className="h-5 w-5 text-blue-500 mr-3" />
+            <span className="text-sm">Instant course access</span>
+          </div>
+        </div>
+      </Card>
     </CheckoutProtection>
   );
 };

@@ -1,11 +1,12 @@
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useNotifyStripePaymentSuccessMutation } from "@/services/api";
 import { setPaymentStatus, setOrderId } from "@/store/slices/cartSlice";
 import { addCourseToUser } from "@/store/slices/authSlice";
+import Modal from "./Modal";
+import { toast } from "sonner";
 
 // Convert country name to ISO 3166-1 alpha-2 code
 const convertCountryToCode = (country) => {
@@ -48,6 +49,8 @@ const StripeCheckoutForm = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   // Get user from Redux for course enrollment
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -72,7 +75,8 @@ const StripeCheckoutForm = ({
     // Authentication check
     if (!isAuthenticated || !user?.id) {
       console.log("❌ Authentication check failed");
-      toast.error("Please log in to complete your purchase");
+      setModalMessage("Please log in to complete your purchase");
+      setModalOpen(true);
       navigate("/login");
       return;
     }
@@ -83,7 +87,8 @@ const StripeCheckoutForm = ({
     const cardElement = elements.getElement(CardElement);
     if (!cardElement) {
       console.log("❌ CardElement not found");
-      toast.error("Card input not found. Please refresh.");
+      setModalMessage("Card input not found. Please refresh.");
+      setModalOpen(true);
       setIsSubmitting(false);
       return;
     }
@@ -117,8 +122,10 @@ const StripeCheckoutForm = ({
       console.log("❌ Error (if any):", error);
 
       if (error) {
-        toast.error(error.message || "Payment failed");
+        setModalMessage(error.message || "Payment failed");
+        setModalOpen(true);
         console.error("Payment error:", error);
+        setIsSubmitting(false);
         return;
       }
 
@@ -180,16 +187,18 @@ const StripeCheckoutForm = ({
           console.log("✅ Fallback navigation called!");
         }
       } else {
-        toast.error("Payment was not completed. Please try again.");
+        setModalMessage("Payment was not completed. Please try again.");
+        setModalOpen(true);
       }
     } catch (err) {
+      setModalMessage("Something went wrong. Please try again.");
+      setModalOpen(true);
       console.error("❌ Unexpected error during payment:", err);
       console.error("❌ Error details:", {
         message: err.message,
         stack: err.stack,
         name: err.name,
       });
-      toast.error("Something went wrong. Please try again.");
     } finally {
       console.log("🔄 Setting isSubmitting to false");
       setIsSubmitting(false);
@@ -197,28 +206,42 @@ const StripeCheckoutForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <CardElement
-        options={{
-          hidePostalCode: true,
-          style: {
-            base: {
-              fontSize: "16px",
-              color: "#32325d",
-              "::placeholder": { color: "#a0aec0" },
+    <>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <CardElement
+          options={{
+            hidePostalCode: true,
+            style: {
+              base: {
+                fontSize: "16px",
+                color: "#32325d",
+                "::placeholder": { color: "#a0aec0" },
+              },
+              invalid: { color: "#e53e3e" },
             },
-            invalid: { color: "#e53e3e" },
-          },
-        }}
-      />
-      <button
-        type="submit"
-        className="w-full mt-4 px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
-        disabled={!stripe || isSubmitting}
-      >
-        {isSubmitting ? "Processing..." : `Pay £${cartTotal}`}
-      </button>
-    </form>
+          }}
+        />
+        <button
+          type="submit"
+          className="w-full mt-4 px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
+          disabled={!stripe || isSubmitting}
+        >
+          {isSubmitting ? "Processing..." : `Pay £${cartTotal}`}
+        </button>
+      </form>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="text-center">
+          <h2 className="text-lg font-semibold mb-2">Payment Error</h2>
+          <p className="mb-4">{modalMessage}</p>
+          <button
+            className="px-4 py-2 bg-primary text-white rounded"
+            onClick={() => setModalOpen(false)}
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
+    </>
   );
 };
 

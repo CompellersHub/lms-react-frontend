@@ -169,7 +169,7 @@ function CoursesPage() {
                     <div className="flex items-center">
                       <BarChart className="h-4 w-4 text-foreground/60 mr-1" />
                       <span className="text-sm text-foreground/70">
-                        {course?.curriculum.length} modules
+                        {Array.isArray(course?.curriculum) ? course.curriculum.length : 0} modules
                       </span>
                     </div>
                   </div>

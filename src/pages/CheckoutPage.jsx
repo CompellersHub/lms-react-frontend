@@ -57,7 +57,6 @@ const CheckoutPage = () => {
   const [bankLoading, setBankLoading] = useState(false);
   const [bankDesc, setBankDesc] = useState("");
   const [bankAmount, setBankAmount] = useState("");
-  const [bankDate, setBankDate] = useState("");
   // const [showPendingModal, setShowPendingModal] = useState(false);
   const [modal, setModal] = useState({ open: false, type: "", message: "" });
 
@@ -388,7 +387,8 @@ const CheckoutPage = () => {
                   onClick={() => setPaymentMethod("payl8r")}
                   aria-label="Payl8r"
                 >
-                  <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-8 w-24 object-contain" />
+                  <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-20 w-48 object-contain hover:scale-105 transition-transform" />
+                  {/* <span className="text-base font-semibold text-yellow-700">Apply with Payl8r</span> */}
                 </button>
               </div>
             </div>
@@ -406,26 +406,6 @@ const CheckoutPage = () => {
                 )}
                 {paymentMethod === "stripe" && isFormValid() && clientSecret && (
                   <Elements options={stripeOptions} stripe={stripePromise}>
-                    {/* Card payment fields */}
-                    <div className="space-y-4 mb-4">
-                      <input
-                        type="text"
-                        placeholder="Card number"
-                        className="block w-full border border-gray-300 rounded-xl p-3 text-lg"
-                      />
-                      <div className="flex gap-4">
-                        <input
-                          type="text"
-                          placeholder="MM/YY"
-                          className="w-1/2 border border-gray-300 rounded-xl p-3 text-lg"
-                        />
-                        <input
-                          type="text"
-                          placeholder="CVC"
-                          className="w-1/2 border border-gray-300 rounded-xl p-3 text-lg"
-                        />
-                      </div>
-                    </div>
                     <StripeCheckoutForm
                       clientSecret={clientSecret}
                       cartTotal={cartTotal}
@@ -480,16 +460,9 @@ const CheckoutPage = () => {
                       placeholder="Amount paid"
                       className="block w-full border border-gray-300 rounded-xl p-3 text-lg"
                     />
-                    <label className="block mt-4 mb-2 text-sm font-medium">Date of Transfer</label>
-                    <input
-                      type="date"
-                      value={bankDate}
-                      onChange={e => setBankDate(e.target.value)}
-                      className="block w-full border border-gray-300 rounded-xl p-3 text-lg"
-                    />
                     <Button
                       className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold"
-                      disabled={bankLoading || !bankRef || !bankFile || !bankDesc || !bankAmount || !bankDate}
+                      disabled={bankLoading || !bankRef || !bankFile || !bankDesc || !bankAmount}
                       onClick={async () => {
                         if (!bankFile) {
                           setModal({ open: true, type: "error", message: "Please upload a receipt before submitting." });
@@ -497,18 +470,13 @@ const CheckoutPage = () => {
                         }
                         setBankLoading(true);
                         const formData = new FormData();
-                        formData.append("file", bankFile); // Try 'file' field
-                        formData.append("receipt", bankFile); // Also send as 'receipt' for compatibility
                         formData.append("reference", bankRef);
+                        formData.append("receipt", bankFile);
                         formData.append("course_id", currentCourse.id);
                         formData.append("title", currentCourse.name || "Bank Transfer Receipt");
                         formData.append("description", bankDesc);
                         formData.append("amount", parseFloat(bankAmount));
-                        formData.append("date", bankDate ? bankDate.toString() : "");
-                        // Debug: log FormData
-                        for (let pair of formData.entries()) {
-                          console.log(pair[0]+ ':', pair[1]);
-                        }
+                        // Do NOT append date
                         const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
                         try {
                           const res = await fetch(`${baseUrl}/courses/receipts/upload/`, {
@@ -524,7 +492,7 @@ const CheckoutPage = () => {
                           setBankFile(null);
                           setBankDesc("");
                           setBankAmount("");
-                          setBankDate("");
+                          // setBankDate(""); // Optionally clear date state if you want
                         } catch (err) {
                           let msg = err?.message || "Failed to upload receipt. Please try again.";
                           // Try to parse backend error
@@ -559,18 +527,22 @@ const CheckoutPage = () => {
                 )}
                 {paymentMethod === "payl8r" && isFormValid() && (
                   <div className="bg-white rounded-2xl shadow-xl p-8">
-                    <div className="flex justify-center mb-4">
-                      <a
-                        href="https://payl8r.com/retailers/payment-detail?retailer=titanscar1020f2ucstj"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block"
-                        aria-label="Apply with Payl8r"
-                      >
-                        <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-12 w-36 object-contain hover:scale-105 transition-transform" />
-                      </a>
+                    <div className="flex flex-col items-center mb-4">
+                      <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-20 w-48 object-contain hover:scale-105 transition-transform" />
+                      <span className="mt-2 text-lg font-semibold text-yellow-700">Apply with Payl8r</span>
                     </div>
-                    <p className="mb-2 text-sm text-center">Apply for flexible payment options with Payl8r. You will be redirected to complete your application.</p>
+                    <p className="mb-2 text-sm text-center">Apply for flexible payment options with Payl8r. Complete your application below.</p>
+                    <div className="w-full mt-4">
+                      <iframe
+                        src="https://payl8r.com/retailers/payment-detail?retailer=titanscar1020f2ucstj"
+                        title="Payl8r Application"
+                        width="100%"
+                        height="800"
+                        frameBorder="0"
+                        className="rounded-xl border border-gray-200 shadow"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
                     <div className="mt-4 text-center text-xs text-gray-700">
                       <a href="https://payl8r.com/retailers/payment-detail?retailer=titanscar1020f2ucstj" target="_blank" rel="noopener noreferrer" className="underline">Payl8r Information Page</a>
                     </div>

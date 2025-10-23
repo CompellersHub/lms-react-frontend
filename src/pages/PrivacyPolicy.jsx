@@ -442,7 +442,7 @@ export default function PrivacyPolicy() {
             www.titanscareers.com/contact
           </a>
         </li>
-        <li>By phone number: +44 20 1234 5678</li>
+        <li>By phone number: +442045720475</li>
       </ul>
       <p className="mb-4">
         We will respond to your request or inquiry within a reasonable

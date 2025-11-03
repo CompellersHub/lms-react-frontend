@@ -59,7 +59,7 @@ export function WhyChooseUs() {
       icon: <Check className="h-8 w-8 text-primary" />,
       title: "Affordable and Accessible",
       description:
-        "Our mission is to make high-quality training affordable without compromising on excellence. Flexible payment plans are available.",
+        "Tians trains you using Industry-relevant tools that real employers use every day. This ensure you graduate with practical, hands-on experience that's directly transferable into the workplace.",
     },
   ];
 

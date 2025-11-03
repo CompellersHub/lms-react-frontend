@@ -24,7 +24,7 @@ import { logout } from "../store/slices/authSlice";
 import { selectCartItems } from "../store/slices/cartSlice";
 import { toast } from "react-toastify";
 import logoImage from "@/assets/img/output.gif"; // Updated logo image import
-import logoText from "@/assets/img/logotext.jpeg";
+// import logoText from "@/assets/img/logotext.jpeg";
 
 function useResponsive() {
   const [isMobile, setIsMobile] = useState(false);
@@ -131,7 +131,7 @@ export function Navbar() {
             <Link to="/" className="flex items-center" aria-label="Home">
               <div className="flex items-center">
                 {/* Titans Careers text logo as black text */}
-                <span className="text-2xl font-bold text-black ml-1" aria-label="Titans Careers">Titans Careers</span>
+                <span className="text-2xl font-bold text-black ml-1 font-sans" style={{fontFamily: 'Inter, Montserrat, Arial, sans-serif'}} aria-label="Titans Careers">Titans Careers</span>
                 <img
                   src={logoImage || "/placeholder.svg"}
                   alt="Logo"

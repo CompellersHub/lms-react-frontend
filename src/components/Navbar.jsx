@@ -130,13 +130,8 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center" aria-label="Home">
               <div className="flex items-center">
-                  {/* Add the new Titans Careers logo beside the existing logo */}
-                <img
-                  src={logoText}
-                  alt="Titans Careers Logo"
-                  className="h-16 w-auto object-contain "
-                  aria-label="Titans Careers"
-                />
+                {/* Titans Careers text logo as black text */}
+                <span className="text-2xl font-bold text-black ml-1" aria-label="Titans Careers">Titans Careers</span>
                 <img
                   src={logoImage || "/placeholder.svg"}
                   alt="Logo"

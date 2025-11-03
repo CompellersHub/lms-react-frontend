@@ -388,7 +388,7 @@ const CheckoutPage = () => {
                   aria-label="Payl8r"
                 >
                   <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-20 w-48 object-contain hover:scale-105 transition-transform" />
-                  {/* <span className="text-base font-semibold text-yellow-700">Apply with Payl8r</span> */}
+                  {/* <span className="text-base font-semibold text-yellow-700">Partnered with Payl8r</span> */}
                 </button>
               </div>
             </div>
@@ -531,7 +531,7 @@ const CheckoutPage = () => {
                       <img src="/assets/company-logos/payl8r.jpg" alt="Payl8r" className="h-20 w-48 object-contain hover:scale-105 transition-transform" />
                       <span className="mt-2 text-lg font-semibold text-yellow-700">Apply with Payl8r</span>
                     </div>
-                    <p className="mb-2 text-sm text-center">Apply for flexible payment options with Payl8r. Complete your application below.</p>
+                    <p className="mb-2 text-sm text-center">Partnered with Payl8r. Complete your application below.</p>
                     <div className="w-full mt-4">
                       <iframe
                         src="https://payl8r.com/retailers/payment-detail?retailer=titanscar1020f2ucstj"
@@ -545,6 +545,10 @@ const CheckoutPage = () => {
                     </div>
                     <div className="mt-4 text-center text-xs text-gray-700">
                       <a href="https://payl8r.com/retailers/payment-detail?retailer=titanscar1020f2ucstj" target="_blank" rel="noopener noreferrer" className="underline">Payl8r Information Page</a>
+                    </div>
+                    {/* FCA Disclaimer for Payl8r compliance */}
+                    <div className="mt-4 text-xs text-gray-700 border-t pt-3">
+                      TITANS CAREERS LIMITED is an Introducer Appointed Representative of Social Money Limited t/a Payl8r who is authorised by the FCA under Ref. Number 675283. Credit is subject to creditworthiness and affordability assessments. Missed payments may affect your credit file, future borrowing and incur fees. Representative APR 65.5%
                     </div>
                   </div>
                 )}

@@ -24,6 +24,7 @@ import { logout } from "../store/slices/authSlice";
 import { selectCartItems } from "../store/slices/cartSlice";
 import { toast } from "react-toastify";
 import logoImage from "@/assets/img/output.gif"; // Updated logo image import
+import logoText from "@/assets/img/logotext.jpeg";
 
 function useResponsive() {
   const [isMobile, setIsMobile] = useState(false);
@@ -129,12 +130,20 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center" aria-label="Home">
               <div className="flex items-center">
+                  {/* Add the new Titans Careers logo beside the existing logo */}
+                <img
+                  src={logoText}
+                  alt="Titans Careers Logo"
+                  className="h-16 w-auto object-contain "
+                  aria-label="Titans Careers"
+                />
                 <img
                   src={logoImage || "/placeholder.svg"}
                   alt="Logo"
-                  className="h-16 w-auto object-contain rounded-md bg-white p-1"
+                  className="h-15 w-auto object-contain rounded-md bg-white "
                   aria-label="Logo"
                 />
+              
               </div>
             </Link>
           </div>

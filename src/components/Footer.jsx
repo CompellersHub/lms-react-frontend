@@ -147,6 +147,10 @@ export function Footer() {
               className="max-h-10 w-[120px] object-contain mr-2 rounded shadow border border-gray-300 bg-white"
               style={{ padding: '2px' }}
             />
+            {/* FCA Disclaimer for Payl8r compliance */}
+            <span className="block text-[10px] text-white mt-1">
+              TITANS CAREERS LIMITED is an Introducer Appointed Representative of Social Money Limited t/a Payl8r who is authorised by the FCA under Ref. Number 675283. Credit is subject to creditworthiness and affordability assessments. Missed payments may affect your credit file, future borrowing and incur fees. Representative APR 65.5%
+            </span>
             <Link
               to="/privacy"
               className="text-blue-100 hover:underline text-xs md:text-sm"

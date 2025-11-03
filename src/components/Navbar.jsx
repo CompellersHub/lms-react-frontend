@@ -24,7 +24,6 @@ import { logout } from "../store/slices/authSlice";
 import { selectCartItems } from "../store/slices/cartSlice";
 import { toast } from "react-toastify";
 import logoImage from "@/assets/img/output.gif"; // Updated logo image import
-// import logoText from "@/assets/img/logotext.jpeg";
 
 function useResponsive() {
   const [isMobile, setIsMobile] = useState(false);

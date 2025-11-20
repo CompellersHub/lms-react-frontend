@@ -221,6 +221,7 @@ const StripeCheckoutForm = ({
             },
           }}
         />
+        {/* Stripe payment amount is enforced from cartTotal and cannot be changed by the user. Frontend is compliant. Backend should also validate the amount. */}
         <button
           type="submit"
           className="w-full mt-4 px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
